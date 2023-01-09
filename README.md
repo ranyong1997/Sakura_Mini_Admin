@@ -2,7 +2,7 @@
 > 欢迎来到Sakura_Mini_Admin后台管理系统，一个简洁轻快的后台管理框架.支持拥有多用户组的RBAC管理后台 🚀
 <h1 align="center">
     <a>
-        <img src="https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=春暖花开，百事可乐.;console.log(%22Hello%EF%BC%8CRanyong%22)">  
+        <img src="https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=春暖花开，百事可乐.;console.log(%22Hello%EF%BC%8CSakuta_MiNi_Admin%22)">  
     </a>
 </h1>
 ### 安装
