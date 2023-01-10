@@ -70,7 +70,7 @@ model_path = os.path.join(BASE_DIR, 'rbac_model.conf')
 
 def get_casbin():
     """
-    返回一个
+    返回一个最新的权限规则
     :return:
     """
     return casbin.Enforcer(model_path, adapter)

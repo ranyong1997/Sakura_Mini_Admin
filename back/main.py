@@ -53,7 +53,6 @@ Base.metadata.create_all(bind=engind)
 
 
 # 生成初始化数据，添加一个超级管理员并赋予所有管理权限，以及一些虚拟用户
-c
 @app.get("/")
 def main():
     html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'index.html')
@@ -69,5 +68,9 @@ async def startup_event():
 
 
 if __name__ == '__main__':
-    uvicorn.run(app='main:app', host=settings.server_host, port=settings.server_port, reload_dirs=['back'], reload=True)
-    # reload_dirs=['back'],仅检测back目录下的代码改动
+    uvicorn.run(
+        app='main:app',
+        host=settings.server_host,
+        port=settings.server_port,
+        reload_dirs=['back'],  # reload_dirs=['back'],仅检测back目录下的代码改动
+        reload=True)

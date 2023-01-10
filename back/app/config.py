@@ -29,7 +29,19 @@ class Settings(BaseSettings):
     cors_allow_methods: List[str] = ["PUT", "POST", "GET", "DELETE", "OPTIONS"]
     # 配置允许访问请求头
     cors_allow_headers: List[str] = ["*"]
-    BANNER = """
+    # url的前缀
+    url_prefix: str = "/v1/token"
+    # jwt加密的key >>>openssl rand -hex 32<<<
+    jwt_secret_key: str = "c71336cfb4c32c0266ba636cf449e71e64e2c3cfe01728182cf5c3ddb33e357b"
+    # jwt 加密算法
+    jwt_algorithm: str = "HS256"
+    # token过期时间，单位：秒
+    jwt_exp_seconds: int = 7 * 24 * 60 * 60
+    # 日志等级
+    LOG_LEVEL = "DEBUG"
+    # 日志目录
+    log_dir: str = "logs/logger.log"
+    BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       
  / ___|  __ _| | ___   _ _ __ __ _    |  \/  (_) \ | (_)      / \   __| |_ __ ___ (_)_ __  
  \___ \ / _` | |/ / | | | '__/ _` |   | |\/| | |  \| | |     / _ \ / _` | '_ ` _ \| | '_ \ 
