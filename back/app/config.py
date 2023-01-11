@@ -6,8 +6,12 @@
 # @File    : config.py
 # @Software: PyCharm
 # @desc    : 全局配置文件
+import os
 from pydantic import BaseSettings
 from typing import List
+
+# 项目根目录
+base_dir = os.path.join(os.path.abspath(__file__))
 
 
 class Settings(BaseSettings):
@@ -41,6 +45,8 @@ class Settings(BaseSettings):
     LOG_LEVEL = "DEBUG"
     # 日志目录
     log_dir: str = "logs/logger.log"
+    # 日志目录2: todo:需要测试是否在back目录下
+    log_dir2: str = f'{base_dir}/logs'
     BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       
  / ___|  __ _| | ___   _ _ __ __ _    |  \/  (_) \ | (_)      / \   __| |_ __ ___ (_)_ __  

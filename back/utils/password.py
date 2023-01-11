@@ -3,7 +3,7 @@
 # @Time    : 2023/1/10 14:50
 # @Author  : 冉勇
 # @Site    : 
-# @File    : pawword.py
+# @File    : password.py
 # @Software: PyCharm
 # @desc    : 密码加密、解密工具
 import os
