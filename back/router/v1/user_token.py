@@ -6,19 +6,13 @@
 # @File    : user_token.py
 # @Software: PyCharm
 # @desc    : 用户路由
-from datetime import datetime, timedelta
-from typing import Union
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from jose import jwt
-
 from back.app.database import get_db
-from back.schemas.token_schemas import Token
 from back.schemas import user_schemas
 from back.schemas.user_schemas import User, Casbin_rule, Users, UserUpdate, ChangeUserRole
-from back.utils.password import verify_password, get_password_hash
-from back.utils.token import oauth2_scheme, get_username_by_token, APP_TOKEN_CONFIG
+from back.utils.password import get_password_hash
+from back.utils.token import oauth2_scheme, get_username_by_token
 from back.utils.casbin import verify_enforce
 from back.crud import crud
 
@@ -254,5 +248,3 @@ async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: S
         return {'options': options, 'checkeds': checkeds}
     else:
         raise no_permission
-
-

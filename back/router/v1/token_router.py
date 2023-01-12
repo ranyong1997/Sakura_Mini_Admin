@@ -15,9 +15,8 @@ from jose import jwt
 from back.app.database import get_db
 from back.crud.crud import get_user_by_username
 from back.schemas.token_schemas import Token
-from back.utils.password import verify_password, get_password_hash
-from back.utils.token import oauth2_scheme, get_username_by_token, APP_TOKEN_CONFIG
-from back.utils.casbin import verify_enforce
+from back.utils.password import verify_password
+from back.utils.token import APP_TOKEN_CONFIG
 
 router = APIRouter(
     prefix="v1",
@@ -103,4 +102,3 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         data={'sub': user.username}, expires_delta=access_token_expired
     )
     return {"access_token": access_token, "token_type": "bearer"}
-
