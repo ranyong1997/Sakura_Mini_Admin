@@ -38,7 +38,7 @@ class AppTokenConfig(BaseSettings):
 
 
 # 创建一个token配置项
-APP_TOEKN_CONFIG = AppTokenConfig()
+APP_TOKEN_CONFIG = AppTokenConfig()
 
 
 def verify_isActive(username: str):
