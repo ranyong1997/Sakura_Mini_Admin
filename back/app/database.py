@@ -12,8 +12,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
-
-from back.main import BASE_DIR
+from back.main import BASE_DIR, DB_DIR
 
 # 创建一个使用内存的SQLite数据库
 # TODO:后续介入mysql
@@ -34,9 +33,6 @@ def get_db_test():
         db.close()
 
 
-# 组装数据库的绝对地址
-DB_DIR = os.path.join(BASE_DIR, "miniadmin_data.db")
-print("DB_DIR--->", DB_DIR)
 # 数据库访问地址
 SQLALCHEMY_DATABASE_URL = "sqlite:///" + DB_DIR
 # 创建物理SQlite数据库

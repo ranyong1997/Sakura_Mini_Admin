@@ -8,17 +8,19 @@
 # @desc    :
 import os
 import sys
-
-# 将当前目录添加到系统变量中
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(BASE_DIR)
-print("-->BASE_DIR", BASE_DIR)
+import uvicorn
 from back.app import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.staticfiles import StaticFiles  # 设置静态目录
 from fastapi.responses import HTMLResponse  # 响应html
-import uvicorn
+from back.app.database import Base, engine
+
+# 将当前目录添加到系统变量中
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
+# 组装数据库的绝对地址
+DB_DIR = os.path.join(BASE_DIR, "miniadmin_data.db")
 
 app = FastAPI(
     title=settings.project_title,
@@ -40,9 +42,9 @@ app.add_middleware(
     allow_headers=settings.cors_allow_headers
 )
 
-
 # 路由
-# app.include_router(router)
+# app.include_router()
+
 
 # 静态资源
 # app.mount("/dist", StaticFiles(directory=os.path.join(BASE_DIR, 'dist')), name="dist")
@@ -50,7 +52,7 @@ app.add_middleware(
 
 
 # 在数据库中生成表结构
-# Base.metadata.create_all(bind=engind)
+Base.metadata.create_all(bind=engine)
 
 
 # 生成初始化数据，添加一个超级管理员并赋予所有管理权限，以及一些虚拟用户
