@@ -7,6 +7,7 @@
 # @Software: PyCharm
 # @desc    : 全局配置文件
 import os
+import sys
 from pydantic import BaseSettings
 from typing import List
 
@@ -41,7 +42,10 @@ class Settings(BaseSettings):
     # 日志等级
     LOG_LEVEL = "DEBUG"
     # 日志目录
-    log_dir: str = "logs/logger.log"
+    # 将当前目录添加到系统变量中
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    sys.path.append(BASE_DIR)
+    log_dir: str = f"{BASE_DIR}/logger.log"
     BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       
  / ___|  __ _| | ___   _ _ __ __ _    |  \/  (_) \ | (_)      / \   __| |_ __ ___ (_)_ __  

@@ -9,16 +9,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from back.app.database import get_db
-from back.crud import crud
+from back.crud import services
+from back.models import db_casbinaction_models
 from back.schemas import casbin_schemas
 from back.router.v1.user_token import return_rule
-from back.models import db_casbinaction_models
 from back.utils.token import oauth2_scheme
 from back.utils.casbin import verify_enforce
 
 router = APIRouter(
-    prefix="v1",
-    tags=["v1"],
+    prefix="/v1",
+    tags=["Casbin行为"],
     responses={404: {"description": "Not Found"}}  # 请求异常返回数据
 )
 
@@ -40,7 +40,7 @@ async def get_cas(db: Session = Depends(get_db)):
     :param db:
     :return:
     """
-    return crud.get_casbin_actions(db)
+    return services.get_casbin_actions(db)
 
 
 @router.post("/ca/create_ca")
@@ -59,7 +59,7 @@ async def create_ca(ca: casbin_schemas.createCasbinAction, token: str = Depends(
         new_ca.action_key = ca.action_key
         new_ca.description = ca.description
         new_ca.user_id = ca.user_id
-        return crud.create_casbin_action(db, new_ca)
+        return services.create_casbin_action(db, new_ca)
     else:
         raise no_permission
 
@@ -72,7 +72,7 @@ async def get_ca(ca_id: int, db: Session = Depends(get_db)):
     :param db:
     :return:
     """
-    return crud.get_casbin_action_by_id(db, ca_id)
+    return services.get_casbin_action_by_id(db, ca_id)
 
 
 @router.post("/ca/update_ca")
@@ -86,7 +86,7 @@ async def update_ca(ca: casbin_schemas.EditCasbinAction, token: str = Depends(oa
     :return:
     """
     if verify_enforce(token, return_rule("CasbinAction", "update")):
-        return crud.update_casbin_action_by_id(db, ca.old_ca_id, ca.name, ca.action_key, ca.description)
+        return services.update_casbin_action_by_id(db, ca.old_ca_id, ca.name, ca.action_key, ca.description)
     else:
         raise no_permission
 
@@ -101,6 +101,6 @@ async def delete_ca(ca_id: int, token: str = Depends(oauth2_scheme), db: Session
     :return:
     """
     if verify_enforce(token, return_rule("CasbinAction", "delete")):
-        return crud.delete_casbin_object_by_id(db, ca_id)
+        return services.delete_casbin_object_by_id(db, ca_id)
     else:
         raise no_permission

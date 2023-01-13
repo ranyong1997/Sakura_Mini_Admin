@@ -13,14 +13,14 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import jwt
 from back.app.database import get_db
-from back.crud.crud import get_user_by_username
+from back.crud import services
 from back.schemas.token_schemas import Token
 from back.utils.password import verify_password
 from back.utils.token import APP_TOKEN_CONFIG
 
 router = APIRouter(
-    prefix="v1",
-    tags=["v1"],
+    prefix="/v1",
+    tags=["系统登录"],
     responses={404: {"description": "Not Found"}}  # 请求异常返回数据
 )
 
@@ -35,7 +35,7 @@ no_permission = HTTPException(
 ################################
 # access_token 系统登录相关的api接口
 ################################
-
+#
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     """
     生成token
@@ -62,7 +62,7 @@ def authenticate_user(db: Session, username: str, password: str):
     :param password:
     :return:
     """
-    user = get_user_by_username(db, username=username)  # 获取用户信息
+    user = services.get_user_by_username(db, username=username)  # 获取用户信息
     # 判断用户是否存在
     if not user:
         return False

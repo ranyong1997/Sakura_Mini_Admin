@@ -12,8 +12,8 @@ from back.utils.token import oauth2_scheme
 from back.utils.casbin import verify_enforce
 
 router = APIRouter(
-    prefix="v1",
-    tags=["v1"],
+    prefix="/v1",
+    tags=["Casbin权限验证"],
     responses={404: {"description": "Not Found"}}  # 请求异常返回数据
 )
 

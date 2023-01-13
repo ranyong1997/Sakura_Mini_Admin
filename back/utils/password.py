@@ -11,11 +11,10 @@ import sys
 from passlib.context import CryptContext
 from loguru import logger
 from back.app import settings
-from back.main import BASE_DIR
 
 LOG_LEVEL = settings.LOG_LEVEL
 logger.remove()  # 删去import logger之后自动产生的handler，不删除的话会出现重复输出的现象
-logger.add(os.path.join(BASE_DIR, settings.log_dir), level=LOG_LEVEL)
+logger.add(os.path.join(settings.BASE_DIR, settings.log_dir), level=LOG_LEVEL)
 handler_id = logger.add(sys.stderr, level=LOG_LEVEL)
 
 # 密码散列 pwd_context_hash(password)

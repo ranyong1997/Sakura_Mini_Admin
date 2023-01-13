@@ -3,7 +3,7 @@
 # @Time    : 2023/1/10 15:50
 # @Author  : 冉勇
 # @Site    : 
-# @File    : crud.py
+# @File    : services.py
 # @Software: PyCharm
 # @desc    :
 import random
@@ -13,10 +13,11 @@ from back.models.db_casbinaction_models import CasbinAction
 from back.models.db_casbinrule_models import CasbinRule
 from back.models.db_role_models import Role
 from back.models.db_user_models import User
-from loguru import logger
 from back.utils.password import get_password_hash, verify_password
+from loguru import logger
 
 
+# TODO:后续将每个crud分离出来
 def create_data(db: Session):
     """
     添加超管和一些普通用户

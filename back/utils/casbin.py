@@ -10,13 +10,13 @@ import os
 import sys
 from fastapi import HTTPException, status
 from back.app import settings
-from back.app.database import get_casbin, BASE_DIR
+from back.app.database import get_casbin
 from back.utils.token import get_username_by_token, verify_isActive
 from loguru import logger
 
 LOG_LEVEL = settings.LOG_LEVEL
 logger.remove()  # 删去import logger之后自动产生的handler，不删除的话会出现重复输出的现象
-logger.add(os.path.join(BASE_DIR, settings.log_dir), level=LOG_LEVEL)
+logger.add(os.path.join(settings.BASE_DIR, settings.log_dir), level=LOG_LEVEL)
 handler_id = logger.add(sys.stderr, level=LOG_LEVEL)
 
 

@@ -20,7 +20,7 @@ class EditRole(BaseModel):
     old_role_id: int
     name: str
     role_key: str
-    description: srt
+    description: str
 
 
 class ChangeRole(BaseModel):

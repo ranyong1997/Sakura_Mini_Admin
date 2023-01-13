@@ -13,7 +13,7 @@ class createCasbinObject(BaseModel):
     name: str
     object_key: str
     description: str
-    user_id: ine
+    user_id: int
 
 
 class EditCasbinObject(BaseModel):

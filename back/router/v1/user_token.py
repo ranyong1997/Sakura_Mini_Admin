@@ -14,11 +14,11 @@ from back.schemas.user_schemas import User, Casbin_rule, Users, UserUpdate, Chan
 from back.utils.password import get_password_hash
 from back.utils.token import oauth2_scheme, get_username_by_token
 from back.utils.casbin import verify_enforce
-from back.crud import crud
+from back.crud import services
 
 router = APIRouter(
-    prefix="v1",
-    tags=["v1"],
+    prefix="/v1",
+    tags=["用户"],
     responses={404: {"description": "Not Found"}}  # 请求异常返回数据
 )
 
@@ -57,10 +57,10 @@ async def create_user(user: user_schemas.UserCreate, db: Session = Depends(get_d
         headers={"WWW-Authenticate": "Bearer"}
     )
     # 注册用户名称不能与用户组的role_key重复
-    role = crud.get_role_by_role_key(db, user.username)
+    role = services.get_role_by_role_key(db, user.username)
     if role:
         raise credentials_exception
-    return crud.create_user(db, user.username, user.password, user.sex, user.email)
+    return services.create_user(db, user.username, user.password, user.sex, user.email)
 
 
 @router.get("/user/me", response_model=User)
@@ -72,7 +72,7 @@ async def read_user_me(token: str = Depends(oauth2_scheme), db: Session = Depend
     :return:
     """
     username = get_username_by_token(token)
-    return crud.get_user_by_username(db, username)
+    return services.get_user_by_username(db, username)
 
 
 @router.get("/user/user_by_id", response_model=User)
@@ -85,7 +85,7 @@ async def get_user_by_id(token: str = Depends(oauth2_scheme), db: Session = Depe
     :return:
     """
     if verify_enforce(token, return_rule("User", "read")):
-        return crud.get_user_by_id(db, user_id)
+        return services.get_user_by_id(db, user_id)
     else:
         raise no_permission
 
@@ -101,7 +101,7 @@ async def get_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 1
     :param keyword: 关键字
     :return:
     """
-    users = Users(users=crud.get_users(db, skip, limit, keyword), count=crud.get_users_count_by_keyword(db, keyword))
+    users = Users(users=services.get_users(db, skip, limit, keyword), count=services.get_users_count_by_keyword(db, keyword))
     return users
 
 
@@ -115,7 +115,7 @@ async def user_active_change(token: str = Depends(oauth2_scheme), db: Session = 
     :return:
     """
     if verify_enforce(token, return_rule('User', 'update')):
-        return crud.active_change(db, user_id)
+        return services.active_change(db, user_id)
     else:
         raise no_permission
 
@@ -130,7 +130,7 @@ async def delete_user(token: str = Depends(oauth2_scheme), db: Session = Depends
     :return:
     """
     if verify_enforce(token, return_rule("User", "delete")):
-        return crud.delete_user_by_id(db, user_id)
+        return services.delete_user_by_id(db, user_id)
     else:
         raise no_permission
 
@@ -150,9 +150,9 @@ async def update_user(user: UserUpdate, token: str = Depends(oauth2_scheme), db:
             detail="用户名称重复!",
             headers={"WWW-Authenticate": "Bearer"}
         )
-        u = crud.get_user_by_id(db, user.user_id)
+        u = services.get_user_by_id(db, user.user_id)
         # 修改用户名称不能与用户组的role_key重复
-        role = crud.get_role_by_role_key(db, user.username)
+        role = services.get_role_by_role_key(db, user.username)
         if role:
             raise credentials_exception
         u.username = user.username
@@ -186,9 +186,9 @@ async def update_me(user: UserUpdate, token: str = Depends(oauth2_scheme), db: S
         headers={"WWW-Authenticate": "Bearer"}
     )
     username = get_username_by_token(token)
-    me = crud.get_user_by_username(db, username)
+    me = services.get_user_by_username(db, username)
     if user.user_id == me.id:
-        u = crud.get_user_by_id(db, user.user_id)
+        u = services.get_user_by_id(db, user.user_id)
         u.username = user.username
         u.email = user.email
         u.sex = user.sex
@@ -218,9 +218,9 @@ async def change_user_role(data: ChangeUserRole, token: str = Depends(oauth2_sch
         # 将用户组名称改成role_key
         role_keys = []
         for name in data.names:
-            role = crud.get_role_by_name(db, name)
+            role = services.get_role_by_name(db, name)
             role_keys.append(role.role_key)
-        return crud.change_user_role(db, data.user_id, role_keys)
+        return services.change_user_role(db, data.user_id, role_keys)
     else:
         raise no_permission
 
@@ -235,15 +235,15 @@ async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: S
     :return:
     """
     if verify_enforce(token, return_rule("User", "read")):
-        user = crud.get_user_by_id(db, user_id)
-        roles = crud.get_roles(db)
+        user = services.get_user_by_id(db, user_id)
+        roles = services.get_roles(db)
         options = []  # 所有权限组名称
         for role in roles:
             options.append(role.name)
         checkeds = []  # 当前用户所拥有的用户组
-        crs = crud.get_casbin_rules_by_username(db, user.username)
+        crs = services.get_casbin_rules_by_username(db, user.username)
         for cr in crs:
-            role = crud.get_role_by_role_key(db, cr.v1)
+            role = services.get_role_by_role_key(db, cr.v1)
             checkeds.append(role.name)
         return {'options': options, 'checkeds': checkeds}
     else:
