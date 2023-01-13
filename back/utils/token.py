@@ -72,7 +72,7 @@ def get_username_by_token(token):
     )
     try:
         print("token.py # 56 获取用户名" + token)
-        payload = jwt.decode(token, settings.APP_TOEKN_CONFIG.SECRET_KEY, algorithms=[settings.APP_TOEKN_CONFIG.ALGORITHM])
+        payload = jwt.decode(token, APP_TOKEN_CONFIG.SECRET_KEY, algorithms=[APP_TOKEN_CONFIG.ALGORITHM])
         username: str = payload.get('sub')  # 从token中获取用户名
         return username
     except JWTError:
