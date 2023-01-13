@@ -41,10 +41,10 @@ class Settings(BaseSettings):
     jwt_exp_seconds: int = 7 * 24 * 60 * 60
     # 日志等级
     LOG_LEVEL = "DEBUG"
-    # 日志目录
     # 将当前目录添加到系统变量中
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(BASE_DIR)
+    # 日志目录
     log_dir: str = f"{BASE_DIR}/logger.log"
     BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       

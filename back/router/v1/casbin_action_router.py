@@ -101,6 +101,6 @@ async def delete_ca(ca_id: int, token: str = Depends(oauth2_scheme), db: Session
     :return:
     """
     if verify_enforce(token, return_rule("CasbinAction", "delete")):
-        return services.delete_casbin_object_by_id(db, ca_id)
+        return services.delete_casbin_action_by_id(db, ca_id)
     else:
         raise no_permission

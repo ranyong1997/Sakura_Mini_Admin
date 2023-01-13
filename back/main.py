@@ -8,11 +8,15 @@
 # @desc    :
 import os
 import uvicorn
-from back.app.database import Base, engine
+from casbin_sqlalchemy_adapter import Base
+
+
 from back.app import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.responses import HTMLResponse  # 响应html
+
+from back.app.database import engine
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_token
 
