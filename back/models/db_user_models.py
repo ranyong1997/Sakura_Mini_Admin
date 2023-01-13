@@ -8,7 +8,7 @@
 # @desc    : 用户数据库
 from datetime import datetime
 from back.app.database import Base
-from sqlalchemy import String, Column, Integer, DateTime, ForeignKey, Boolean
+from sqlalchemy import String, Column, Integer, DateTime, Boolean
 from sqlalchemy.orm import relationship
 
 

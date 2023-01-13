@@ -7,13 +7,16 @@
 # @Software: PyCharm
 # @desc    : 数据库以及连接的配置
 import os
+import sys
 import casbin  # 权限控制模块
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
-from back.main import BASE_DIR, DB_DIR
 
+# 将当前目录添加到系统变量中
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
 # 创建一个使用内存的SQLite数据库
 # TODO:后续介入mysql
 SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
@@ -32,6 +35,9 @@ def get_db_test():
     finally:
         db.close()
 
+
+# 组装数据库的绝对地址
+DB_DIR = os.path.join(BASE_DIR, '../miniadmin_data.db')
 
 # 数据库访问地址
 SQLALCHEMY_DATABASE_URL = "sqlite:///" + DB_DIR

@@ -7,20 +7,12 @@
 # @Software: PyCharm
 # @desc    :
 import os
-import sys
 import uvicorn
+from back.app.database import Base, engine
 from back.app import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
-from fastapi.staticfiles import StaticFiles  # 设置静态目录
 from fastapi.responses import HTMLResponse  # 响应html
-from back.app.database import Base, engine
-
-# 将当前目录添加到系统变量中
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(BASE_DIR)
-# 组装数据库的绝对地址
-DB_DIR = os.path.join(BASE_DIR, "miniadmin_data.db")
 
 app = FastAPI(
     title=settings.project_title,
