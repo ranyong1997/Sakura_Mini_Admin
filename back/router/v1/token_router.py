@@ -39,9 +39,6 @@ no_permission = HTTPException(
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     """
     生成token
-    :param data:
-    :param expires_delta:
-    :return:
     """
     to_encode = data.copy()
     if expires_delta:
@@ -57,10 +54,6 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 def authenticate_user(db: Session, username: str, password: str):
     """
     认证用户，包括检测用户是否存在，密码校验
-    :param db:
-    :param username:
-    :param password:
-    :return:
     """
     user = services.get_user_by_username(db, username=username)  # 获取用户信息
     # 判断用户是否存在
@@ -77,9 +70,6 @@ def authenticate_user(db: Session, username: str, password: str):
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
     获取用户，如果没有或者密码错误并提示
-    :param form_data:
-    :param db:
-    :return:
     """
     user = authenticate_user(db, form_data.username, form_data.password)
     # 判断是否有用户

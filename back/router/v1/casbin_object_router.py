@@ -37,8 +37,6 @@ no_permission = HTTPException(
 async def get_cos(db: Session = Depends(get_db)):
     """
     获取Casbin资源
-    :param db:
-    :return:
     """
     return services.get_casbin_objects(db)
 
@@ -48,10 +46,6 @@ async def create_casbin_object(co: casbin_schemas.createCasbinObject, token: str
                                db: Session = Depends(get_db)):
     """
     创建资源
-    :param co:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule("CasbinObject", 'create')):
         new_co = db_casbin_object_models.CasbinObject()
@@ -68,9 +62,6 @@ async def create_casbin_object(co: casbin_schemas.createCasbinObject, token: str
 async def get_casbin_object(co_id: int, db: Session = Depends(get_db)):
     """
     根据co_id获取资源
-    :param co_id:
-    :param db:
-    :return:
     """
     return services.get_casbin_object_by_id(db, co_id)
 
@@ -88,10 +79,6 @@ async def update_casbin_object_by_id(co: casbin_schemas.EditCasbinObject, token:
 async def delete_casbin_object_by_id(co_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据co_id删除资源
-    :param co_id:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule('CasbinObject', 'read')):
         return services.delete_casbin_object_by_id(db, co_id)

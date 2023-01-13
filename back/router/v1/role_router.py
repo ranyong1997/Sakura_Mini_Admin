@@ -33,24 +33,18 @@ no_permission = HTTPException(
 ################################
 # role相关的api接口
 ################################
-@router.get("role/get_roles")
+@router.get("/role/get_roles")
 async def get_roles(db: Session = Depends(get_db)):
     """
     获取角色
-    :param db:
-    :return:
     """
-    return get_roles(db)
+    return services.get_roles(db)
 
 
 @router.post("/role/create_role")
 async def create_role(role: role_schemas.Role, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     创建角色
-    :param role: 自定义角色名称
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule('Role', 'create')):
         new_role = db_role_models.Role()
@@ -67,10 +61,6 @@ async def create_role(role: role_schemas.Role, token: str = Depends(oauth2_schem
 async def get_role_by_id(role_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据id获取角色
-    :param role_id:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule('Role', 'read')):
         return services.get_role_by_id(db, role_id)
@@ -83,10 +73,6 @@ async def update_role_by_id(role: role_schemas.EditRole, token: str = Depends(oa
                             db: Session = Depends(get_db)):
     """
     修改角色
-    :param role:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule('Role', 'update')):
         new_role = db_role_models.Role()
@@ -102,10 +88,6 @@ async def update_role_by_id(role: role_schemas.EditRole, token: str = Depends(oa
 async def delete_role_by_id(role_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据id删除角色
-    :param role_id:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule('Role', 'delete')):
         return services.delete_role_by_id(db, role_id)
@@ -117,9 +99,6 @@ async def delete_role_by_id(role_id: int, token: str = Depends(oauth2_scheme), d
 async def get_co_ca(role_id: int, db: Session = Depends(get_db)):
     """
     返回用户组role所包含的权限用于前端使用多选框来展示
-    :param role_id:
-    :param db:
-    :return:
     """
     cos = services.get_casbin_objects(db)
     cas = services.get_casbin_actions(db)
@@ -145,7 +124,7 @@ async def get_co_ca(role_id: int, db: Session = Depends(get_db)):
         cks.append(co_key_name[cr.v1])
         cks.append(ca_key_name[cr.v2])
     print("role_router.py 154 --->", cks)
-    temp_names = {}
+    temp_names = []
     for ck in cks:
         if len(temp_names) == 0:
             temp_names.append(ck)
@@ -166,10 +145,6 @@ async def change_role(cr_data: role_schemas.ChangeRole, token: str = Depends(oau
                       db: Session = Depends(get_db)):
     """
     修改用户组所拥有的的权限
-    :param cr_data:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule('Role', 'update')):
         role = services.get_role_by_id(db, cr_data.role_id)

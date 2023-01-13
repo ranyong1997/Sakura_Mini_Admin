@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(BASE_DIR)
     # 日志目录
-    log_dir: str = f"{BASE_DIR}/logger.log"
+    log_dir: str = "../log/logger.log"
     BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       
  / ___|  __ _| | ___   _ _ __ __ _    |  \/  (_) \ | (_)      / \   __| |_ __ ___ (_)_ __  

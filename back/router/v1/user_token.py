@@ -33,9 +33,6 @@ no_permission = HTTPException(
 def return_rule(obj, act):
     """
     返回一个验证权限的规则，包括obj、act。
-    :param obj:
-    :param act:
-    :return:
     """
     return Casbin_rule(obj=obj, act=act)
 
@@ -47,9 +44,6 @@ def return_rule(obj, act):
 async def create_user(user: user_schemas.UserCreate, db: Session = Depends(get_db)):
     """
     创建用户
-    :param user:
-    :param db:
-    :return:
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -67,9 +61,6 @@ async def create_user(user: user_schemas.UserCreate, db: Session = Depends(get_d
 async def read_user_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     返回当前用户的资料
-    :param token:
-    :param db:
-    :return:
     """
     username = get_username_by_token(token)
     return services.get_user_by_username(db, username)
@@ -78,11 +69,7 @@ async def read_user_me(token: str = Depends(oauth2_scheme), db: Session = Depend
 @router.get("/user/user_by_id", response_model=User)
 async def get_user_by_id(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db), user_id: int = 0):
     """
-     根据id获取用户资料
-    :param token:
-    :param db:
-    :param user_id:
-    :return:
+    根据id获取用户资料
     """
     if verify_enforce(token, return_rule("User", "read")):
         return services.get_user_by_id(db, user_id)
@@ -95,13 +82,9 @@ async def get_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 1
                     keyword: str = ""):
     """
     获取用户
-    :param db:
-    :param skip: 页码
-    :param limit: 条数
-    :param keyword: 关键字
-    :return:
     """
-    users = Users(users=services.get_users(db, skip, limit, keyword), count=services.get_users_count_by_keyword(db, keyword))
+    users = Users(users=services.get_users(db, skip, limit, keyword),
+                  count=services.get_users_count_by_keyword(db, keyword))
     return users
 
 
@@ -109,10 +92,6 @@ async def get_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 1
 async def user_active_change(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db), user_id: int = 0):
     """
     修改用户锁定
-    :param token:
-    :param db:
-    :param user_id:
-    :return:
     """
     if verify_enforce(token, return_rule('User', 'update')):
         return services.active_change(db, user_id)
@@ -124,10 +103,6 @@ async def user_active_change(token: str = Depends(oauth2_scheme), db: Session = 
 async def delete_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db), user_id: int = 0):
     """
     根据id删除用户
-    :param token:
-    :param db:
-    :param user_id:
-    :return:
     """
     if verify_enforce(token, return_rule("User", "delete")):
         return services.delete_user_by_id(db, user_id)
@@ -139,10 +114,6 @@ async def delete_user(token: str = Depends(oauth2_scheme), db: Session = Depends
 async def update_user(user: UserUpdate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     修改用户资料
-    :param user:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule("User", "update")):
         credentials_exception = HTTPException(
@@ -175,10 +146,6 @@ async def update_user(user: UserUpdate, token: str = Depends(oauth2_scheme), db:
 async def update_me(user: UserUpdate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     修改用户资料
-    :param user:
-    :param token:
-    :param db:
-    :return:
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -209,10 +176,6 @@ async def update_me(user: UserUpdate, token: str = Depends(oauth2_scheme), db: S
 async def change_user_role(data: ChangeUserRole, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     修改用户拥有的用户组
-    :param data:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule('User', 'update')):
         # 将用户组名称改成role_key
@@ -229,10 +192,6 @@ async def change_user_role(data: ChangeUserRole, token: str = Depends(oauth2_sch
 async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     获取用户所拥有的用户组
-    :param user_id:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule("User", "read")):
         user = services.get_user_by_id(db, user_id)

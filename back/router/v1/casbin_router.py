@@ -32,9 +32,6 @@ no_permission = HTTPException(
 async def get_menu_permissions(token: str = Depends(oauth2_scheme)):
     """
     获取菜单权限
-    :param token:
-    :param db:
-    :return:
     """
     rules = [
         ['User', 'show'],
@@ -55,9 +52,6 @@ async def get_menu_permissions(token: str = Depends(oauth2_scheme)):
 async def isAuthenticated(rule: user_schemas.Casbin_rule, token: str = Depends(oauth2_scheme)):
     """
     路由页面的权限验证接口
-    :param rule:
-    :param token:
-    :return:
     """
     return verify_enforce(token, rule)
 
@@ -66,8 +60,6 @@ async def isAuthenticated(rule: user_schemas.Casbin_rule, token: str = Depends(o
 async def casbin_test(token: str = Depends(oauth2_scheme)):
     """
     简单的接口权限单元测试
-    :param token:
-    :return:
     """
     rule = user_schemas.Casbin_rule(obj="User", act='read')
     if verify_enforce(token, rule):

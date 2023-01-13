@@ -651,6 +651,8 @@ def delete_casbin_object_by_id(db: Session, ac_id: int):
         return True
     else:
         return False
+
+
 # --------------------------【CasbinObject增删改查 完】--------------------------------------
 
 # --------------------------【CasbinRulet增删改查】--------------------------------------

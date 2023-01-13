@@ -7,9 +7,10 @@
 # @Software: PyCharm
 # @desc    :
 import os
+
+import loguru
 import uvicorn
 from casbin_sqlalchemy_adapter import Base
-
 
 from back.app import settings
 from fastapi import FastAPI
@@ -69,8 +70,9 @@ def main():
 
 @app.on_event("startup")
 async def startup_event():
-    print(f'{settings.BANNER}')
-    print(f"{settings.project_title} 正在运行环境: 【环境】 网址: http://localhost:8000/docs")
+    loguru.logger.info(f'{settings.BANNER}')
+    loguru.logger.info(
+        f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
 
 
 if __name__ == '__main__':

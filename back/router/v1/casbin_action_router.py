@@ -37,8 +37,6 @@ no_permission = HTTPException(
 async def get_cas(db: Session = Depends(get_db)):
     """
     获取casbin行为
-    :param db:
-    :return:
     """
     return services.get_casbin_actions(db)
 
@@ -48,10 +46,6 @@ async def create_ca(ca: casbin_schemas.createCasbinAction, token: str = Depends(
                     db: Session = Depends(get_db)):
     """
     创建casbin行为
-    :param ca:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule("CasbinAction", "create")):
         new_ca = db_casbinaction_models.CasbinAction()
@@ -68,9 +62,6 @@ async def create_ca(ca: casbin_schemas.createCasbinAction, token: str = Depends(
 async def get_ca(ca_id: int, db: Session = Depends(get_db)):
     """
     根据ca_id获取casbin行为
-    :param ca_id:
-    :param db:
-    :return:
     """
     return services.get_casbin_action_by_id(db, ca_id)
 
@@ -80,10 +71,6 @@ async def update_ca(ca: casbin_schemas.EditCasbinAction, token: str = Depends(oa
                     db: Session = Depends(get_db)):
     """
     更新casbin行为
-    :param ca:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule("CasbinAction", "update")):
         return services.update_casbin_action_by_id(db, ca.old_ca_id, ca.name, ca.action_key, ca.description)
@@ -95,10 +82,6 @@ async def update_ca(ca: casbin_schemas.EditCasbinAction, token: str = Depends(oa
 async def delete_ca(ca_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据ca_id删除casbin行为
-    :param ca_id:
-    :param token:
-    :param db:
-    :return:
     """
     if verify_enforce(token, return_rule("CasbinAction", "delete")):
         return services.delete_casbin_action_by_id(db, ca_id)
