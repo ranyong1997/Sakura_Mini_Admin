@@ -6,6 +6,7 @@
 # @File    : services.py
 # @Software: PyCharm
 # @desc    :
+import os
 import random
 from sqlalchemy.orm import Session
 from back.models.db_casbin_object_models import CasbinObject
@@ -14,7 +15,9 @@ from back.models.db_casbinrule_models import CasbinRule
 from back.models.db_role_models import Role
 from back.models.db_user_models import User
 from back.utils.password import get_password_hash, verify_password
-from loguru import logger
+from back.utils.logger import HandleLog
+
+log = HandleLog(os.path.split(__file__)[-1].split(".")[0])
 
 
 # TODO:后续将每个crud分离出来
@@ -29,7 +32,7 @@ def create_data(db: Session):
     if not get_user_by_username(db, 'root'):
         add_user(db, User(username='root', hashed_password=hashed_password, email='root@example.com',
                           remark="超级管理员，拥有所有权限"))
-        logger.info("创建超级管理员:【root】")
+        log.info("创建超级管理员:【root】")
     user = get_user_by_username(db, "root")
     if get_role_count(db) <= 0:
         create_role(db, Role(name='超级管理员', role_key='role_superadmin', description='超级管理员，拥有所有系统的权限',
@@ -62,7 +65,7 @@ def create_data(db: Session):
     # 如果casbin规则<=0,则创建CasbinRule
     if get_casbin_rule_count(db) <= 0:
         # 创建CasbinRule
-        logger.info("设置用户组权限")
+        log.info("设置用户组权限")
 
 
 # --------------------------【User增删改查】--------------------------------------

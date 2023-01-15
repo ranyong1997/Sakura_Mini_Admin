@@ -14,7 +14,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
 
-
 # 创建一个使用内存的SQLite数据库
 # TODO:后续介入mysql
 SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
@@ -38,9 +37,10 @@ def get_db_test():
 DB_DIR = os.path.join(settings.BASE_DIR, '../miniadmin_data.db')
 
 # 数据库访问地址
-SQLALCHEMY_DATABASE_URL = "sqlite:///" + DB_DIR
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_DIR}"
 # 创建物理SQlite数据库
-engine = create_engine(SQLALCHEMY_DATABASE_URL + '?check_same_thread=False', echo=False)
+engine = create_engine(f'{SQLALCHEMY_DATABASE_URL}?check_same_thread=False', echo=False)
+
 # 启动会话
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

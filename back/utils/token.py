@@ -6,21 +6,13 @@
 # @File    : token.py
 # @Software: PyCharm
 # @desc    : 令牌工具
-import os
-import sys
 from jose import JWTError, jwt
-from loguru import logger
 from pydantic import BaseSettings
 from back.app import settings
 from fastapi.security import OAuth2PasswordBearer
-from back.app.database import  get_db
+from back.app.database import get_db
 from back.models.db_user_models import User
 from fastapi import HTTPException, status
-
-LOG_LEVEL = settings.LOG_LEVEL  # 日志等级
-logger.remove()  # 删去import logger之后自动产生的handler，不删除的话会出现重复输出的现象
-logger.add(os.path.join(settings.BASE_DIR, settings.log_dir), level=LOG_LEVEL)
-handler_id = logger.add(sys.stderr, level=LOG_LEVEL)
 
 # 执行生成token的地址
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.url_prefix)
@@ -71,7 +63,6 @@ def get_username_by_token(token):
         headers={"WWW-Authenticate": "Bearer"}
     )
     try:
-        print("token.py # 56 获取用户名" + token)
         payload = jwt.decode(token, APP_TOKEN_CONFIG.SECRET_KEY, algorithms=[APP_TOKEN_CONFIG.ALGORITHM])
         username: str = payload.get('sub')  # 从token中获取用户名
         return username

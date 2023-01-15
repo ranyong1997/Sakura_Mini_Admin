@@ -7,19 +7,18 @@
 # @Software: PyCharm
 # @desc    :
 import os
-
-import loguru
 import uvicorn
+from back.utils.logger import HandleLog
 from casbin_sqlalchemy_adapter import Base
-
 from back.app import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.responses import HTMLResponse  # 响应html
-
 from back.app.database import engine
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_token
+
+log = HandleLog(os.path.split(__file__)[-1].split(".")[0])
 
 app = FastAPI(
     title=settings.project_title,
@@ -70,8 +69,8 @@ def main():
 
 @app.on_event("startup")
 async def startup_event():
-    loguru.logger.info(f'{settings.BANNER}')
-    loguru.logger.info(
+    log.info(f'{settings.BANNER}')
+    log.info(
         f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
 
 

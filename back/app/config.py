@@ -7,7 +7,6 @@
 # @Software: PyCharm
 # @desc    : 全局配置文件
 import os
-import sys
 from pydantic import BaseSettings
 from typing import List
 
@@ -20,7 +19,7 @@ class Settings(BaseSettings):
     # 项目描述
     project_description: str = "欢迎来到Sakura_Mini_Admin后台管理系统,一个简洁轻快的后台管理框架.支持拥有多用户组的RBAC管理后台 🚀"
     # 项目版本
-    project_version: str = '0.0.1'
+    project_version: str = '0.0.2'
     # host
     server_host: str = "127.0.0.1"
     # port
@@ -40,12 +39,10 @@ class Settings(BaseSettings):
     # token过期时间，单位：秒
     jwt_exp_seconds: int = 7 * 24 * 60 * 60
     # 日志等级
-    LOG_LEVEL = "DEBUG"
+    LOG_LEVEL: str = "DEBUG"
     # 将当前目录添加到系统变量中
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    sys.path.append(BASE_DIR)
-    # 日志目录
-    log_dir: str = "../log/logger.log"
+    BASE_DIR = os.path.dirname(os.path.realpath(__file__))  # 当前项目路径
+    LOG_PATH = os.path.join(BASE_DIR, '../logs')  # log_path为存放日志的路径
     BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       
  / ___|  __ _| | ___   _ _ __ __ _    |  \/  (_) \ | (_)      / \   __| |_ __ ___ (_)_ __  
