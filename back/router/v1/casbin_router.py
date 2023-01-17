@@ -54,15 +54,3 @@ async def isAuthenticated(rule: user_schemas.Casbin_rule, token: str = Depends(o
     路由页面的权限验证接口
     """
     return verify_enforce(token, rule)
-
-
-@router.post("/casbin_rule_test")
-async def casbin_test(token: str = Depends(oauth2_scheme)):
-    """
-    简单的接口权限单元测试
-    """
-    rule = user_schemas.Casbin_rule(obj="User", act='read')
-    if verify_enforce(token, rule):
-        return True
-    else:
-        return False

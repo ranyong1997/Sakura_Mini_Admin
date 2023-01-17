@@ -13,7 +13,7 @@ from typing import List
 
 class Settings(BaseSettings):
     # DEBUG模式
-    debug: bool = False
+    debug: bool = True
     # 项目标题
     project_title = "Sakura_Mini_Admin"
     # 项目描述
@@ -38,8 +38,6 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     # token过期时间，单位：秒
     jwt_exp_seconds: int = 7 * 24 * 60 * 60
-    # 日志等级
-    LOG_LEVEL: str = "DEBUG"
     # 将当前目录添加到系统变量中
     BASE_DIR = os.path.dirname(os.path.realpath(__file__))  # 当前项目路径
     LOG_PATH = os.path.join(BASE_DIR, '../logs')  # log_path为存放日志的路径
