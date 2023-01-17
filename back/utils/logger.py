@@ -13,8 +13,6 @@ from back.app import settings
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
 
-
-
 # 配置日志文件名称及路径
 log_path = settings.LOG_PATH  # log_path为存放日志的路径
 if not os.path.exists(log_path):

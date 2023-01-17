@@ -20,19 +20,6 @@ SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
 engind_test = create_engine(SQLALCHEMY_DATABASE_MEMORY, echo=False)
 SessionLocal_test = sessionmaker(autocommit=False, autoflush=False, bind=engind_test)
 
-
-def get_db_test():
-    """
-    获取一个数据连接，异步fastapi使用
-    :return: session
-    """
-    db = SessionLocal_test()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 # 组装数据库的绝对地址
 DB_DIR = os.path.join(settings.BASE_DIR, '../miniadmin_data.db')
 
