@@ -8,6 +8,8 @@
 # @desc    :
 import os
 import random
+
+from loguru import logger
 from sqlalchemy.orm import Session
 from back.models.db_casbin_object_models import CasbinObject
 from back.models.db_casbinaction_models import CasbinAction
@@ -32,7 +34,7 @@ def create_data(db: Session):
     if not get_user_by_username(db, 'root'):
         add_user(db, User(username='root', hashed_password=hashed_password, email='root@example.com',
                           remark="超级管理员，拥有所有权限"))
-        log.info("创建超级管理员:【root】")
+        logger.info("创建超级管理员:【root】")
     user = get_user_by_username(db, "root")
     if get_role_count(db) <= 0:
         create_role(db, Role(name='超级管理员', role_key='role_superadmin', description='超级管理员，拥有所有系统的权限',
@@ -65,7 +67,13 @@ def create_data(db: Session):
     # 如果casbin规则<=0,则创建CasbinRule
     if get_casbin_rule_count(db) <= 0:
         # 创建CasbinRule
-        log.info("设置用户组权限")
+        logger.info("设置用户组权限")
+        set_user_role(db)
+        logger.info("设置超级管理员")
+        role_superadmin = get_role_by_id(db, 1)  # 超级管理员
+        create_casbin_rule_g(db, CasbinRule(ptype='g', v0=user.username, v1=role_superadmin.role_key))
+        logger.info("生成一些普通用户")
+        create_temp_users(db)
 
 
 # --------------------------【User增删改查】--------------------------------------
