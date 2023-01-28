@@ -8,17 +8,15 @@
 # @desc    :
 import os
 import uvicorn
-from back.utils.logger import HandleLog
-from casbin_sqlalchemy_adapter import Base
 from back.app import settings
+from back.crud import services
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.responses import HTMLResponse  # 响应html
-from back.app.database import engine
+from back.app.database import Base, engine, get_db
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_token
-
-log = HandleLog(os.path.split(__file__)[-1].split(".")[0])
+from loguru import logger
 
 app = FastAPI(
     title=settings.project_title,
@@ -56,21 +54,22 @@ app.include_router(user_token.router)
 
 # 在数据库中生成表结构
 Base.metadata.create_all(bind=engine)
+# 生成初始化数据，添加了一个超级管理员并赋予所有管理权限，以及一些虚拟的用户。
+services.create_data(next(get_db()))
 
 
-# 生成初始化数据，添加一个超级管理员并赋予所有管理权限，以及一些虚拟用户
-@app.get("/")
-def main():
-    html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'index.html')
-    with open(html_path, encoding="utf-8") as f:
-        html_content = f.read()
-    return HTMLResponse(content=html_content, status_code=200)
+# @app.get("/")
+# def main():
+#     html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'index.html')
+#     with open(html_path, encoding="utf-8") as f:
+#         html_content = f.read()
+#     return HTMLResponse(content=html_content, status_code=200)
 
 
 @app.on_event("startup")
 async def startup_event():
-    log.info(f'{settings.BANNER}')
-    log.info(
+    logger.info(f'{settings.BANNER}')
+    logger.info(
         f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
 
 

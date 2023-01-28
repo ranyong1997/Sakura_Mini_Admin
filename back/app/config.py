@@ -25,7 +25,9 @@ class Settings(BaseSettings):
     # port
     server_port: int = 5555
     # 配置允许域名
-    origins: List[str] = ["http://localhost", "http://localhost:5555", "http://127.0.0.1:5555"]
+    # origins: List[str] = ["http://localhost", "http://localhost:5555", "http://127.0.0.1:5555", "http://127.0.0.1:5174"]
+    # 所有域名可访问
+    origins: List[str] = ["*"]
     # 配置允许访问方式
     cors_allow_methods: List[str] = ["PUT", "POST", "GET", "DELETE", "OPTIONS"]
     # 配置允许访问请求头

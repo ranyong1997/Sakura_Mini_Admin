@@ -8,7 +8,6 @@
 # @desc    :
 import os
 import random
-
 from loguru import logger
 from sqlalchemy.orm import Session
 from back.models.db_casbin_object_models import CasbinObject
@@ -31,10 +30,10 @@ def create_data(db: Session):
     """
     # 创建超管
     hashed_password = get_password_hash('123456')
-    if not get_user_by_username(db, 'root'):
+    if not get_user_by_username(db, "root"):
         add_user(db, User(username='root', hashed_password=hashed_password, email='root@example.com',
-                          remark="超级管理员，拥有所有权限"))
-        logger.info("创建超级管理员:【root】")
+                          remark='超级管理员，拥有所有权限'))
+        log.info("创建超级管理员：root")
     user = get_user_by_username(db, "root")
     if get_role_count(db) <= 0:
         create_role(db, Role(name='超级管理员', role_key='role_superadmin', description='超级管理员，拥有所有系统的权限',
@@ -43,7 +42,7 @@ def create_data(db: Session):
         create_role(db, Role(name='普通用户', role_key='role_generaluser', description='默认注册的用户', user=user))
     # 如果casbin行为<=0,则创建CasbinAction
     if get_casbin_action_count(db) <= 0:
-        # 创建CasbinAction
+        # # 创建CasbinAction
         cas = [
             CasbinAction(name='增', action_key='create', description='增加数据', user=user),
             CasbinAction(name='删', action_key='delete', description='删除数据', user=user),
@@ -54,7 +53,7 @@ def create_data(db: Session):
         add_casbin_action(db, cas)
     # 如果casbin项目<=0,则创建CasbinObject
     if get_casbin_object_count(db) <= 0:
-        # 创建CasbinObject
+        # # 创建CasbinObject
         cos = [
             CasbinObject(name='用户管理', object_key='User', description='User表--用户相关权限', user=user),
             CasbinObject(name='角色管理', object_key='Role', description='Role表--角色相关权限', user=user),
@@ -67,12 +66,12 @@ def create_data(db: Session):
     # 如果casbin规则<=0,则创建CasbinRule
     if get_casbin_rule_count(db) <= 0:
         # 创建CasbinRule
-        logger.info("设置用户组权限")
+        log.info("设置用户组权限")
         set_user_role(db)
-        logger.info("设置超级管理员")
+        log.info("设置超级管理员")
         role_superadmin = get_role_by_id(db, 1)  # 超级管理员
         create_casbin_rule_g(db, CasbinRule(ptype='g', v0=user.username, v1=role_superadmin.role_key))
-        logger.info("生成一些普通用户")
+        log.info("生成一些普通用户")
         create_temp_users(db)
 
 
@@ -133,16 +132,16 @@ def create_temp_users(db: Session):
     :return:
     """
     # 添加一些用户
-    hasded_password = get_password_hash('123456')
+    hashed_password = get_password_hash('123456')
     role_user = get_role_by_id(db, 3)  # 普通用户组
     if get_users_count(db) <= 1:
         for i in range(10):
             sex = str(random.randint(0, 1))
             is_active = False
             if random.randint(0, 1): is_active = True
-            k = str(1)
-            u = User(username='Sakura_mini' + k, hashed_password=hasded_password,
-                     email='Sakura_mini' + k + '@example.com', sex=sex, is_active=is_active, remark='临时测试用户')
+            k = str(i)
+            u = User(username='mini' + k, hashed_password=hashed_password, email='admin' + k + '@example.com',
+                     sex=sex, is_active=is_active, remark='临时测试用户')
             user = add_user(db, u)
             create_casbin_rule_g(db, CasbinRule(ptype='g', v0=user.username, v1=role_user.role_key))
 
