@@ -84,7 +84,7 @@ async def update_role_by_id(role: role_schemas.EditRole, token: str = Depends(oa
         raise no_permission
 
 
-@router.get("role/delete_role")
+@router.get("/role/delete_role")
 async def delete_role_by_id(role_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据id删除角色
@@ -123,7 +123,6 @@ async def get_co_ca(role_id: int, db: Session = Depends(get_db)):
     for cr in crs:
         cks.append(co_key_name[cr.v1])
         cks.append(ca_key_name[cr.v2])
-    print("role_router.py 154 --->", cks)
     temp_names = []
     for ck in cks:
         if len(temp_names) == 0:
@@ -136,13 +135,11 @@ async def get_co_ca(role_id: int, db: Session = Depends(get_db)):
         elif ck in ca_key_name.values() and ck not in temp_names:
             temp_names.append(ck)
     checkeds.append(temp_names)
-    print("role_router.py 141 --->", checkeds)
     return {'options': all_co_ca, 'checkeds': checkeds}
 
 
 @router.post("/role/change_role")
-async def change_role(cr_data: role_schemas.ChangeRole, token: str = Depends(oauth2_scheme),
-                      db: Session = Depends(get_db)):
+async def change_role(cr_data: role_schemas.ChangeRole, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     修改用户组所拥有的的权限
     """

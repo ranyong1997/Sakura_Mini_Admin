@@ -8,7 +8,6 @@
 # @desc    :
 import os
 import random
-from loguru import logger
 from sqlalchemy.orm import Session
 from back.models.db_casbin_object_models import CasbinObject
 from back.models.db_casbinaction_models import CasbinAction
@@ -626,7 +625,7 @@ def update_casbin_object(db: Session, old_id, name, obj_key, description):
     :param description:
     :return:
     """
-    co = get_casbin_action_by_id(db, old_id)
+    co = get_casbin_object_by_id(db, old_id)
     if co:
         temp_key = co.object_key
         co.name = name
