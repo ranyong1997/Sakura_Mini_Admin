@@ -5,6 +5,7 @@
         <img src="https://readme-typing-svg.herokuapp.com?color=%2336BCF7&lines=春暖花开，百事可乐.;console.log(%22Hello%EF%BC%8CSakuta_MiNi_Admin%22)">  
     </a>
 </h1>
+- [x] Python3.8
 ### 安装
 
 Git克隆或是下载压缩包。

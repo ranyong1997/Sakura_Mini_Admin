@@ -128,3 +128,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /back/logs/
+.idea/Sakura_Mini_Admin.iml
