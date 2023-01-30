@@ -1,2 +1,3 @@
 #!/bin/sh
-python3 back/main.py
+cd back || exit
+python3 main.py
