@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 /back/logs/
 .idea/Sakura_Mini_Admin.iml
+*.iml
+*.xml
+back/Sakura_Mini_Admin_data.db
