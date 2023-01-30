@@ -22,11 +22,12 @@ app = FastAPI(
     title=settings.project_title,
     description=settings.project_description,
     version=settings.project_version,
-    terms_of_service="#",
+    openapi_tags=settings.tags_metadata,
     license_info={
-        "name": "✶  🎀  GitHub地址  🎀  ✶",
-        "url": "https://github.com/ranyong1997"
-    }
+        "name": "开源MIT协议",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+
 )
 
 # 配置允许域名列表、允许方式、请求头、cookie等等

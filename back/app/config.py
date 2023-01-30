@@ -17,9 +17,52 @@ class Settings(BaseSettings):
     # 项目标题
     project_title = "Sakura_Mini_Admin"
     # 项目描述
-    project_description: str = "欢迎来到Sakura_Mini_Admin后台管理系统,一个简洁轻快的后台管理框架.支持拥有多用户组的RBAC管理后台 🚀"
+    project_description: str = """
+#### Description/说明
+<details>
+<summary>点击展开/Click to expand</summary>
+> [中文/Chinese]
+- 🌸Mini后台管理，更多功能正在开发中。
+- 本项目开源在[GitHub：Sakura_Mini_Admin](https://github.com/ranyong1997/Sakura_Mini_Admin)。
+- 本项目仅供学习交流使用，严禁用于违法用途，如有侵权请联系作者。
+</details>
+#### Contact author/联系作者
+<details>
+<summary>点击展开/Click to expand</summary>
+- WeChat: RanY_Luck
+- Email: [ranyong1209@gmail.com](mailto:ranyong1209@gmail.com)
+- Github: [✶  🎀  GitHub地址  🎀  ✶](https://github.com/ranyong1997)
+</details>
+"""
+    # Tags数据
+    tags_metadata = [
+        {
+            "name": "Casbin权限验证",
+            "description": "",
+        },
+        {
+            "name": "Casbin资源",
+            "description": "",
+        },
+        {
+            "name": "Casbin行为",
+            "description": "",
+        },
+        {
+            "name": "角色",
+            "description": "角色相关操作，增删改查",
+        },
+        {
+            "name": "系统登录",
+            "description": "获取token",
+        },
+        {
+            "name": "用户",
+            "description": "用户相关操作，增删改查",
+        },
+    ]
     # 项目版本
-    project_version: str = '0.0.2'
+    project_version: str = '0.0.3'
     # host
     server_host: str = "127.0.0.1"
     # port
