@@ -5,8 +5,7 @@
 # @Site    : 
 # @File    : main.py
 # @Software: PyCharm
-# @desc    :
-import os
+# @desc    : 总入口
 import uvicorn
 from back.app import settings
 from back.crud import services

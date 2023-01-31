@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     # 项目版本
     project_version: str = '0.0.3'
     # host
-    server_host: str = "127.0.0.1"
+    server_host: str = "0.0.0.0"
     # port
     server_port: int = 5555
     # 配置允许域名

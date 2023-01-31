@@ -1,33 +1,21 @@
 version: '3.8'
 services:
     # bot
-    Sakura_Mini_Admin:
+    sakura_mini_admin:
         # 指定容器运行的镜像
-        image: python:v3.8
+        build: .
         # 自定义容器名称
-        container_name: Sakura_Mini_Admin-v1.0
+        container_name: sakura_mini_admin
         # 将主机的数据卷或着文件挂载到容器里
         restart: always
-        volumes:
-            - .:/home
-            - /etc/hosts:/etc/hosts
-        # 启动的默认命令
-        command: python3 main.py
         environment:
           TZ: Asia/Shanghai
         # 容器的端口xx映射到宿主机的端口xx
         ports:
-            - "9003:5555"
-        # 配置容器连接的网络
-        networks:
-            - docker_public_network
+            - "5555:5555"
         # 服务的日志记录配置
         logging:
             driver: "json-file"
             options:
                 max-size: "100m" # 单个文件大小为200k
                 max-file: "2" # 最多10个文件
-
-networks:
-    docker_public_network:
-        external: true
