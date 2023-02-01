@@ -2,7 +2,7 @@ version: '3.8'
 services:
     # bot
     sakura_mini_admin:
-        # 指定容器运行的镜像
+        # 指定容器运行的镜像,指向Dockerfile文件
         build: .
         # 自定义容器名称
         container_name: sakura_mini_admin
