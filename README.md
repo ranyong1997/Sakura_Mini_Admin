@@ -1,5 +1,7 @@
 # Sakura_Mini_Admin
+
 ## 👻介绍
+
 欢迎来到Sakura_Mini_Admin后台管理系统，一个简洁轻快的后台管理框架.支持拥有多用户组的RBAC管理后台 🚀
 <h1 align="center">
     <a>
@@ -20,7 +22,9 @@ git clone https://github.com/ranyong1997/Sakura_Mini_Admin.git
 创建虚拟环境(win)
 
 ```python
-python -m venv venv
+python - m
+venv
+venv
 ```
 
 ![image-20230109105555094](https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202301091056655.png)
@@ -31,7 +35,9 @@ python -m venv venv
 >>>cd .\venv\Scripts\
 >>> .\activate
 ```
+
 激活虚拟环境（Mac）
+
 ```shell
 #python3默认安装virtualenv环境
 >>>pip3 install virtualenv
@@ -49,6 +55,7 @@ eg:/Users/ranyong/Desktop/gitpush/Sakura_Mini_Admin/venv
 #退出虚拟环境
 deactivate
 ```
+
 终端进入程序的根目录：
 
 ```
@@ -56,15 +63,22 @@ cd back
 pip3 install -r requirements.txt
 ```
 
-
 ## 🤦‍待办清单：
-- [ ] 使用Dockerfile进行构建
+
+- [ ] 使用Mysql接替sqlite
+- [ ] 完善README文档
+
+## 🤦‍已办清单：
+
+- [X] 使用Dockerfile进行构建
 
 ## 🛰️API文档
+
 ***API文档：***
 本地：[http://localhost:5555/docs](http://localhost:5555/docs)
 
 ## 📸截图
+
 ***项目界面***
 <details><summary>🔎点击展开截图</summary>
 </details>

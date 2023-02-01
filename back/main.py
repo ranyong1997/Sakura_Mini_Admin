@@ -6,16 +6,17 @@
 # @File    : main.py
 # @Software: PyCharm
 # @desc    : 总入口
+import os
 import uvicorn
-from back.app import settings
-from back.crud import services
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.responses import HTMLResponse  # 响应html
+from loguru import logger
+from back.app import settings
 from back.app.database import Base, engine, get_db
+from back.crud import services
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_token
-from loguru import logger
 
 app = FastAPI(
     title=settings.project_title,
