@@ -6,7 +6,7 @@
 # @File    : lark_test_report.py
 # @Software: PyCharm
 # @desc    :
-import json
+
 import requests
 
 url = "https://open.feishu.cn/open-apis/bot/v2/hook/fce32975-4d2f-49ab-b7a0-72921b173bb9"
@@ -144,6 +144,3 @@ AUTOTEST_LARK_MESSAGE_TEMPLATE = {
 response = requests.request("POST", url, headers=headers, json=AUTOTEST_LARK_MESSAGE_TEMPLATE)
 
 print(response.text)
-
-
-# https://blog.csdn.net/sumeixiaoxiao/article/details/128022326
