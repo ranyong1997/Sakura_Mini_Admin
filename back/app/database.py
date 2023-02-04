@@ -34,9 +34,7 @@ from back.app.config import Config
 
 # 创建一个使用Mysql数据库
 # 创建数据库引擎
-engine = create_engine(
-    f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}',
-    encoding='utf8', echo=False)
+engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', encoding='utf8', echo=False)
 # engine = create_engine('mysql+mysqlconnector://sakura_Mini_Admin:phz2kAshAfSfJGrA@120.79.24.202:3306/sakura_mini',
 #                        encoding='utf8', echo=False)
 with engine.connect() as conn:
