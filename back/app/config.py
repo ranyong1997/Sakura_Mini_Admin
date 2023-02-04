@@ -8,12 +8,24 @@
 # @desc    : 全局配置文件
 import os
 from pydantic import BaseSettings
+from pathlib import Path
 from typing import List
+
+# 项目根目录 父一级再父一级再父一级 root根路径
+base_dir = Path(__file__).absolute().parent.parent
 
 
 class Settings(BaseSettings):
     # DEBUG模式
     debug: bool = True
+    # 数据库—server
+    MYSQL_HOST: str = None  # 数据库主机
+    MYSQL_PORT: int = None  # 数据库端口
+    MYSQL_USER: str = None  # 数据库用户名
+    MYSQL_PWD: str = None  # 数据库密码
+    DBNAME: str = None  # 数据库表名
+    # sqlalchemy_server
+    SQLALCHEMY_DATABASE_URI: str = ''
     # 项目标题
     project_title = "Sakura_Mini_Admin"
     # 项目描述
@@ -94,3 +106,23 @@ class Settings(BaseSettings):
  |____/ \__,_|_|\_\\__,_|_|  \__,_|___|_|  |_|_|_| \_|_|___/_/   \_\__,_|_| |_| |_|_|_| |_|
                                  |_____|              |_____|                                                                                                                                                                                                              
     """
+
+
+class Dev_Config(Settings):
+    # 开发者模式
+    class Config:
+        env_file = os.path.join(base_dir, "conf", "dev.env")
+
+
+class Pro_Config(Settings):
+    # 正式环境
+    class Config:
+        env_file = os.path.join(base_dir, "conf", "pro.env")
+
+
+# 获取sakura_mini环境变量
+Sakura_Mini_ENV = os.environ.get("sakura_mini_env", "dev")
+# 如果sakura_mini存在且为pro
+Config = Pro_Config() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else Dev_Config()
+# 初始化 sqlalchemy（由 apscheduler 使用）
+Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'

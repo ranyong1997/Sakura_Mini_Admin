@@ -65,12 +65,13 @@ pip3 install -r requirements.txt
 
 ## 🤦‍待办清单：
 
-- [ ] 使用Mysql接替sqlite
+- [ ] 封装mysql账号密码到config.py里面
 - [ ] 完善README文档
 
 ## 🤦‍已办清单：
 
 - [X] 使用Dockerfile进行构建
+- [X] 使用Mysql接替sqlite
 
 ## 🛰️API文档
 

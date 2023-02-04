@@ -13,35 +13,39 @@ from back.app import settings
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
+from back.app.config import Config
 
 # 创建一个使用内存的SQLite数据库
-# TODO:后续介入mysql
-SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
-engine_test = create_engine(SQLALCHEMY_DATABASE_MEMORY, echo=False, )
-SessionLocal_test = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
+# SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
+# engine_test = create_engine(SQLALCHEMY_DATABASE_MEMORY, echo=False, )
+# SessionLocal_test = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
 
-# 组装数据库的绝对地址(数据库生成在一下目录)
-DB_DIR = os.path.join(settings.BASE_DIR, '../Sakura_Mini_Admin_data.db')
+# # 组装数据库的绝对地址(数据库生成在一下目录)
+# DB_DIR = os.path.join(settings.BASE_DIR, '../Sakura_Mini_Admin_data.db')
+#
+# # 数据库访问地址
+# SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_DIR}"
+# # 创建物理SQlite数据库
+# engine = create_engine(f'{SQLALCHEMY_DATABASE_URL}?check_same_thread=False', echo=False)
+#
+# # 启动会话
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# 数据库访问地址
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_DIR}"
-# 创建物理SQlite数据库
-engine = create_engine(f'{SQLALCHEMY_DATABASE_URL}?check_same_thread=False', echo=False)
 
-# 启动会话
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-# # 创建数据库引擎
+# 创建一个使用Mysql数据库
+# 创建数据库引擎
+engine = create_engine(
+    f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}',
+    encoding='utf8', echo=False)
 # engine = create_engine('mysql+mysqlconnector://sakura_Mini_Admin:phz2kAshAfSfJGrA@120.79.24.202:3306/sakura_mini',
 #                        encoding='utf8', echo=False)
-# with engine.connect() as conn:
-#     conn.execute(
-#         "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
-# engine.dispose()
-#
-# # 创建本地会话
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+with engine.connect() as conn:
+    conn.execute(
+        "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
+engine.dispose()
+
+# 创建本地会话
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_db():
