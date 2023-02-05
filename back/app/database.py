@@ -35,8 +35,6 @@ from back.app.config import Config
 # 创建一个使用Mysql数据库
 # 创建数据库引擎
 engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', encoding='utf8', echo=False)
-# engine = create_engine('mysql+mysqlconnector://sakura_Mini_Admin:phz2kAshAfSfJGrA@120.79.24.202:3306/sakura_mini',
-#                        encoding='utf8', echo=False)
 with engine.connect() as conn:
     conn.execute(
         "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")

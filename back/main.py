@@ -7,6 +7,7 @@
 # @Software: PyCharm
 # @desc    : 总入口
 import os
+import asyncio
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
@@ -55,9 +56,31 @@ app.include_router(user_token.router)
 
 # 在数据库中生成表结构
 Base.metadata.create_all(bind=engine)
+
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info(f'{settings.BANNER}')
+    logger.info(
+        f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
+
+
+@app.on_event("startup")
+async def init_database():
+    """
+        初始化数据库,建表
+        :return:
+        """
+    try:
+        # Base.metadata.create_all(bind=engine)
+        logger.bind(name=None).success("数据库和表创建成功.          ✔")
+    except Exception as e:
+        logger.bind(name=None).error(f"数据库和表创建失败.          ❌ \n Error:{str(e)}")
+        raise
+
+
 # 生成初始化数据，添加了一个超级管理员并赋予所有管理权限，以及一些虚拟的用户。
 services.create_data(next(get_db()))
-
 
 # @app.get("/")
 # def main():
@@ -66,12 +89,6 @@ services.create_data(next(get_db()))
 #         html_content = f.read()
 #     return HTMLResponse(content=html_content, status_code=200)
 
-
-@app.on_event("startup")
-async def startup_event():
-    logger.info(f'{settings.BANNER}')
-    logger.info(
-        f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
 
 if __name__ == '__main__':
     uvicorn.run(
