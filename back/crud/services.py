@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : services.py
 # @Software: PyCharm
-# @desc    :
+# @desc    : CRUD接口
 import os
 import random
 from sqlalchemy.orm import Session
