@@ -6,8 +6,6 @@
 # @File    : main.py
 # @Software: PyCharm
 # @desc    : 总入口
-import os
-import asyncio
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
@@ -60,8 +58,8 @@ Base.metadata.create_all(bind=engine)
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info(f'{settings.BANNER}')
-    logger.info(
+    logger.bind(name=None).success(f'{settings.BANNER}')
+    logger.bind(name=None).success(
         f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
 
 
@@ -72,15 +70,28 @@ async def init_database():
         :return:
         """
     try:
-        # Base.metadata.create_all(bind=engine)
+        # 在数据库中生成表结构
+        # TODO:将生成数据库异步执行
         logger.bind(name=None).success("数据库和表创建成功.          ✔")
     except Exception as e:
         logger.bind(name=None).error(f"数据库和表创建失败.          ❌ \n Error:{str(e)}")
         raise
 
 
-# 生成初始化数据，添加了一个超级管理员并赋予所有管理权限，以及一些虚拟的用户。
-services.create_data(next(get_db()))
+@app.on_event("startup")
+async def init_fake_data():
+    """
+        生成初始化数据
+        :return:
+        """
+    try:
+        # 生成初始化数据，添加了一个超级管理员并赋予所有管理权限，以及一些虚拟的用户。
+        services.create_data(next(get_db()))
+        logger.bind(name=None).success("生成初始化数据成功.          ✔")
+    except Exception as e:
+        logger.bind(name=None).error(f"生成初始化数据失败.          ❌ \n Error:{str(e)}")
+        raise
+
 
 # @app.get("/")
 # def main():

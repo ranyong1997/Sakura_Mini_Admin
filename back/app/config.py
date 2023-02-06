@@ -78,7 +78,7 @@ class Settings(BaseSettings):
     # host
     server_host: str = "0.0.0.0"
     # port
-    server_port: int = 5555
+    server_port: int = 8080
     # 配置允许域名
     # origins: List[str] = ["http://localhost", "http://localhost:5555", "http://127.0.0.1:5555", "http://127.0.0.1:5174"]
     # 所有域名可访问

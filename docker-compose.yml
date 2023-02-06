@@ -12,7 +12,7 @@ services:
           TZ: Asia/Shanghai
         # 容器的端口xx映射到宿主机的端口xx
         ports:
-            - "5555:5555"
+            - "8080:8080"
         # 服务的日志记录配置
         logging:
             driver: "json-file"

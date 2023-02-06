@@ -9,17 +9,17 @@
 import os
 import casbin  # 权限控制模块
 from sqlalchemy import create_engine
-from back.app import settings
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
+from back.app import settings
 from back.app.config import Config
 
-# 创建一个使用内存的SQLite数据库
+# # 创建一个使用内存的SQLite数据库
 # SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
 # engine_test = create_engine(SQLALCHEMY_DATABASE_MEMORY, echo=False, )
 # SessionLocal_test = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
-
+#
 # # 组装数据库的绝对地址(数据库生成在一下目录)
 # DB_DIR = os.path.join(settings.BASE_DIR, '../Sakura_Mini_Admin_data.db')
 #
@@ -34,7 +34,7 @@ from back.app.config import Config
 
 # 创建一个使用Mysql数据库
 # 创建数据库引擎
-engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', encoding='utf8', echo=False)
+engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', encoding='utf8', echo=False,pool_recycle=1500)
 with engine.connect() as conn:
     conn.execute(
         "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
