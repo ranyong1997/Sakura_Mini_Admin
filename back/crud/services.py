@@ -52,7 +52,7 @@ def create_data(db: Session):
         add_casbin_action(db, cas)
     # 如果casbin项目<=0,则创建CasbinObject
     if get_casbin_object_count(db) <= 0:
-        # # 创建CasbinObject
+        # 创建CasbinObject
         cos = [
             CasbinObject(name='用户管理', object_key='User', description='User表--用户相关权限', user=user),
             CasbinObject(name='角色管理', object_key='Role', description='Role表--角色相关权限', user=user),
@@ -62,6 +62,7 @@ def create_data(db: Session):
                          user=user)
         ]
         add_casbin_objects(db, cos)
+        log.info("创建用户管理、角色管理、资源管理、动作管理")
     # 如果casbin规则<=0,则创建CasbinRule
     if get_casbin_rule_count(db) <= 0:
         # 创建CasbinRule
@@ -382,13 +383,11 @@ def update_role_by_id(db: Session, old_role_id, new_role):
         role.role_key = new_role.role_key
         role.description = new_role.description
         db.commit()
-
         # 更新相关的casbin_rule关联用户组的role_key
         crs = get_casbin_rules_by_ptype_g_v1(db, old_role_key)
         for cr in crs:
             cr.v1 = new_role.role_key
         db.commit()
-
         # 更新相关的casbin_rule关联资源动作的role_key
         crs = get_casbin_rules_by_ptype_p_v0(db, old_role_key)
         for cr in crs:

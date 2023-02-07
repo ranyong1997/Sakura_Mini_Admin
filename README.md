@@ -101,11 +101,12 @@ pip3 install -r requirements.txt
 
 ## 🤦‍待办清单：
 - [ ] 完善README文档
+- [ ] 接入Redis
 
 ## 🤦‍已办清单：
 - [X] 使用Dockerfile进行构建
 - [X] 使用Mysql接替sqlite
-- [X]] 封装mysql账号密码到config.py里面
+- [X] 封装mysql账号密码到config.py里面
 
 ## 🛰️API文档
 ***API文档：***

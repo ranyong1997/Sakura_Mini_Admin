@@ -15,3 +15,5 @@ colorlog==6.7.0
 mysql-connector==2.2.9
 mysql-connector-python==8.0.6
 pydantic[dotenv]
+redis~=3.5.3
+redis-py-cluster

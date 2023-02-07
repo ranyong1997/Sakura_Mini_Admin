@@ -6,6 +6,7 @@
 # @File    : logger.py
 # @Software: PyCharm
 # @desc    :
+import inspect
 import os
 import logging
 import colorlog
@@ -44,12 +45,10 @@ class HandleLog:
 
     def __init__(self, log_name):
         self.__now_time = datetime.now().strftime('%Y-%m-%d')  # 当前日期格式化
-
         # 收集所有日志文件，名称为：[日志名称] 2020-01-01-all.log；收集错误日志信息文件，名称为：[日志名称] 2020-01-01-error.log
         # 其中，[日志名称]为调用日志时的传入参数
         self.__all_log_path = os.path.join(log_path, f"{log_name} {self.__now_time}-all.log")
         self.__error_log_path = os.path.join(log_path, f"{log_name} {self.__now_time}-error.log")
-
         # 配置日志记录器及其级别 设置默认日志记录器记录级别为DEBUG
         self.__logger = logging.getLogger()  # 创建日志记录器
         self.__logger.setLevel(logging.DEBUG)  # 设置默认日志记录器记录级别

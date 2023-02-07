@@ -16,16 +16,25 @@ base_dir = Path(__file__).absolute().parent.parent
 
 
 class Settings(BaseSettings):
-    # DEBUG模式
-    debug: bool = True
+    debug: bool = True  # DEBUG模式
     # 数据库—server
     MYSQL_HOST: str = None  # 数据库主机
     MYSQL_PORT: int = None  # 数据库端口
     MYSQL_USER: str = None  # 数据库用户名
     MYSQL_PWD: str = None  # 数据库密码
     DBNAME: str = None  # 数据库表名
+    # Redis-server
+    REDIS_ON: bool = None  # Redis开关
+    REDIS_HOST: str = None  # Redis主机
+    REDIS_PORT: int = None  # Redis端口
+    REDIS_DB: int = None  # Redis数据库
+    REDIS_PASSWORD: str = None  # Redis密码
+    REDIS_NODES: List[dict] = []  # Redis连接信息
     # sqlalchemy_server
     SQLALCHEMY_DATABASE_URI: str = ''
+    # 异步URI
+    ASYNC_SQLALCHEMY_URI: str = ''
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     # 项目标题
     project_title = "Sakura_Mini_Admin"
     # 项目描述
@@ -89,7 +98,7 @@ class Settings(BaseSettings):
     cors_allow_headers: List[str] = ["*"]
     # url的前缀
     url_prefix: str = "/v1/token"
-    # jwt加密的key >>>openssl rand -hex 32<<<
+    # jwt加密的key CMD运行: >>>openssl rand -hex 32<<< 生成key
     jwt_secret_key: str = "c71336cfb4c32c0266ba636cf449e71e64e2c3cfe01728182cf5c3ddb33e357b"
     # jwt 加密算法
     jwt_algorithm: str = "HS256"
@@ -108,13 +117,13 @@ class Settings(BaseSettings):
     """
 
 
-class Dev_Config(Settings):
+class DevConfig(Settings):
     # 开发者模式
     class Config:
         env_file = os.path.join(base_dir, "conf", "dev.env")
 
 
-class Pro_Config(Settings):
+class ProConfig(Settings):
     # 正式环境
     class Config:
         env_file = os.path.join(base_dir, "conf", "pro.env")
@@ -123,6 +132,15 @@ class Pro_Config(Settings):
 # 获取sakura_mini环境变量
 Sakura_Mini_ENV = os.environ.get("sakura_mini_env", "dev")
 # 如果sakura_mini存在且为pro
-Config = Pro_Config() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else Dev_Config()
-# 初始化 sqlalchemy（由 apscheduler 使用）
+Config = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
+# 初始化 redis
+Config.REDIS_NODES = [
+    {
+        'host': Config.REDIS_HOST, 'port': Config.REDIS_PORT, 'db': Config.REDIS_DB, 'password': Config.REDIS_PASSWORD
+    }
+]
+# 初始化 sqlalchemy(由 apscheduler 使用)
 Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
+# 初始化 sqlalchemy(异步)
+Config.ASYNC_SQLALCHEMY_URI = f'mysql+aiomysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}' \
+                              f'@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
