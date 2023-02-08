@@ -77,7 +77,6 @@ def get_casbin():
 # redis相关配置
 def get_rdb():
     pool = ConnectionPool(host='120.79.24.202', password='123456', port=6379, decode_responses=True)
-    # pool = ConnectionPool(settings.REDIS_URI, decode_responses=True)
     rdb = Redis(connection_pool=pool)
     try:
         yield rdb

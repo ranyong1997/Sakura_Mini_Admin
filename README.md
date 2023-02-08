@@ -53,7 +53,6 @@
 │  ├─📄 README.md               //使用文档
 │  ├─📄 requirements.txt        //项目依赖文件
 │  ├─📄 start.sh                //项目运行脚本
-
 ```
 
 ## 💽部署(方式一 本地)

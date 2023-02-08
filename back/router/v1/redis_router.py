@@ -25,10 +25,15 @@ router = APIRouter(
 ################################
 # role相关的api接口
 ################################
-@router.post("/item/", response_model=Item)
-async def create_item(item: Item, rdb: Redis = Depends(get_rdb)):
-    obj = rdb.set('item_name', json.dumps(item.dict()))
-    return item
+# @router.post("/item/", response_model=Item)
+@router.post("/item/")
+# async def create_item(item: Item, rdb: Redis = Depends(get_rdb)):
+async def create_item(rdb: Redis = Depends(get_rdb)):
+    # obj = rdb.set('item_name', json.dumps(item.dict()))
+    # Redis.set()
+    rdb.set('name', '123')
+    rdb.expire(name='name', time=10)
+    # return item
 
 
 @router.get("/item/", response_model=Item)

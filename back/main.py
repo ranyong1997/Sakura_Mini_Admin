@@ -7,6 +7,7 @@
 # @Software: PyCharm
 # @desc    : 总入口
 import uvicorn
+from aioredis import create_redis_pool, Redis
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.responses import HTMLResponse  # 响应html
@@ -16,6 +17,7 @@ from back.app.database import Base, engine, get_db
 from back.crud import services
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_token, redis_router
+from back.app.config import Config
 
 app = FastAPI(
     title=settings.project_title,
@@ -48,9 +50,27 @@ app.include_router(token_router.router)
 app.include_router(user_token.router)
 app.include_router(redis_router.router)
 
+
 # 静态资源
 # app.mount("/dist", StaticFiles(directory=os.path.join(BASE_DIR, 'dist')), name="dist")
 # app.mount("/assets", StaticFiles(directory=os.path.join(BASE_DIR, 'dist/assets')), name="assets")
+
+
+async def get_redis_pool() -> Redis:
+    redis = await create_redis_pool("redis://:123456@120.79.24.202:6379/0?encoding=utf-8")
+    # redis = await create_redis_pool(f'{settings.REDIS_URI}')
+    return redis
+
+
+@app.on_event("startup")
+async def startup_event():
+    app.state.redis = await get_redis_pool()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    app.state.redis.close()
+    await app.state.redis.wait_closed()
 
 
 # 在数据库中生成表结构

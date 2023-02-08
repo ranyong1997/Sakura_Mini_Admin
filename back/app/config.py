@@ -24,7 +24,6 @@ class Settings(BaseSettings):
     MYSQL_PWD: str = None  # 数据库密码
     DBNAME: str = None  # 数据库表名
     # Redis-server
-    REDIS_ON: bool = None  # Redis开关
     REDIS_HOST: str = None  # Redis主机
     REDIS_PORT: int = None  # Redis端口
     REDIS_DB: int = None  # Redis数据库
@@ -89,7 +88,7 @@ class Settings(BaseSettings):
     # host
     server_host: str = "0.0.0.0"
     # port
-    server_port: int = 8080
+    server_port: int = 8000
     # 配置允许域名
     # origins: List[str] = ["http://localhost", "http://localhost:5555", "http://127.0.0.1:5555", "http://127.0.0.1:5174"]
     # 所有域名可访问
@@ -104,7 +103,7 @@ class Settings(BaseSettings):
     jwt_secret_key: str = "c71336cfb4c32c0266ba636cf449e71e64e2c3cfe01728182cf5c3ddb33e357b"
     # jwt 加密算法
     jwt_algorithm: str = "HS256"
-    # token过期时间，单位：秒
+    # token过期时间，单位：秒 7天过期时间
     jwt_exp_seconds: int = 7 * 24 * 60 * 60
     # 将当前目录添加到系统变量中
     BASE_DIR = os.path.dirname(os.path.realpath(__file__))  # 当前项目路径
@@ -147,5 +146,5 @@ Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{C
 Config.ASYNC_SQLALCHEMY_URI = f'mysql+aiomysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}' \
                               f'@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
 # 初始化Redis
-Config.REDIS_URI = f'host="{Config.REDIS_HOST}", password="{Config.REDIS_PASSWORD}", port={Config.REDIS_PORT}'
-
+# Config.REDIS_URI = f'redis://:{Config.REDIS_PASSWORD}@{Config.REDIS_HOST}:{Config.REDIS_PORT}/{Config.REDIS_DB}?encoding=utf-8'
+# print(Config.REDIS_URI)
