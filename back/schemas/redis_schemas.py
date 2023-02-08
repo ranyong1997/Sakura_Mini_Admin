@@ -1,24 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Time    : 2023/2/6 15:51
+# @Time    : 2023/2/7 16:44
 # @Author  : 冉勇
 # @Site    : 
 # @File    : redis_schemas.py
 # @Software: PyCharm
-# @desc    : redis模型
-from pydantic import validator, BaseModel
-from back.schemas.base_schemas import SakuraModel
+# @desc    :
+from datetime import date
+from typing import Optional
+from uuid import uuid4
+from pydantic import BaseModel, Field
 
 
-class RedisConfigForm(BaseModel):
-    id: int = None
+def generate_id():
+    return str(uuid4())
+
+
+def generate_date():
+    return str(date.today())
+
+
+class Product(BaseModel):
+    id: str = Field(default_factory=generate_id)
     name: str
-    addr: str
-    db: int = 0
-    password: str = ''
-    cluster: bool = False
-    env: int
+    price: float
+    created_at: date = Field(default_factory=generate_date)
 
-    @validator("name", "addr", "cluster", "db", "env")
-    def data_not_empty(cls, v):
-        return SakuraModel.not_empty(v)
+
+class Item(BaseModel):
+    title: str
+    description: Optional[str] = None

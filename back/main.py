@@ -15,7 +15,7 @@ from back.app import settings
 from back.app.database import Base, engine, get_db
 from back.crud import services
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
-    user_token
+    user_token, redis_router
 
 app = FastAPI(
     title=settings.project_title,
@@ -46,6 +46,7 @@ app.include_router(casbin_action_router.router)
 app.include_router(role_router.router)
 app.include_router(token_router.router)
 app.include_router(user_token.router)
+app.include_router(redis_router.router)
 
 # 静态资源
 # app.mount("/dist", StaticFiles(directory=os.path.join(BASE_DIR, 'dist')), name="dist")

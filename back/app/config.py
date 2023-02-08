@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     # 异步URI
     ASYNC_SQLALCHEMY_URI: str = ''
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Redis源配置
+    REDIS_URI: str = ''
     # 项目标题
     project_title = "Sakura_Mini_Admin"
     # 项目描述
@@ -144,3 +146,6 @@ Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{C
 # 初始化 sqlalchemy(异步)
 Config.ASYNC_SQLALCHEMY_URI = f'mysql+aiomysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}' \
                               f'@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
+# 初始化Redis
+Config.REDIS_URI = f'host="{Config.REDIS_HOST}", password="{Config.REDIS_PASSWORD}", port={Config.REDIS_PORT}'
+

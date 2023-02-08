@@ -9,11 +9,13 @@
 import os
 import casbin  # 权限控制模块
 from sqlalchemy import create_engine
+from redis import Redis
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
 from back.app import settings
 from back.app.config import Config
+from redis.connection import ConnectionPool
 
 # # 创建一个使用内存的SQLite数据库
 # SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
@@ -70,3 +72,15 @@ def get_casbin():
     :return:
     """
     return casbin.Enforcer(model_path, adapter)
+
+
+# redis相关配置
+def get_rdb():
+    pool = ConnectionPool(host='120.79.24.202', password='123456', port=6379, decode_responses=True)
+    # pool = ConnectionPool(settings.REDIS_URI, decode_responses=True)
+    rdb = Redis(connection_pool=pool)
+    try:
+        yield rdb
+    finally:
+        rdb.close()
+
