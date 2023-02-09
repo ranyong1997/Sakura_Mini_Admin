@@ -94,8 +94,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={'sub': user.username}, expires_delta=access_token_expired
     )
-    # 将token写入redis,并设置过期销毁时间
-    rdb.set(user.username, access_token)
-    # redis设置过期销毁时间
-    rdb.expire(name=user.username, time=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+    # 将token写入redis,并设置过期销毁时间,创建根目录/UserToken/user
+    await rdb.set(f'Sakura:user:{user.username}', access_token, expire=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {"access_token": access_token, "token_type": "bearer"}

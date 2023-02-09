@@ -8,7 +8,6 @@
 # @desc    :
 import json
 from fastapi import APIRouter, Depends
-
 from back.app.database import get_rdb
 from back.schemas.redis_schemas import Item
 from redis import Redis
@@ -27,16 +26,11 @@ router = APIRouter(
 ################################
 # @router.post("/item/", response_model=Item)
 @router.post("/item/")
-# async def create_item(item: Item, rdb: Redis = Depends(get_rdb)):
 async def create_item(rdb: Redis = Depends(get_rdb)):
-    # obj = rdb.set('item_name', json.dumps(item.dict()))
-    # Redis.set()
-    rdb.set('name', '123')
-    rdb.expire(name='name', time=10)
-    # return item
+    # rdb.set('name', '123')
+    rdb.set('userinfo:shanghai:zhangsan', 'user')
 
-
-@router.get("/item/", response_model=Item)
-async def get_item(rdb: Redis = Depends(get_rdb)):
-    obj = rdb.get('item_name')
-    return json.loads(obj)
+# @router.get("/item/", response_model=Item)
+# async def get_item(rdb: Redis = Depends(init_redis)):
+#     obj = rdb.get('item_name')
+#     return json.loads(obj)

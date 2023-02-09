@@ -50,27 +50,9 @@ app.include_router(token_router.router)
 app.include_router(user_token.router)
 app.include_router(redis_router.router)
 
-
 # 静态资源
 # app.mount("/dist", StaticFiles(directory=os.path.join(BASE_DIR, 'dist')), name="dist")
 # app.mount("/assets", StaticFiles(directory=os.path.join(BASE_DIR, 'dist/assets')), name="assets")
-
-
-async def get_redis_pool() -> Redis:
-    redis = await create_redis_pool("redis://:123456@120.79.24.202:6379/0?encoding=utf-8")
-    # redis = await create_redis_pool(f'{settings.REDIS_URI}')
-    return redis
-
-
-@app.on_event("startup")
-async def startup_event():
-    app.state.redis = await get_redis_pool()
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    app.state.redis.close()
-    await app.state.redis.wait_closed()
 
 
 # 在数据库中生成表结构

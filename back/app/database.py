@@ -7,6 +7,8 @@
 # @Software: PyCharm
 # @desc    : 数据库以及连接的配置
 import os
+import asyncio
+import aioredis
 import casbin  # 权限控制模块
 from sqlalchemy import create_engine
 from redis import Redis
@@ -75,11 +77,9 @@ def get_casbin():
 
 
 # redis相关配置
-def get_rdb():
-    pool = ConnectionPool(host='120.79.24.202', password='123456', port=6379, decode_responses=True)
-    rdb = Redis(connection_pool=pool)
+async def get_rdb():
+    redis = await aioredis.create_redis(f'{Config.REDIS_URI}')
     try:
-        yield rdb
+        yield redis
     finally:
-        rdb.close()
-
+        await redis.wait_closed()
