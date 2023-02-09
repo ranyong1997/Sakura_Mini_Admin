@@ -29,7 +29,6 @@ class Settings(BaseSettings):
     REDIS_DB: int = None  # Redis数据库
     REDIS_PASSWORD: str = None  # Redis密码
     REDIS_TIMEOUT: int = None  # Redis超时
-    REDIS_NODES: List[dict] = []  # Redis连接信息
     # sqlalchemy_server
     SQLALCHEMY_DATABASE_URI: str = ''
     # 异步URI

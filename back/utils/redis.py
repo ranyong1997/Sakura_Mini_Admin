@@ -13,7 +13,6 @@ from back.app.config import Config
 
 
 class RedisCli(Redis):
-
     def __init__(self):
         super(RedisCli, self).__init__(
             host=Config.REDIS_HOST,
@@ -31,7 +30,6 @@ class RedisCli(Redis):
         """
         try:
             await self.ping()
-            log.success("连接redis成功")
         except TimeoutError:
             log.error("连接redis超时")
             sys.exit()

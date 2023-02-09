@@ -16,6 +16,7 @@ from back.app.database import Base, engine, get_db
 from back.crud import services
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_token
+from back.utils.redis import redis_client
 
 app = FastAPI(
     title=settings.project_title,
@@ -90,6 +91,20 @@ async def init_fake_data():
         logger.bind(name=None).success("生成初始化数据成功.          ✔")
     except Exception as e:
         logger.bind(name=None).error(f"生成初始化数据失败.          ❌ \n Error:{str(e)}")
+        raise
+
+
+@app.on_event("startup")
+async def init_redis():
+    """
+        初始化redis，失败则服务起不来
+        :return:
+    """
+    try:
+        await redis_client.init_redis_connect()
+        logger.bind(name=None).success("redis连接成功.          ✔")
+    except Exception as e:
+        logger.bind(name=None).error(f"redis连接失败.          ❌ \n Error:{str(e)}")
         raise
 
 
