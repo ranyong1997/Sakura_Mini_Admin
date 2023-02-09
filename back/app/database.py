@@ -7,17 +7,13 @@
 # @Software: PyCharm
 # @desc    : 数据库以及连接的配置
 import os
-import asyncio
-import aioredis
 import casbin  # 权限控制模块
 from sqlalchemy import create_engine
-from redis import Redis
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
 from back.app import settings
 from back.app.config import Config
-from redis.connection import ConnectionPool
 
 # # 创建一个使用内存的SQLite数据库
 # SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
@@ -74,12 +70,3 @@ def get_casbin():
     :return:
     """
     return casbin.Enforcer(model_path, adapter)
-
-
-# redis相关配置
-async def get_rdb():
-    redis = await aioredis.create_redis(f'{Config.REDIS_URI}')
-    try:
-        yield redis
-    finally:
-        await redis.wait_closed()

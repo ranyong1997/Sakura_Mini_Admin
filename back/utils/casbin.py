@@ -6,8 +6,6 @@
 # @File    : casbin.py
 # @Software: PyCharm
 # @desc    : 权限工具
-import os
-import sys
 from fastapi import HTTPException, status
 from back.app.database import get_casbin
 from back.utils.token import get_username_by_token, verify_isActive

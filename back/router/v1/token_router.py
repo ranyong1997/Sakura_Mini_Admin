@@ -13,10 +13,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import jwt
-from back.app.database import get_db, get_rdb
+
+from back.app import settings
+from back.app.database import get_db
 from back.crud import services
 from back.schemas.token_schemas import Token
 from back.utils.password import verify_password
+from back.utils.redis import redis_client
 from back.utils.token import APP_TOKEN_CONFIG
 
 router = APIRouter(
@@ -68,8 +71,7 @@ def authenticate_user(db: Session, username: str, password: str):
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db),
-                                 rdb: Redis = Depends(get_rdb)):
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
     获取用户，如果没有或者密码错误并提示
     """
@@ -94,6 +96,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={'sub': user.username}, expires_delta=access_token_expired
     )
-    # 将token写入redis,并设置过期销毁时间,创建根目录/UserToken/user
-    await rdb.set(f'Sakura:user:{user.username}', access_token, expire=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+    # 将token写入redis,并设置过期销毁时间,创建根目录/Sakura/user
+    await redis_client.set(f'{settings.REDIS_PREFIX}:user:{user.username}', access_token,
+                           ex=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {"access_token": access_token, "token_type": "bearer"}

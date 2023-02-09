@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int = None  # Redis端口
     REDIS_DB: int = None  # Redis数据库
     REDIS_PASSWORD: str = None  # Redis密码
+    REDIS_TIMEOUT: int = None  # Redis超时
     REDIS_NODES: List[dict] = []  # Redis连接信息
     # sqlalchemy_server
     SQLALCHEMY_DATABASE_URI: str = ''
@@ -36,6 +37,8 @@ class Settings(BaseSettings):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # Redis源配置
     REDIS_URI: str = ''
+    # Redis键前缀
+    REDIS_PREFIX: str = 'Sakura'
     # 项目标题
     project_title = "Sakura_Mini_Admin"
     # 项目描述
@@ -134,16 +137,10 @@ class ProConfig(Settings):
 Sakura_Mini_ENV = os.environ.get("sakura_mini_env", "dev")
 # 如果sakura_mini存在且为pro
 Config = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
-# 初始化 redis
-Config.REDIS_NODES = [
-    {
-        'host': Config.REDIS_HOST, 'port': Config.REDIS_PORT, 'db': Config.REDIS_DB, 'password': Config.REDIS_PASSWORD
-    }
-]
 # 初始化 sqlalchemy(由 apscheduler 使用)
 Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
 # 初始化 sqlalchemy(异步)
 Config.ASYNC_SQLALCHEMY_URI = f'mysql+aiomysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}' \
                               f'@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
-# 初始化Redis
+# 初始化Redis(暂时废除)
 Config.REDIS_URI = f'redis://:{Config.REDIS_PASSWORD}@{Config.REDIS_HOST}:{Config.REDIS_PORT}/{Config.REDIS_DB}?encoding=utf-8'
