@@ -1,21 +1,39 @@
 version: '3.8'
 services:
-    # bot
-    sakura_mini_admin:
-        # 指定容器运行的镜像,指向Dockerfile文件
-        build: .
-        # 自定义容器名称
-        container_name: sakura_mini_admin
-        # 将主机的数据卷或着文件挂载到容器里
-        restart: always
-        environment:
-          TZ: Asia/Shanghai
-        # 容器的端口xx映射到宿主机的端口xx
-        ports:
-            - "8080:8080"
-        # 服务的日志记录配置
-        logging:
-            driver: "json-file"
-            options:
-                max-size: "100m" # 单个文件大小为200k
-                max-file: "2" # 最多10个文件
+  # bot
+  sakura_mini_admin:
+    # 指定容器运行的镜像,指向Dockerfile文件
+    build: .
+    # 自定义容器名称
+    container_name: sakura_mini_admin
+    # 将主机的数据卷或着文件挂载到容器里
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    # 容器的端口xx映射到宿主机的端口xx
+    ports:
+      - "8000:8000"
+    # 服务的日志记录配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m" # 单个文件大小为200k
+        max-file: "2" # 最多10个文件
+  mysql:
+    image: mysql:8.0.24
+    ports:
+      - "3306:3306"
+    container_name: "sakura-mysql"
+    restart: always
+    environment:
+      MYSQL_DATABASE: sakura_mini_mysql
+      MYSQL_ROOT_PASSWORD: sakura_mini
+      TZ: Asia/Shanghai
+    volumes:
+      - /var/lib/mysql
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --lower_case_table_names=1
+
