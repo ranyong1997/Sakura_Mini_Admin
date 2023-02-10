@@ -45,11 +45,9 @@ services:
       TZ: Asia/Shanghai
     volumes:
       # 存放了数据库表文件
-      - /root/docker/compose/mysql/data:/var/lib/mysql
+      - /var/lib/mysql
       # 存放自定义的配置文件
-      - /root/docker/compose/mysql/conf/my.cnf:/etc/mysql.cnf
-      # 初始化数据库
-      - /root/docker/compose/mysql/init:/docker-entrypoint-initdb.d
+      - /etc/mysql.cnf
     # 加入指定网络
     networks:
       - my_network
@@ -73,9 +71,9 @@ services:
     # 数据容器卷
     volumes:
       # 存放了redis文件
-      - /root/docker/compose/redis/data:/var/lib/redis
+      - /var/lib/redis
       # 存放自定义的配置文件
-      - /root/docker/compose/redis/redis.conf:/etc/redis.conf
+      - /etc/redis.conf
     # 加入指定网络
     networks:
       - my_network

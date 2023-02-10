@@ -132,3 +132,5 @@ dmypy.json
 *.iml
 *.xml
 back/Sakura_Mini_Admin_data.db
+/back/conf/dev.env
+/back/conf/pro.env
