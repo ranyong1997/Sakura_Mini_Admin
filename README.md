@@ -60,7 +60,20 @@ Git克隆或是下载压缩包。
 ```git
 git clone https://github.com/ranyong1997/Sakura_Mini_Admin.git
 ```
+## 环境要求
+🧰服务端
 
+| 运行环境 | 要求版本 | 推荐版本 |
+| -------- | :------: | -------: |
+| Python   |  >=3.8   |   3.8.10 |
+| Mysql    |  >=8.0   |   8.0.24 |
+| Redis    |  >=8.0   |    7.0.4 |
+
+🧰前端
+
+| 运行环境    |   要求版本    |    推荐版本 |
+|---------|:---------:|--------:|
+| Node.js | >=16.17.0 |  18.9.1 |
 创建虚拟环境(win)
 ```python
 python - m venv venv
@@ -94,14 +107,20 @@ deactivate
 
 终端进入程序的根目录：
 ```
-cd back
 pip3 install -r requirements.txt
+cd back
+python3 main.py
+```
+
+## 💽部署(方式二 Docker)
+```docker
+docker-compose up -d
 ```
 
 ## 🤦‍待办清单：
 - [ ] 完善README文档
 - [ ] 数据迁移
-- 
+
 
 ## 🤦‍已办清单：
 - [X] 使用Dockerfile进行构建
@@ -112,7 +131,7 @@ pip3 install -r requirements.txt
 
 ## 🛰️API文档
 ***API文档：***
-本地：[http://localhost:8080/docs](http://localhost:8080/docs)
+本地：[http://localhost:8000/docs](http://localhost:8000/docs)
 生成
 ## 📸截图
 ***项目界面***
