@@ -84,7 +84,7 @@ async def update_role_by_id(role: role_schemas.EditRole, token: str = Depends(oa
         raise no_permission
 
 
-@router.get("/role/delete_role")
+@router.delete("/role/delete_role")
 async def delete_role_by_id(role_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据id删除角色

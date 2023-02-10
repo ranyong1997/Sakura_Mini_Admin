@@ -99,7 +99,7 @@ async def user_active_change(token: str = Depends(oauth2_scheme), db: Session = 
         raise no_permission
 
 
-@router.get("/user/delete_user")
+@router.delete("/user/delete_user")
 async def delete_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db), user_id: int = 0):
     """
     根据id删除用户

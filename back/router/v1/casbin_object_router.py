@@ -75,7 +75,7 @@ async def update_casbin_object_by_id(co: casbin_schemas.EditCasbinObject, token:
         raise no_permission
 
 
-@router.get("/co/delete_co")
+@router.delete("/co/delete_co")
 async def delete_casbin_object_by_id(co_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据co_id删除资源

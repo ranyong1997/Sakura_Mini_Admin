@@ -78,7 +78,7 @@ async def update_ca(ca: casbin_schemas.EditCasbinAction, token: str = Depends(oa
         raise no_permission
 
 
-@router.get("/ca/delete_ca")
+@router.delete("/ca/delete_ca")
 async def delete_ca(ca_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据ca_id删除casbin行为
