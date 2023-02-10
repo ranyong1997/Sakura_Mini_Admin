@@ -15,7 +15,7 @@ from casbin_sqlalchemy_adapter import Adapter
 from back.app import settings
 from back.app.config import Config
 
-# # 创建一个使用内存的SQLite数据库
+# # 创建一个使用内存的SQLite数据库(暂时废除)
 # SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
 # engine_test = create_engine(SQLALCHEMY_DATABASE_MEMORY, echo=False, )
 # SessionLocal_test = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)

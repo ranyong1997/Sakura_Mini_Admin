@@ -7,6 +7,7 @@ services:
     container_name: sakura_mini_admin
     # 将主机的数据卷或着文件挂载到容器里
     restart: always
+    #定义了依赖关系
     depends_on:
       - mysql
       - redis
@@ -24,7 +25,7 @@ services:
       options:
         max-size: "100m" # 单个文件大小为200k
         max-file: "2" # 最多10个文件
-
+  # MySQL服务
   mysql:
     image: mysql:8.0.24
     # 映射主机和容器的端口
@@ -34,15 +35,21 @@ services:
     container_name: "sakura-mysql"
     restart: always
     environment:
+      # 此处就是相当于 mysql create user，创建了数据库的登录用户
       MYSQL_USER: sakura_mini
+      # 等同于 -e MYSQL_ROOT_PASSWORD指定root的登录密码
       MYSQL_ROOT_PASSWORD: sakura_mini
+      MYSQL_PASSWORD: '123456'
+      # 这里这个指令compose启动成功后会自动创建名为docker的数据库
       MYSQL_DATABASE: sakura_mini
       TZ: Asia/Shanghai
     volumes:
-      # 存放自定义的配置文件
-      - './conf/my.cnf:/etc/my.cnf'
       # 存放了数据库表文件
-      - './db:/var/lib/mysql'
+      - /root/docker/compose/mysql/data:/var/lib/mysql
+      # 存放自定义的配置文件
+      - /root/docker/compose/mysql/conf/my.cnf:/etc/mysql.cnf
+      # 初始化数据库
+      - /root/docker/compose/mysql/init:/docker-entrypoint-initdb.d
     # 加入指定网络
     networks:
       - my_network
@@ -51,7 +58,7 @@ services:
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
-
+  # Redis服务
   redis:
     # 指定镜像
     image: redis:7.0.4
@@ -65,11 +72,15 @@ services:
       - TZ=Asia/Shanghai
     # 数据容器卷
     volumes:
-      - './redis:/var/lib/redis'
-      - './conf/my.cnf:/etc/redis.cnf'
+      # 存放了redis文件
+      - /root/docker/compose/redis/data:/var/lib/redis
+      # 存放自定义的配置文件
+      - /root/docker/compose/redis/redis.conf:/etc/redis.conf
     # 加入指定网络
     networks:
       - my_network
+    # 运行命令
+    command: redis-server /etc/redis.conf
 
 # 创建网络
 networks:

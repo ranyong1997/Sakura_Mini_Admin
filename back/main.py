@@ -26,8 +26,7 @@ app = FastAPI(
     license_info={
         "name": "开源MIT协议",
         "url": "https://opensource.org/licenses/MIT",
-    },
-
+    }
 )
 
 # 配置允许域名列表、允许方式、请求头、cookie等等
