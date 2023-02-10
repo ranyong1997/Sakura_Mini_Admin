@@ -101,6 +101,7 @@ pip3 install -r requirements.txt
 ## 🤦‍待办清单：
 - [ ] 完善README文档
 - [ ] redis接入Dockerfile里
+- [ ] 数据迁移
 
 ## 🤦‍已办清单：
 - [X] 使用Dockerfile进行构建

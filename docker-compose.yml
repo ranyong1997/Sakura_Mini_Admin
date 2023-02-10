@@ -1,6 +1,5 @@
 version: '3.8'
 services:
-  # bot
   sakura_mini_admin:
     # 指定容器运行的镜像,指向Dockerfile文件
     build: .
@@ -8,32 +7,71 @@ services:
     container_name: sakura_mini_admin
     # 将主机的数据卷或着文件挂载到容器里
     restart: always
+    depends_on:
+      - mysql
+      - redis
     environment:
       TZ: Asia/Shanghai
     # 容器的端口xx映射到宿主机的端口xx
     ports:
       - "8000:8000"
+    # 加入指定网络
+    networks:
+      - my_network
     # 服务的日志记录配置
     logging:
       driver: "json-file"
       options:
         max-size: "100m" # 单个文件大小为200k
         max-file: "2" # 最多10个文件
+
   mysql:
     image: mysql:8.0.24
+    # 映射主机和容器的端口
     ports:
       - "3306:3306"
+    # 自定义容器名称
     container_name: "sakura-mysql"
     restart: always
     environment:
-      MYSQL_DATABASE: sakura_mini_mysql
+      MYSQL_USER: sakura_mini
       MYSQL_ROOT_PASSWORD: sakura_mini
+      MYSQL_DATABASE: sakura_mini
       TZ: Asia/Shanghai
     volumes:
-      - /var/lib/mysql
+      # 存放自定义的配置文件
+      - './conf/my.cnf:/etc/my.cnf'
+      # 存放了数据库表文件
+      - './db:/var/lib/mysql'
+    # 加入指定网络
+    networks:
+      - my_network
     command:
+      --max_connections=1000
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
-      --lower_case_table_names=1
 
+  redis:
+    # 指定镜像
+    image: redis:7.0.4
+    # 指定端口
+    ports:
+      - "6379:6379"
+    # 自定义容器名称
+    container_name: "sakura_redis"
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    # 数据容器卷
+    volumes:
+      - './redis:/var/lib/redis'
+      - './conf/my.cnf:/etc/redis.cnf'
+    # 加入指定网络
+    networks:
+      - my_network
+
+# 创建网络
+networks:
+  # 默认将会创建为 docker-compose.yml所在 文件夹名_my_network 网络名称
+  my_network:
