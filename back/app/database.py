@@ -44,6 +44,9 @@ engine.dispose()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
+# 异步数据库引擎
+
+
 def get_db():
     """
     获取一个数据库，异步fastapi下使用
@@ -57,7 +60,7 @@ def get_db():
 
 
 # 数据模型的基类
-Base = declarative_base()
+Base = declarative_base(engine)
 
 # casbin相关配置
 adapter = Adapter(engine)

@@ -120,6 +120,7 @@ docker-compose up -d
 ## 🤦‍待办清单：
 - [ ] 完善README文档
 - [ ] 数据迁移
+- [ ] 替换异步mysql
 
 
 ## 🤦‍已办清单：
