@@ -116,6 +116,7 @@ python3 main.py
 ```docker
 docker-compose up -d
 ```
+>📢注意事项：部署前请检查本地mysql端口3306是否开启，如果开启，请关闭。否则更改3306映射端口
 
 ## 🤦‍待办清单：
 - [ ] 完善README文档
