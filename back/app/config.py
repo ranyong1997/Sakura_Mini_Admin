@@ -18,12 +18,14 @@ base_dir = Path(__file__).absolute().parent.parent
 class Settings(BaseSettings):
     debug: bool = True  # DEBUG模式
     # 数据库—server
+    DB_ECHO: bool = False  # 是否开启日志打印
     MYSQL_HOST: str = None  # 数据库主机
     MYSQL_PORT: int = None  # 数据库端口
     MYSQL_USER: str = None  # 数据库用户名
     MYSQL_PWD: str = None  # 数据库密码
     DBNAME: str = None  # 数据库表名
     # Redis-server
+    REDIS_OPEN: bool = True  # 是否开启Redis连接
     REDIS_HOST: str = None  # Redis主机
     REDIS_PORT: int = None  # Redis端口
     REDIS_DB: int = None  # Redis数据库

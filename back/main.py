@@ -16,6 +16,7 @@ from back.app.database import Base, engine, get_db
 from back.crud import services
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_token
+from back.utils.logger import log
 from back.utils.redis import redis_client
 
 app = FastAPI(
@@ -47,13 +48,10 @@ app.include_router(role_router.router)
 app.include_router(token_router.router)
 app.include_router(user_token.router)
 
+
 # 静态资源
 # app.mount("/dist", StaticFiles(directory=os.path.join(BASE_DIR, 'dist')), name="dist")
 # app.mount("/assets", StaticFiles(directory=os.path.join(BASE_DIR, 'dist/assets')), name="assets")
-
-
-# 在数据库中生成表结构
-Base.metadata.create_all(bind=engine)
 
 
 @app.on_event("startup")
@@ -64,26 +62,27 @@ async def startup_event():
 
 
 @app.on_event("startup")
-async def init_database():
+async def startup_event():
     """
-        初始化数据库,建表
+        初始化数据库,建表,Redis
         :return:
         """
     try:
         # 在数据库中生成表结构
         # TODO:将生成数据库异步执行
+        Base.metadata.create_all(bind=engine)
         logger.bind(name=None).success("数据库和表创建成功.          ✔")
     except Exception as e:
         logger.bind(name=None).error(f"数据库和表创建失败.          ❌ \n Error:{str(e)}")
         raise
-
-
-@app.on_event("startup")
-async def init_fake_data():
-    """
-        生成初始化数据
-        :return:
-        """
+    if settings.REDIS_OPEN:
+        # 连接redis
+        try:
+            await redis_client.init_redis_connect()
+            logger.bind(name=None).success("redis连接成功.          ✔")
+        except Exception as e:
+            logger.bind(name=None).error(f"redis连接失败.          ❌ \n Error:{str(e)}")
+            raise
     try:
         # 生成初始化数据，添加了一个超级管理员并赋予所有管理权限，以及一些虚拟的用户。
         services.create_data(next(get_db()))
@@ -93,18 +92,11 @@ async def init_fake_data():
         raise
 
 
-@app.on_event("startup")
-async def init_redis():
-    """
-        初始化redis，失败则服务起不来
-        :return:
-    """
-    try:
-        await redis_client.init_redis_connect()
-        logger.bind(name=None).success("redis连接成功.          ✔")
-    except Exception as e:
-        logger.bind(name=None).error(f"redis连接失败.          ❌ \n Error:{str(e)}")
-        raise
+@app.on_event("shutdown")
+async def shutdown_event():
+    if settings.REDIS_OPEN:
+        # 关闭redis连接
+        await redis_client.close()
 
 
 # @app.get("/")

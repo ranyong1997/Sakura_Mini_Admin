@@ -5,8 +5,7 @@
 # @Site    : 
 # @File    : logger.py
 # @Software: PyCharm
-# @desc    :
-import inspect
+# @desc    : 日志工具
 import os
 import logging
 import colorlog
@@ -30,9 +29,9 @@ log_colors_config = {
 
 default_formats = {
     # 终端输出格式
-    'color_format': '%(log_color)s%(asctime)s-%(name)s-%(filename)s-[line:%(lineno)d]-%(levelname)s-[日志信息]: %(message)s',
+    'color_format': '%(log_color)s%(asctime)s | %(filename)s | [line:%(lineno)d] | [日志级别]:%(levelname)s | [日志信息]: %(message)s',
     # 日志输出格式
-    'log_format': '%(asctime)s - %(name)s - %(filename)s - [line:%(lineno)d] - %(levelname)s - [日志信息]: %(message)s'
+    'log_format': '%(asctime)s | %(filename)s | [line:%(lineno)d] | [日志级别]:%(levelname)s | [日志信息]: %(message)s'
 }
 
 
@@ -159,3 +158,6 @@ class HandleLog:
 
     def critical(self, message):
         self.__console('critical', message)
+
+
+log = HandleLog(os.path.split(__file__)[-1].split(".")[0])

@@ -7,13 +7,15 @@
 # @Software: PyCharm
 # @desc    : 数据库以及连接的配置
 import os
+import sys
+
 import casbin  # 权限控制模块
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
-from back.app import settings
 from back.app.config import Config
+from back.utils.logger import log
 
 # # 创建一个使用内存的SQLite数据库(暂时废除)
 # SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
@@ -34,17 +36,18 @@ from back.app.config import Config
 
 # 创建一个使用Mysql数据库
 # 创建数据库引擎
-engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', encoding='utf8', echo=False, pool_recycle=1500)
-with engine.connect() as conn:
-    conn.execute(
-        "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
-engine.dispose()
-
-# 创建本地会话
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-
-# 异步数据库引擎
+try:
+    engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', encoding='utf8', echo=Config.DB_ECHO, pool_recycle=1500)
+    with engine.connect() as conn:
+        conn.execute(
+            "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
+    engine.dispose()
+except Exception as e:
+    log.error('❌ 数据库链接失败 {}', e)
+    sys.exit()
+else:
+    # 创建本地会话
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def get_db():
@@ -64,7 +67,7 @@ Base = declarative_base(engine)
 
 # casbin相关配置
 adapter = Adapter(engine)
-model_path = os.path.join(settings.BASE_DIR, '../rbac_model.conf')
+model_path = os.path.join(Config.BASE_DIR, './rbac_model.conf')
 
 
 def get_casbin():
