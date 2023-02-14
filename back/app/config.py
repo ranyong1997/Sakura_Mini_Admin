@@ -94,7 +94,7 @@ class Settings(BaseSettings):
         },
     ]
     # 项目版本
-    project_version: str = '0.0.3'
+    project_version: str = '0.0.4'
     # host
     server_host: str = "0.0.0.0"
     # port
@@ -143,7 +143,7 @@ class ProConfig(Settings):
 # 获取sakura_mini环境变量
 Sakura_Mini_ENV: str = os.environ.get("sakura_mini_env", "dev")
 # 如果sakura_mini存在且为pro
-Config: str = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
+Config = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
 # 初始化 sqlalchemy(由 apscheduler 使用)
 Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset=utf8mb4'
 # 初始化 sqlalchemy(异步)
