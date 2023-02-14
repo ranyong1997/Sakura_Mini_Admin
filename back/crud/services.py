@@ -6,7 +6,6 @@
 # @File    : services.py
 # @Software: PyCharm
 # @desc    : CRUD接口
-import os
 import random
 from sqlalchemy.orm import Session
 from back.models.db_casbin_object_models import CasbinObject
@@ -15,9 +14,7 @@ from back.models.db_casbinrule_models import CasbinRule
 from back.models.db_role_models import Role
 from back.models.db_user_models import User
 from back.utils.password import get_password_hash, verify_password
-from back.utils.logger import HandleLog
-
-log = HandleLog(os.path.split(__file__)[-1].split(".")[0])
+from back.utils.logger import log
 
 
 # TODO:后续将每个crud分离出来
@@ -858,8 +855,3 @@ def delete_p_casbin_rules(db: Session, roles):
         db.delete(r)
     db.commit()
 # --------------------------【CasbinRulet增删改查 完】--------------------------------------
-
-# --------------------------【Redis增删改查】--------------------------------------
-
-
-# --------------------------【Redis增删改完】--------------------------------------

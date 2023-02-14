@@ -123,6 +123,7 @@ docker-compose up -d
 - [ ] 数据迁移、定时备份
 - [ ] 替换异步mysql
 - [ ] 日志优化输出控制台
+- [ ] 引入APScheduler
 
 
 ## 🤦‍已办清单：
@@ -132,6 +133,14 @@ docker-compose up -d
 - [X] 接入Redis
 - [X] redis接入Dockerfile里
 
+##  📢开发提交规范:
+```text
+✨ feat:  新增
+🐞Fix: 修复
+📃 docs: 文档
+🦄 refactor: 重构
+🎈 perf: 优化
+```
 ## 🛰️API文档
 ***API文档：***
 本地：[http://localhost:8000/docs](http://localhost:8000/docs)
