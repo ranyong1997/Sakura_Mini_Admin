@@ -88,6 +88,10 @@ class Settings(BaseSettings):
             "name": "用户",
             "description": "用户相关操作，增删改查",
         },
+        {
+            "name": "虚拟数据生成器",
+            "description": "生成虚拟数据API",
+        },
     ]
     # 项目版本
     project_version: str = '0.0.3'

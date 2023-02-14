@@ -14,9 +14,7 @@ from loguru import logger
 from back.app import settings
 from back.app.database import Base, engine, get_db
 from back.crud import services
-from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
-    user_token
-from back.utils.logger import log
+from back.router.v1 import api_v1_router
 from back.utils.redis import redis_client
 
 app = FastAPI(
@@ -40,13 +38,9 @@ app.add_middleware(
 )
 
 # 挂载路由
-app.include_router(casbin_router.router)
-app.include_router(casbin_object_router.router)
-app.include_router(casbin_router.router)
-app.include_router(casbin_action_router.router)
-app.include_router(role_router.router)
-app.include_router(token_router.router)
-app.include_router(user_token.router)
+app.include_router(
+    api_v1_router
+)
 
 
 # 静态资源
