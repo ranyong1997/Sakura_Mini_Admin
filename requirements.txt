@@ -18,3 +18,5 @@ python-multipart==0.0.5
 bcrypt==4.0.1
 asyncmy==0.2.5
 Faker==17.0.0
+httprunner==4.3.0
+har2case==0.3.1

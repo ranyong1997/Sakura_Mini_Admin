@@ -253,5 +253,5 @@ if __name__ == '__main__':
         app='main:app',
         host=settings.server_host,
         port=settings.server_port,
-        reload_dirs=['back'],  # reload_dirs=['back'],仅检测back目录下的代码改动
+        # reload_dirs=['back'],  # reload_dirs=['back'],仅检测back目录下的代码改动
         reload=True)

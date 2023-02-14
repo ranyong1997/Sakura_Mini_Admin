@@ -1,0 +1,56 @@
+{
+    "config": {
+        "name": "",
+        "verify": false,
+        "base_url": "",
+        "variables": {
+            "key": "支持JSON数据类型字符串、数字、JSON对象、数组、布尔、null"
+        },
+        "parameters": {},
+        "export": [],
+        "path": null
+    },
+    "teststeps": [
+        {
+            "name": "",
+            "request": {
+                "method": "",
+                "url": "",
+                "params": {},
+                "headers": {},
+                "json": {},
+                "data": {},
+                "cookies": {},
+                "timeout": 120,
+                "allow_redirects": true,
+                "verify": false,
+                "upload": {}
+            },
+            "variables": {},
+            "setup_hooks": [],
+            "teardown_hooks": [],
+            "extract": {},
+            "validate": [
+                {
+                    "check": "",
+                    "assert": "",
+                    "expect": "",
+                    "msg": ""
+                }
+            ],
+            "validate_script": [],
+            "retry_times": 0,
+            "retry_interval": 0
+        },
+        {
+            "name": "",
+            "testcase": "",
+            "variables": {},
+            "setup_hooks": [],
+            "teardown_hooks": [],
+            "export": [],
+            "retry_times": 0,
+            "retry_interval": 0
+        }
+    ]
+}

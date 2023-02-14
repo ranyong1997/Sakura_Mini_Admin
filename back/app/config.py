@@ -92,6 +92,10 @@ class Settings(BaseSettings):
             "name": "虚拟数据生成器",
             "description": "生成虚拟数据API",
         },
+        {
+            "name": "HttpRunner",
+            "description": "HttpRunner接口测试",
+        },
     ]
     # 项目版本
     project_version: str = '0.0.4'

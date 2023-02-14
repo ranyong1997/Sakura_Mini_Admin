@@ -5,12 +5,10 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
       <excludeFolder url="file://$MODULE_DIR$/back/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/hrun_proj/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/.pytest_cache" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.9 (Sakura_Admin)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (Sakura_Mini_Admin)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-  </component>
-  <component name="PyDocumentationSettings">
-    <option name="format" value="PLAIN" />
-    <option name="myDocStringFormat" value="Plain" />
   </component>
 </module>
