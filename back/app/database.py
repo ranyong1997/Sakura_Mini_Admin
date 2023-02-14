@@ -67,7 +67,7 @@ Base = declarative_base(engine)
 
 # casbin相关配置
 adapter = Adapter(engine)
-model_path = os.path.join(Config.BASE_DIR, './rbac_model.conf')
+model_path = Config.model_path
 
 
 def get_casbin():

@@ -36,12 +36,14 @@ class Settings(BaseSettings):
     # 异步URI
     ASYNC_SQLALCHEMY_URI: str = ''
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Casbin权限控制
+    model_path: str = os.path.join(base_dir, './rbac_model.conf')
     # Redis源配置
     REDIS_URI: str = ''
     # Redis键前缀
     REDIS_PREFIX: str = 'Sakura'
     # 项目标题
-    project_title = "Sakura_Mini_Admin"
+    project_title: str = "Sakura_Mini_Admin"
     # 项目描述
     project_description: str = """
 #### Description/说明
@@ -110,8 +112,8 @@ class Settings(BaseSettings):
     # token过期时间，单位：秒 7天过期时间
     jwt_exp_seconds: int = 7 * 24 * 60 * 60
     # 将当前目录添加到系统变量中
-    BASE_DIR = os.path.dirname(os.path.realpath(__file__))  # 当前项目路径
-    LOG_PATH = os.path.join(BASE_DIR, '../logs')  # log_path为存放日志的路径
+    BASE_DIR: str = os.path.dirname(os.path.realpath(__file__))  # 当前项目路径
+    LOG_PATH: str = os.path.join(BASE_DIR, '../logs')  # log_path为存放日志的路径
     BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       
  / ___|  __ _| | ___   _ _ __ __ _    |  \/  (_) \ | (_)      / \   __| |_ __ ___ (_)_ __  
@@ -135,11 +137,11 @@ class ProConfig(Settings):
 
 
 # 获取sakura_mini环境变量
-Sakura_Mini_ENV = os.environ.get("sakura_mini_env", "dev")
+Sakura_Mini_ENV: str = os.environ.get("sakura_mini_env", "dev")
 # 如果sakura_mini存在且为pro
-Config = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
+Config: str = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
 # 初始化 sqlalchemy(由 apscheduler 使用)
-Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
+Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset=utf8mb4'
 # 初始化 sqlalchemy(异步)
 Config.ASYNC_SQLALCHEMY_URI = f'mysql+aiomysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}' \
                               f'@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'
