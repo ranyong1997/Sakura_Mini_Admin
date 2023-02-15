@@ -18,7 +18,7 @@ from pydantic import BaseSettings
 from back.utils.httprunner_request import HttpRequest
 from back.utils.logger import log
 
-sys.path.append('..')
+sys.path.append('../../../')
 router = APIRouter(
     prefix="/v1",
     tags=["HttpRunner"],
@@ -37,29 +37,30 @@ def settings():
     return Settings()
 
 
-@router.post("/run_har2case")
-async def run_har2case(har_path: str, config: Settings = Depends(settings)):
-    log.info(f"run_har2case.params: {har_path}")
-    resp = {
-        "code": 200,
-        "message": "success",
-        "results": {}
-    }
-    try:
-        har_path = os.path.join(config.ROOT_PATH, har_path)
-        if os.path.exists(har_path):
-            case_info = HarParser(har_path)._make_testcase("V2")
-            result = {"case_info": case_info, "har_path": har_path}
-            resp["results"] = result
-        else:
-            resp["code"] = 400
-            resp["message"] = f"Path Not Exist:{har_path}"
-    except:
-        resp["code"] = 500
-        resp["message"] = f"Unexpected Error:{traceback.format_exc()}"
-    log.debug("run_har2case.return:" + resp["message"])
-    return resp
-
+# TODO:BUG:无法自动将har文件转换到testcase目录下
+# @router.post("/run_har2case")
+# async def run_har2case(har_path: str, config: Settings = Depends(settings)):
+#     log.info(f"run_har2case.params: {har_path}")
+#     resp = {
+#         "code": 200,
+#         "message": "success",
+#         "results": {}
+#     }
+#     try:
+#         har_path = os.path.join(config.ROOT_PATH, har_path)
+#         log.debug(f"获取转换har文件地址:{har_path}")
+#         if os.path.exists(har_path):
+#             case_info = HarParser(har_path)._make_testcase("V2")
+#             result = {"case_info": case_info, "har_path": har_path}
+#             resp["results"] = result
+#         else:
+#             resp["code"] = 400
+#             resp["message"] = f"Path Not Exist:{har_path}"
+#     except Exception:
+#         resp["code"] = 500
+#         resp["message"] = f"Unexpected Error:{traceback.format_exc()}"
+#     log.debug("run_har2case.return:" + resp["message"])
+#     return resp
 
 @router.post("/run_online_debug")
 async def run_online_debug(testcase_infos: dict):

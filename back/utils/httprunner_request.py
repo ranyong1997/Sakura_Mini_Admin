@@ -7,15 +7,10 @@
 # @Software: PyCharm
 # @desc    :
 import json
-import logging
-
 import requests
 from requests import Request, Response
-from requests.exceptions import (
-    InvalidSchema, InvalidURL, MissingSchema, RequestException
-)
-
 from back.utils.logger import log
+from requests.exceptions import (InvalidSchema, InvalidURL, MissingSchema, RequestException)
 
 
 class HttpRequest(requests.Session):
@@ -33,7 +28,7 @@ class HttpRequest(requests.Session):
         if request_body is not None:
             try:
                 request_body = json.loads(request_body)
-            except:
+            except Exception:
                 pass
             request_content_type = {key.lower(): value for key, value in request_headers.items()}.get('content-type')
             if request_content_type and 'multipart/form-data' in request_content_type:
@@ -48,7 +43,6 @@ class HttpRequest(requests.Session):
         resp_headers = dict(resp_obj.headers)
         lower_resp_headers = {key.lower(): value for key, value in resp_headers.items()}
         content_type = lower_resp_headers.get('content-type', '')
-
         if 'image' in content_type:
             response_body = resp_obj.content
         else:
@@ -90,10 +84,18 @@ class HttpRequest(requests.Session):
 
 
 if __name__ == '__main__':
-    method = "GET"
-    headers = {"user-agent": "Edg/106.0.1370.47", 'Content-Type': 'application/json;charset=UTF-8'}
-    url = 'https://api.wrdan.com/shorturl'
+    # method = "GET"
+    # headers = {"user-agent": "Edg/106.0.1370.47", 'Content-Type': 'application/json;charset=UTF-8'}
+    # url = 'https://api.wrdan.com/shorturl'
+    # data = ''
+    # jsons = ''
+    # params = {"url": "https://api.wrdan.com", "api": "mrwso"}
+    # print(HttpRequest().request(method=method, url=url, headers=headers, params=params))
+    method = "POST"
+    headers = {"user-agent": "apifox/1.0.0 (https://www.apifox.cn)",
+               'Content-Type': 'application/x-www-form-urlencoded'}
+    url = 'http://127.0.0.1:8000/v1/token'
     data = ''
     jsons = ''
-    params = {"url": "https://api.wrdan.com", "api": "mrwso"}
-    print(HttpRequest().request(method=method, url=url, headers=headers, params=params))
+    params = {"username": "root", "password": "123456"}
+    print(HttpRequest().request(method=method, url=url, headers=headers, data=params))
