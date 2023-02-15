@@ -9,7 +9,8 @@
 # 👨‍💻‍简介 Sakura_Mini_Admin
 
 ## 👻介绍
->欢迎来到Sakura_Mini_Admin后台管理系统，一个简洁轻快的后台管理框架.支持拥有多用户组的RBAC管理后台 🚀
+
+> 欢迎来到Sakura_Mini_Admin后台管理系统，一个简洁轻快的后台管理框架.支持拥有多用户组的RBAC管理后台 🚀
 
 <h1 align="center">
     <a>
@@ -18,6 +19,7 @@
 </h1>
 
 ## 🧐💻‍目录
+
 ```shell
 ├─📂 Sakura_MiNi_Admin          //服务端根目录（管理后台、接口）
 │  ├─📂 back                    //后端应用
@@ -56,37 +58,46 @@
 ```
 
 ## 💽部署(方式一 本地)
+
 Git克隆或是下载压缩包。
+
 ```git
 git clone https://github.com/ranyong1997/Sakura_Mini_Admin.git
 ```
+
 ## 环境要求
+
 🧰服务端
 
-| 运行环境 | 要求版本 | 推荐版本 |
-| -------- | :------: | -------: |
-| Python   |  >=3.8   |   3.8.10 |
-| Mysql    |  >=8.0   |   8.0.24 |
-| Redis    |  >=8.0   |    7.0.4 |
+| 运行环境   | 要求版本  |   推荐版本 |
+|--------|:-----:|-------:|
+| Python | >=3.8 | 3.8.10 |
+| Mysql  | >=8.0 | 8.0.24 |
+| Redis  | >=8.0 |  7.0.4 |
 
 🧰前端
 
-| 运行环境    |   要求版本    |    推荐版本 |
-|---------|:---------:|--------:|
-| Node.js | >=16.17.0 |  18.9.1 |
+| 运行环境    |   要求版本    |   推荐版本 |
+|---------|:---------:|-------:|
+| Node.js | >=16.17.0 | 18.9.1 |
+
 创建虚拟环境(win)
+
 ```python
 python - m venv venv
 ```
+
 ![image-20230109105555094](https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202301091056655.png)
 
 激活虚拟环境（win）
+
 ```shell
 >>>cd .\venv\Scripts\
 >>> .\activate
 ```
 
 激活虚拟环境（Mac）
+
 ```shell
 #python3默认安装virtualenv环境
 >>>pip3 install virtualenv
@@ -106,6 +117,7 @@ deactivate
 ```
 
 终端进入程序的根目录：
+
 ```
 pip3 install -r requirements.txt
 cd back
@@ -113,27 +125,38 @@ python3 main.py
 ```
 
 ## 💽部署(方式二 Docker)
+
 ```docker
 docker-compose up -d
 ```
->📢注意事项：部署前请检查本地mysql端口3306是否开启，如果开启，请关闭。否则更改3306映射端口
+
+> 📢注意事项：部署前请检查本地mysql端口3306是否开启，如果开启，请关闭。否则更改3306映射端口
 
 ## 🤦‍待办清单：
+
 - [ ] 完善README文档
 - [ ] 数据迁移、定时备份
 - [ ] 替换异步mysql
 - [ ] 日志优化输出控制台
 - [ ] 引入APScheduler
 
-
 ## 🤦‍已办清单：
+
 - [X] 使用Dockerfile进行构建
 - [X] 使用Mysql接替sqlite
 - [X] 封装mysql账号密码到config.py里面
 - [X] 接入Redis
 - [X] redis接入Dockerfile里
+- [X] 接入Httprunner
 
-##  📢开发提交规范:
+### Httprunner快速体验
+
+> run_har2case——>"har\requests.har"
+
+> run_pytest——>"testcases\requests.json"
+
+## 📢开发提交规范:
+
 ```text
 ✨ feat:  新增
 🐞Fix: 修复
@@ -141,15 +164,23 @@ docker-compose up -d
 🦄 refactor: 重构
 🎈 perf: 优化
 ```
+
 ## 🛰️API文档
+
 ***API文档：***
 本地：[http://localhost:8000/docs](http://localhost:8000/docs)
 生成
+
 ## 📸截图
+
 ***项目界面***
+
 <details><summary>🔎点击展开截图</summary>
-<div align="center">
-  <img  width="80%"  src="图片地址" /><br>
+  <img  width="80%"  src="https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202302150953778.png" /><br>
+  <img  width="80%"  src="https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202302150955926.png" /><br>
+  <img  width="80%"  src="https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202302150956145.png" /><br>
+  <img  width="80%"  src="https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202302150952967.png" /><br>
+  <img  width="80%"  src="https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202302150951340.png" /><br>
 </div>
 </details>
 <hr>
