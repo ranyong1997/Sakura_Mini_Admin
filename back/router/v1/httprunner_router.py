@@ -8,17 +8,16 @@
 # @desc    : HttpRunner路由
 import json
 import os
+import subprocess
 import traceback
-import sys
 import functools
 from fastapi import APIRouter, Depends
 from har2case.core import HarParser
-from httprunner.cli import main_run
 from pydantic import BaseSettings
-from back.utils.httprunner_request import HttpRequest
+from back.schemas import httprunner_schemas
+from back.utils.httprunner_client import HttpClient
 from back.utils.logger import log
 
-sys.path.append('../../../')
 router = APIRouter(
     prefix="/v1",
     tags=["HttpRunner"],
@@ -29,7 +28,8 @@ router = APIRouter(
 class Settings(BaseSettings):
     ROOT_PATH: str = os.path.abspath("../hrun_proj")
     LOG_LEVEL: str = "DEBUG"
-    EXCUTE_ARGS: list = ["-sW", "ignore:Module already imported:pytest.PytestWarning", "--save-tests"]
+    HRUN_EXCUTE_ARGS: list = ["hrun", "-sW", "ignore:Module already imported:pytest.PytestWarning", "--save-tests",
+                              "--log-level", LOG_LEVEL]
 
 
 @functools.lru_cache()
@@ -37,9 +37,11 @@ def settings():
     return Settings()
 
 
-# TODO:BUG:无法自动将har文件转换到testcase目录下
 @router.post("/run_har2case")
 async def run_har2case(har_path: str, config: Settings = Depends(settings)):
+    """
+    将*.har转为json文件
+    """
     log.info(f"run_har2case.params: {har_path}")
     resp = {
         "code": 200,
@@ -50,9 +52,9 @@ async def run_har2case(har_path: str, config: Settings = Depends(settings)):
         har_path = os.path.join(config.ROOT_PATH, har_path)
         log.debug(f"获取转换har文件地址:{har_path}")
         if os.path.exists(har_path):
+            # 将*.har转*.json的内容
             case_info = HarParser(har_path)._make_testcase("V2")
-            result = {"case_info": case_info, "har_path": har_path}
-            resp["results"] = result
+            resp["results"] = {"case_info": case_info, "har_path": har_path}
         else:
             resp["code"] = 400
             resp["message"] = f"Path Not Exist:{har_path}"
@@ -63,15 +65,18 @@ async def run_har2case(har_path: str, config: Settings = Depends(settings)):
     return resp
 
 
-@router.post("/run_online_debug")
-async def run_online_debug(testcase_infos: dict):
+@router.post("/run_debug")
+async def run_debug(case_info: dict):
+    """
+    将har转的json内容复制到这，可以debug调试
+    """
     resp = {
         "code": 200,
         "message": "success",
         "results": {}
     }
     try:
-        request_info = testcase_infos.get("teststeps")[0].get("request")
+        request_info = case_info.get("teststeps")[0].get("request")
         method = request_info.get("method")
         url = request_info.get("url")
         kwargs = {}
@@ -87,7 +92,9 @@ async def run_online_debug(testcase_infos: dict):
             kwargs['params'] = request_info.get("params")
         if request_info.get("upload"):
             kwargs['files'] = request_info.get("upload")
-        req_resp = HttpRequest().request(method, url, **kwargs)
+        hc = HttpClient()
+        req_resp = hc.request(method, url, **kwargs)
+        hc.log()
         resp["results"] = req_resp
     except Exception:
         resp["code"] = 500
@@ -96,40 +103,50 @@ async def run_online_debug(testcase_infos: dict):
     return resp
 
 
-@router.post("/run_pytest")
-async def run_pytest(case_path: str, config: Settings = Depends(settings)):
-    log.debug(f"run_pytest.params: {case_path}")
+@router.post("/run_subprocess")
+async def run_subprocess(testcase_info: httprunner_schemas.HttpRunner_rule, config: Settings = Depends(settings)):
+    """
+    run测试用例
+    """
+    log.info(f"run_subprocess.params: {testcase_info}")
     resp = {
         "code": 200,
         "message": "success",
         "results": {}
     }
     try:
+        case_path = testcase_info.case_path
         testcase_json_path = os.path.join(config.ROOT_PATH, case_path)
+        print(testcase_json_path)
         if os.path.exists(testcase_json_path):
-            excute_args = config.EXCUTE_ARGS
+            excute_args = []
+            excute_args.extend(config.HRUN_EXCUTE_ARGS)
             excute_args.append(testcase_json_path)
-            exit_code = main_run(excute_args)
+            CompletedProcess = subprocess.run(excute_args)
             summary_path = os.path.join(config.ROOT_PATH, "logs", f"{case_path.split('.')[0]}.summary.json")
-            with open(summary_path, "r") as summary_file:
-                summary = json.load(summary_file)
-            if exit_code != 0:
-                error_path = os.path.join("logs", "httprunner.exceptions.log")
-                if os.path.exists(error_path):
-                    with open(error_path, "r") as error_file:
-                        message = error_file.read()
-                    os.remove(error_path)
-                else:
-                    message = "httprunner.exceptions: Unexpected Error"
-                resp["code"] = 300
-                resp["message"] = message
-            result = {"summary": summary, "case_path": case_path}
-            resp["results"] = result
+            if os.path.exists(summary_path):
+                with open(summary_path, "r") as summary_file:
+                    summary = json.load(summary_file)
+                resp["results"] = {"summary": summary, "caseID": testcase_info.caseId, "case_path": case_path}
+                os.remove(summary_path)
+                if CompletedProcess.returncode != 0:
+                    error_path = os.path.join("logs", "httprunner.exceptions.log")
+                    if os.path.exists(error_path):
+                        with open(error_path, "r") as error_file:
+                            message = error_file.read()
+                        os.remove(error_path)
+                    else:
+                        message = "httprunner.exceptions: Unexpected Error"
+                    resp["code"] = 300
+                    resp["message"] = message
+            else:
+                resp["code"] = 400
+                resp["message"] = f"Summary Not Generated:{summary_path}"
         else:
             resp["code"] = 400
             resp["message"] = f"Path Not Exist:{testcase_json_path}"
     except Exception:
         resp["code"] = 500
         resp["message"] = f"Unexpected Error:{traceback.format_exc()}"
-    log.debug("run_pytest.return: " + resp["message"])
+    log.info("run_subprocess.return: " + resp["message"])
     return resp
