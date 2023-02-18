@@ -157,11 +157,11 @@ docker-compose up -d
 
 > run_har2case 将har文件转化为httprunner用例
 
-> run_pytest 执行用例,使用pytest的方式执行httprunner用例,得到执行结果
+> run_subprocess 执行用例,使用pytest的方式执行httprunner用例,得到执行结果
 
-> run_pytest——>"testcases\requests.json"
+> run_subprocess——>"testcases\requests.json"
 
-> run_online_debug 在线调试,用于接口调试,使用run_har2case转换后的json内容在线执行,得到接口响应结果
+> run_debug 在线调试,用于接口调试,使用run_har2case转换后的json内容在线执行,得到接口响应结果
 
 
 ## 📢开发提交规范:
