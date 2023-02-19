@@ -141,6 +141,7 @@ docker-compose up -d
 - [ ] 日志优化输出控制台
 - [ ] 引入APScheduler
 - [ ] 单元测试
+- [ ] dev环境下不启动docs调试文档
 
 ## 🤦‍已办清单：
 
@@ -167,18 +168,33 @@ docker-compose up -d
 ## 📢开发提交规范:
 
 ```text
-✨ feat:  新增
-🐞Fix: 修复
-📃 docs: 文档
-🦄 refactor: 重构
-🎈 perf: 优化
+✨ feat:():新增
+🐞Fix:():修复
+📃 docs:():文档
+🦄 refactor:():重构
+🎈 perf:():优化
 ```
 
 ## 🛰️API文档
 
 ***API文档：***
-本地：[http://localhost:8000/docs](http://localhost:8000/docs)
-生成
+本地文档：[http://localhost:8000/docs](http://localhost:8000/docs)
+
+
+## ⚡API 说明
+<details><summary>🔎点击展开</summary>
+
+GET：`/news_api`
+
+### 请求参数
+
+| 参数名           | 位置  | 类型   | 必填 | 示例值 | 说明                                                        |
+| :--------------- | ----- | ------ | ---- | ------ | ----------------------------------------------------------- |
+| _vercel_no_cache | query |        | 否   | 1      | 说明：`vercel` 强制不缓存                                   |
+| cache            | query |        | 否   | 任意值 | 说明：清除缓存用                                            |
+| index            | query | number | 否   | 0      | 说明：`0-99` 用来控制天数，`0` 为今天，`1` 为昨天，依次类推 |
+| origin           | query | string | 否   | zhihu  | 说明："`zhihu`" 或 "`163`" 切换源                           |
+</details>
 
 ## 📸截图
 
