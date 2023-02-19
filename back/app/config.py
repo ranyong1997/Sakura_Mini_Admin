@@ -96,9 +96,13 @@ class Settings(BaseSettings):
             "name": "HttpRunner",
             "description": "HttpRunner接口测试",
         },
+        {
+            "name": "每日60秒读世界",
+            "description": "60秒读世界API",
+        },
     ]
     # 项目版本
-    project_version: str = '0.0.4'
+    project_version: str = '0.0.5'
     # host
     server_host: str = "0.0.0.0"
     # port
