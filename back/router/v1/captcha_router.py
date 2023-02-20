@@ -22,6 +22,9 @@ router = APIRouter(
 
 @router.get('/captcha', summary='获取验证码')
 async def get_ca(request: Request):
+    """
+    生成验证码图片
+    """
     img, code = img_captcha()
     uid = get_uuid()
     request.app.state.captcha_uid = uid
@@ -33,6 +36,9 @@ async def get_ca(request: Request):
 
 @router.get('/captcha/test', summary='验证码验证')
 async def check_captcha(request: Request):
+    """
+    验证码验证
+    """
     try:
         code = request.app.state.captcha_uid
         return {'code': 200, 'captcha_uid': code}
