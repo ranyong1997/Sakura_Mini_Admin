@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     REDIS_URI: str = ''
     # Redis键前缀
     REDIS_PREFIX: str = 'Sakura'
+    # Captcha验证码超时
+    CAPTCHA_EXPIRATION_TIME: int = 60  # 单位：s
     # 项目标题
     project_title: str = "Sakura_Mini_Admin"
     # 项目描述
@@ -99,6 +101,10 @@ class Settings(BaseSettings):
         {
             "name": "每日60秒读世界",
             "description": "60秒读世界API",
+        },
+        {
+            "name": "验证码",
+            "description": "验证码API",
         },
     ]
     # 项目版本

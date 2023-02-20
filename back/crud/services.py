@@ -238,7 +238,7 @@ def change_user_role(db: Session, user_id: int, role_keys: list):
     try:
         create_casbin_rules(db, new_crs)
         return True
-    except:
+    except Exception:
         return False
 
 
@@ -275,7 +275,7 @@ def create_role(db: Session, role: Role):
     try:
         db.commit()
         return role
-    except:
+    except Exception:
         return False
 
 
@@ -361,7 +361,7 @@ def change_role_casbinrules(db: Session, role_key: str, crs: list):
         delete_p_casbin_rules(db, role_key)
         create_casbin_rules(db, crs)
         return True
-    except:
+    except Exception:
         return False
 
 
