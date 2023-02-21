@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Time    : 2023/2/1 21:47
+# @Author  : 冉勇
+# @Site    :
+# @File    : httprunner_client.py
+# @Software: PyCharm
+# @desc    : Httprunner连接工具库
 import json
 import requests
 from requests import Request, Response

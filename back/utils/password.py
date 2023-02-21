@@ -29,3 +29,4 @@ def get_password_hash(password):
     :return: 哈希加密密码
     """
     return pwd_context.hash(password)
+

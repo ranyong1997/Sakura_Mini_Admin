@@ -7,12 +7,16 @@
 # @Software: PyCharm
 # @desc    : 令牌工具
 from jose import JWTError, jwt
-from pydantic import BaseSettings
+from pydantic import BaseSettings, ValidationError
 from back.app import settings
 from fastapi.security import OAuth2PasswordBearer
 from back.app.database import get_db
+from back.crud import services
 from back.models.db_user_models import User
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
+from sqlalchemy.orm import Session
+from typing import Optional
+from back.utils.exception.errors import TokenError
 
 # 执行生成token的地址
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.url_prefix)
@@ -51,7 +55,7 @@ def verify_isActive(username: str):
         raise credentials_exception
 
 
-def get_username_by_token(token):
+def get_username_by_token(token: str = Depends(oauth2_scheme)) -> Optional[User]:
     """
     从token中取出username
     :param token:
@@ -63,11 +67,10 @@ def get_username_by_token(token):
         headers={"WWW-Authenticate": "Bearer"}
     )
     try:
-        payload = jwt
-        username: str = payload.get('sub')  # 从token中获取用户名
-        return username
-    except JWTError:
-        raise credentials_exception
+        payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+        return payload.get('sub')
+    except JWTError as e:
+        raise credentials_exception from e
 
 
 def verify_e(e, sub, obj, act):
@@ -80,3 +83,24 @@ def verify_e(e, sub, obj, act):
     :return:
     """
     return e.enforce(sub, obj, act)
+
+
+def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> Optional[User]:
+    """
+    通过token获取当前用户
+    :param db:
+    :param token:
+    :return:
+    """
+    try:
+        # 解密token
+        payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+        username = payload.get('sub')  # 从token中获取用户名
+        if not username:
+            raise TokenError
+    except (JWTError, ValidationError) as e:
+        raise TokenError from e
+    user = services.get_user_by_username(db, username)
+    if not user:
+        raise TokenError
+    return user

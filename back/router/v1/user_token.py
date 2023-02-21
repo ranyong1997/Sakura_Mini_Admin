@@ -11,7 +11,10 @@ from sqlalchemy.orm import Session
 from back.app.database import get_db
 from back.schemas import user_schemas
 from back.schemas.user_schemas import User, Casbin_rule, Users, UserUpdate, ChangeUserRole
+from back.utils import token
 from back.utils.password import get_password_hash
+from back.utils.response.response_schema import response_base
+from back.utils.response_code import resp_200
 from back.utils.token import oauth2_scheme, get_username_by_token
 from back.utils.casbin import verify_enforce
 from back.crud import services
@@ -62,7 +65,7 @@ async def read_user_me(token: str = Depends(oauth2_scheme), db: Session = Depend
     """
     返回当前用户的资料
     """
-    username = get_username_by_token(token)
+    username = get_username_by_token()
     return services.get_user_by_username(db, username)
 
 
@@ -152,7 +155,7 @@ async def update_me(user: UserUpdate, token: str = Depends(oauth2_scheme), db: S
         detail="无法验证凭据!",
         headers={"WWW-Authenticate": "Bearer"}
     )
-    username = get_username_by_token(token)
+    username = get_username_by_token()
     me = services.get_user_by_username(db, username)
     if user.user_id == me.id:
         u = services.get_user_by_id(db, user.user_id)
@@ -207,3 +210,8 @@ async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: S
         return {'options': options, 'checkeds': checkeds}
     else:
         raise no_permission
+
+
+@router.post("/user/logout", summary='用户退出', dependencies=[Depends(token.get_current_user)])
+def user_logout():
+    return response_base.response_200(msg='退出登录成功')

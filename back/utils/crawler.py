@@ -9,7 +9,6 @@
 from bs4 import BeautifulSoup
 import requests
 import time
-from back.utils.logger import log
 
 
 def get_zhihu_days(index):
