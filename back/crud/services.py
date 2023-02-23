@@ -40,7 +40,7 @@ def create_data(db: Session):
     # 创建超管
     hashed_password = get_password_hash('123456')
     if not get_user_by_username(db, "root"):
-        add_user(db, User(username='root', hashed_password=hashed_password, email='root@example.com', is_active=True,
+        add_user(db, User(username='root', hashed_password=hashed_password, email='root@example.com', is_active=False,
                           is_superuser=True, remark='超级管理员，拥有所有权限'))
         log.info("创建超级管理员：root")
     user = get_user_by_username(db, "root")
