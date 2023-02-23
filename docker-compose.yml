@@ -64,7 +64,7 @@ services:
     image: redis:7.0.4
     # 指定端口
     ports:
-      - "6379:6379"
+      - "63791:6379"
     # 自定义容器名称
     container_name: "sakura_redis"
     restart: always
