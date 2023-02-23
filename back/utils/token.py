@@ -50,7 +50,6 @@ def verify_isActive(username: str):
         headers={"WWW-Authenticate": "Bearer"}
     )
     user = next(get_db()).query(User).filter_by(username=username).first()
-    print(user)
     if user:
         return user.is_active
     else:
@@ -98,6 +97,7 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         # 解密token
         payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
         username = payload.get('sub')  # 从token中获取用户名
+        print("username1",username)
         if not username:
             raise TokenError
     except (JWTError, ValidationError) as e:
@@ -108,31 +108,35 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
     return user
 
 
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
+# def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
+#     """
+#     生成加密 token
+#     :param data: 传进来的值
+#     :param expires_delta: 增加的到期时间
+#     :return: 加密token
+#     """
+#     if expires_delta:
+#         expires = datetime.utcnow() + expires_delta
+#     else:
+#         expires = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+#     to_encode = {"exp": expires, "sub": str(data)}
+#     encoded_jwt = jwt.encode(to_encode, APP_TOKEN_CONFIG.SECRET_KEY, algorithm=APP_TOKEN_CONFIG.ALGORITHM)
+#     return encoded_jwt
+
+def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     """
-    生成加密 token
-    :param data: 传进来的值
-    :param expires_delta: 增加的到期时间
-    :return: 加密token
+    生成token
+    :param data:
+    :param expires_delta:
+    :return:
     """
+    to_encode = data.copy()
     if expires_delta:
-        expires = datetime.utcnow() + expires_delta
+        expire = datetime.utcnow() + expires_delta
     else:
-        expires = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"exp": expires, "sub": str(data)}
+        expire = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    # 生成带有时间限制的token
     encoded_jwt = jwt.encode(to_encode, APP_TOKEN_CONFIG.SECRET_KEY, algorithm=APP_TOKEN_CONFIG.ALGORITHM)
     return encoded_jwt
 
-# def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
-#     """
-#     生成token
-#     """
-#     to_encode = data.copy()
-#     if expires_delta:
-#         expire = datetime.utcnow() + expires_delta
-#     else:
-#         expire = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
-#     to_encode.update({'exp': expire})
-#     # 生成带有时间限制的token
-#     encoded_jwt = jwt.encode(to_encode, APP_TOKEN_CONFIG.SECRET_KEY, algorithm=APP_TOKEN_CONFIG.ALGORITHM)
-#     return encoded_jwt

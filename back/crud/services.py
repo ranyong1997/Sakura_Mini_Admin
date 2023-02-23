@@ -94,7 +94,7 @@ async def login(form_data: OAuth2PasswordRequestForm):
             raise errors.NotFoundError(msg='用户名不存在')
         elif not verify_password(form_data.password, current_user.hashed_password):
             raise errors.AuthorizationError(msg='密码错误')
-        elif not current_user.is_active:  # 如果is_active 为0则被锁定
+        elif current_user.is_active:  # 如果is_active 为1则被锁定
             raise errors.AuthorizationError(msg='该用户已被锁定，无法登录')
         # 更新登陆时间
         update_user_login_time(db, form_data.username)
@@ -304,8 +304,8 @@ def update_user_login_time(db: Session, username: str) -> int:
     """
     user = db.execute(
         update(User)
-        .where(User.username == username)
-        .values(update_time=datetime.now())
+            .where(User.username == username)
+            .values(update_time=datetime.now())
     )
     return user.rowcount
 

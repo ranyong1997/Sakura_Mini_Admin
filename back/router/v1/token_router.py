@@ -67,7 +67,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="用户或密码错误!",
             headers={"WWW-Authenticate": "Bearer"}
         )
-    if not user.is_active:
+    if user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="账号已被禁用!",
