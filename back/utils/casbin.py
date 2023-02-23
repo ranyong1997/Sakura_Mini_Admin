@@ -25,6 +25,7 @@ def verify_enforce(token: str, rule):
     )
     e = get_casbin()  # 每次都要调用,获取最新的权限规则
     sub = get_username_by_token(token)  # token中获取用户名
+    print(sub, rule.obj, rule.act)
     if not verify_isActive(sub):
         return e.enforce(sub, rule.obj, rule.act)
     else:

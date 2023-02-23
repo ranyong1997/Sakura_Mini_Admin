@@ -6,8 +6,16 @@
 # @File    : user_schemas.py
 # @Software: PyCharm
 # @desc    : 用户模型
-from typing import Union
+from typing import Union, Optional
 from pydantic import BaseModel
+
+
+class Token(BaseModel):
+    code: int = 200
+    msg: str = 'Success'
+    access_token: str
+    token_type: str = 'Bearer'
+    is_superuser: Optional[bool] = None
 
 
 class UserBase(BaseModel):

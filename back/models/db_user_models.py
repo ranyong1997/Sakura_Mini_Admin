@@ -22,7 +22,8 @@ class User(Base):
     hashed_password = Column(String(128), nullable=False, comment='用户密码')
     sex = Column(String(1), nullable=False, default='1', comment='用户性别')
     email = Column(String(128), nullable=False, unique=True, comment='用户邮箱')
-    is_active = Column(Boolean, default=False)
+    is_superuser = Column(Boolean, default=False, comment='超级权限')  # 1为超管
+    is_active = Column(Boolean, default=False, comment='用户账户状态')  # 1为正常
     avatar = Column(String(128), comment='用户头像')
     remark = Column(String(128), comment='备注')
     create_time = Column(DateTime, nullable=False, default=datetime.now, comment='创建时间')

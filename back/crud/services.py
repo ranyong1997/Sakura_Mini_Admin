@@ -7,14 +7,27 @@
 # @Software: PyCharm
 # @desc    : CRUD接口
 import random
+from datetime import datetime
+
+from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt
+from sqlalchemy import update, func
 from sqlalchemy.orm import Session
+
+from back.app import settings
+from back.app.database import SessionLocal
 from back.models.db_casbin_object_models import CasbinObject
 from back.models.db_casbinaction_models import CasbinAction
 from back.models.db_casbinrule_models import CasbinRule
 from back.models.db_role_models import Role
 from back.models.db_user_models import User
+from back.router.v1.token_router import authenticate_user
+from back.utils import token
+from back.utils.exception import errors
 from back.utils.password import get_password_hash, verify_password
 from back.utils.logger import log
+from back.utils.redis import redis_client
+from back.utils.token import APP_TOKEN_CONFIG
 
 
 # TODO:后续将每个crud分离出来
@@ -27,8 +40,8 @@ def create_data(db: Session):
     # 创建超管
     hashed_password = get_password_hash('123456')
     if not get_user_by_username(db, "root"):
-        add_user(db, User(username='root', hashed_password=hashed_password, email='root@example.com',
-                          remark='超级管理员，拥有所有权限'))
+        add_user(db, User(username='root', hashed_password=hashed_password, email='root@example.com', is_active=True,
+                          is_superuser=True, remark='超级管理员，拥有所有权限'))
         log.info("创建超级管理员：root")
     user = get_user_by_username(db, "root")
     if get_role_count(db) <= 0:
@@ -38,7 +51,7 @@ def create_data(db: Session):
         create_role(db, Role(name='普通用户', role_key='role_generaluser', description='默认注册的用户', user=user))
     # 如果casbin行为<=0,则创建CasbinAction
     if get_casbin_action_count(db) <= 0:
-        # # 创建CasbinAction
+        # 创建CasbinAction
         cas = [
             CasbinAction(name='增', action_key='create', description='增加数据', user=user),
             CasbinAction(name='删', action_key='delete', description='删除数据', user=user),
@@ -73,6 +86,26 @@ def create_data(db: Session):
 
 
 # --------------------------【User增删改查】--------------------------------------
+async def login(form_data: OAuth2PasswordRequestForm):
+    with SessionLocal() as db:
+        user = authenticate_user(db, form_data.username, form_data.password)
+        current_user = get_user_by_username(db, form_data.username)
+        if not current_user:
+            raise errors.NotFoundError(msg='用户名不存在')
+        elif not verify_password(form_data.password, current_user.hashed_password):
+            raise errors.AuthorizationError(msg='密码错误')
+        elif not current_user.is_active:  # 如果is_active 为0则被锁定
+            raise errors.AuthorizationError(msg='该用户已被锁定，无法登录')
+        # 更新登陆时间
+        update_user_login_time(db, form_data.username)
+        # 创建token
+        access_token = token.create_access_token(current_user.id)
+        # 将token写入redis,并设置过期销毁时间,创建根目录/Sakura/user
+        await redis_client.set(f'{settings.REDIS_PREFIX}:user:{user.username}', access_token,
+                               ex=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+        return access_token, current_user.is_superuser
+
+
 def create_user(db: Session, username: str, password: str, sex: str, email: str):
     """
     创建一个用户
@@ -259,6 +292,22 @@ def delete_user_by_id(db: Session, user_id: int):
         return True
     except Exception as e:
         return False
+
+
+def update_user_login_time(db: Session, username: str) -> int:
+    """
+    # todo:需要在User数据库重增加个last_login字段
+    更新用户登录时间
+    :param db:
+    :param username:
+    :return:
+    """
+    user = db.execute(
+        update(User)
+        .where(User.username == username)
+        .values(update_time=datetime.now())
+    )
+    return user.rowcount
 
 
 # --------------------------【User增删改查 完】--------------------------------------

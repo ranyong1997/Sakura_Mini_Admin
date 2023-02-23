@@ -6,6 +6,7 @@
 # @File    : token.py
 # @Software: PyCharm
 # @desc    : 令牌工具
+from datetime import timedelta, datetime
 from jose import JWTError, jwt
 from pydantic import BaseSettings, ValidationError
 from back.app import settings
@@ -15,7 +16,7 @@ from back.crud import services
 from back.models.db_user_models import User
 from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, Union, Any
 from back.utils.exception.errors import TokenError
 
 # 执行生成token的地址
@@ -49,13 +50,14 @@ def verify_isActive(username: str):
         headers={"WWW-Authenticate": "Bearer"}
     )
     user = next(get_db()).query(User).filter_by(username=username).first()
+    print(user)
     if user:
         return user.is_active
     else:
         raise credentials_exception
 
 
-def get_username_by_token(token: str = Depends(oauth2_scheme)) -> Optional[User]:
+def get_username_by_token(token):
     """
     从token中取出username
     :param token:
@@ -68,14 +70,14 @@ def get_username_by_token(token: str = Depends(oauth2_scheme)) -> Optional[User]
     )
     try:
         payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
-        return payload.get('sub')
+        username: str = payload.get("sub")  # 从 token中获取用户名
+        return username
     except JWTError as e:
         raise credentials_exception from e
 
 
 def verify_e(e, sub, obj, act):
     """
-
     :param e:
     :param sub:
     :param obj:
@@ -100,7 +102,37 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
             raise TokenError
     except (JWTError, ValidationError) as e:
         raise TokenError from e
-    user = services.get_user_by_username(db, username)
+    user = services.get_user_by_username(db, User.username)
     if not user:
         raise TokenError
     return user
+
+
+def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
+    """
+    生成加密 token
+    :param data: 传进来的值
+    :param expires_delta: 增加的到期时间
+    :return: 加密token
+    """
+    if expires_delta:
+        expires = datetime.utcnow() + expires_delta
+    else:
+        expires = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode = {"exp": expires, "sub": str(data)}
+    encoded_jwt = jwt.encode(to_encode, APP_TOKEN_CONFIG.SECRET_KEY, algorithm=APP_TOKEN_CONFIG.ALGORITHM)
+    return encoded_jwt
+
+# def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
+#     """
+#     生成token
+#     """
+#     to_encode = data.copy()
+#     if expires_delta:
+#         expire = datetime.utcnow() + expires_delta
+#     else:
+#         expire = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+#     to_encode.update({'exp': expire})
+#     # 生成带有时间限制的token
+#     encoded_jwt = jwt.encode(to_encode, APP_TOKEN_CONFIG.SECRET_KEY, algorithm=APP_TOKEN_CONFIG.ALGORITHM)
+#     return encoded_jwt
