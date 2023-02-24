@@ -8,7 +8,13 @@
 # @desc    : CRUD接口
 import random
 from datetime import datetime
+from hashlib import sha256
+from typing import Optional
+from email_validator import validate_email, EmailNotValidError
+from fast_captcha import text_captcha
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import Request, Response, HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from back.app import settings
 from back.app.database import SessionLocal
@@ -18,11 +24,13 @@ from back.models.db_casbinrule_models import CasbinRule
 from back.models.db_role_models import Role
 from back.models.db_user_models import User
 from back.router.v1.token_router import authenticate_user
+from back.schemas.user_schemas import ResetPassword
 from back.utils import token
 from back.utils.exception import errors
 from back.utils.password import get_password_hash, verify_password
 from back.utils.logger import log
 from back.utils.redis import redis_client
+from back.utils.send_email import send_verification_code_email
 from back.utils.token import APP_TOKEN_CONFIG
 
 
@@ -102,6 +110,86 @@ async def login(form_data: OAuth2PasswordRequestForm):
         return access_token, current_user.is_superuser
 
 
+def pwd_reset(*, obj: ResetPassword, request: Request, response: Response):
+    """
+    密码重置
+    :param obj:
+    :param request:
+    :param response:
+    :return:
+    """
+    with SessionLocal.begin() as db:
+        pwd1 = obj.password1
+        pwd2 = obj.password2
+        cookie_reset_pwd_code = request.cookies.get('fastapi_reset_pwd_code')
+        cookie_reset_pwd_username = request.cookies.get('fastapi_reset_pwd_username')
+        if pwd1 != pwd2:
+            raise errors.ForbiddenError(msg='两次密码输入不一致')
+        if cookie_reset_pwd_username is None or cookie_reset_pwd_code is None:
+            raise errors.NotFoundError(msg='验证码已失效，请重新获取验证码')
+        if cookie_reset_pwd_code != sha256(obj.code.encode('utf-8')).hexdigest():
+            raise errors.ForbiddenError(msg='验证码错误')
+        reset_password(db, cookie_reset_pwd_username, obj.password2)
+        response.delete_cookie(key='fastapi_reset_pwd_code')
+        response.delete_cookie(key='fastapi_reset_pwd_username')
+
+
+def get_pwd_rest_captcha(*, username_or_email: str, response: Response):
+    """
+    获取验证码
+    :param username_or_email:
+    :param response:
+    :return:
+    """
+    with SessionLocal.begin() as db:
+        code = text_captcha()
+        if get_user_by_username(db, username_or_email):
+            try:
+                response.delete_cookie(key='fastapi_reset_pwd_code')
+                response.delete_cookie(key='fastapi_reset_pwd_username')
+                response.set_cookie(
+                    key='fastapi_reset_pwd_code',
+                    value=sha256(code.encode('utf-8')).hexdigest(),
+                    max_age=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES
+                )
+                response.set_cookie(
+                    key='fastapi_reset_pwd_username',
+                    value=username_or_email,
+                    max_age=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES
+                )
+            except Exception as e:
+                log.exception('无法发送验证码 {}', e)
+                raise e
+            current_user_email = get_email_by_username(db, username_or_email)
+            send_verification_code_email(current_user_email, code)
+        else:
+            try:
+                validate_email(username_or_email, check_deliverability=False)
+            except EmailNotValidError as e:
+                raise HTTPException(status_code=404, detail='用户名不存在') from e
+            email_result = check_email(db, username_or_email)
+            if not email_result:
+                raise HTTPException(status_code=404, detail='邮箱不存在')
+            try:
+                response.delete_cookie(key='fastapi_reset_pwd_code')
+                response.delete_cookie(key='fastapi_reset_pwd_username')
+                response.set_cookie(
+                    key='fastapi_reset_pwd_code',
+                    value=sha256(code.encode('utf-8')).hexdigest(),
+                    max_age=settings.COOKIES_MAX_AGE
+                )
+                username = get_username_by_email(db, username_or_email)
+                response.set_cookie(
+                    key='fastapi_reset_pwd_username',
+                    value=username,
+                    max_age=settings.COOKIES_MAX_AGE
+                )
+            except Exception as e:
+                log.exception('无法发送验证码 {}', e)
+                raise e
+            send_verification_code_email(username_or_email, code)
+
+
 def create_user(db: Session, username: str, password: str, sex: str, email: str):
     """
     创建一个用户
@@ -148,6 +236,16 @@ def set_user_role(db: Session):
             crs1.append(CasbinRule(ptype='p', v0=role_user.role_key, v1=co.object_key, v2=ca))
     # 为普通用户增加所有policy
     create_casbin_rules(db, crs1)
+
+
+def check_email(db: Session, email: str) -> Optional[User]:
+    """
+    检查邮箱
+    :param db:
+    :param email:
+    :return:
+    """
+    return db.execute(select(User).where(User.email == email)).scalars().first()
 
 
 def create_temp_users(db: Session):
@@ -300,6 +398,24 @@ def update_user_login_time(db: Session, username: str) -> int:
     try:
         user = db.query(User).filter(User.username == username).first()
         user.last_login = datetime.now()
+        db.commit()
+        return True
+    except Exception:
+        return False
+
+
+def get_email_by_username(db: Session, username: str) -> str:
+    return get_user_by_username(db, username).email
+
+
+def get_username_by_email(db: Session, email: str) -> str:
+    return db.execute(select(User).where(User.email == email)).scalars().first().username
+
+
+def reset_password(db: Session, username: str, password: str) -> int:
+    try:
+        user = db.query(User).filter(User.username == username).first()
+        user.hashed_password = get_password_hash(password)
         db.commit()
         return True
     except Exception:

@@ -143,7 +143,6 @@ docker-compose up -d
 - [ ] 单元测试
 - [ ] dev环境下不启动docs调试文档
 - [ ] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
-- [ ] 密码重置功能
 - [ ] 新增分页查询
 - [ ] 增加Jenkinsfile打包
 
@@ -158,6 +157,7 @@ docker-compose up -d
 - [X] 增加登录验证码图片接口
 - [X] 采用slim打包更小的Docker镜像,包体积从1G+缩小到500M以内
 - [X] 实现单点登录功能
+- [X] 密码重置功能
 
 ### Httprunner快速体验
 

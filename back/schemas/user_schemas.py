@@ -7,7 +7,7 @@
 # @Software: PyCharm
 # @desc    : 用户模型
 from typing import Union, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class Token(BaseModel):
@@ -19,7 +19,13 @@ class Token(BaseModel):
 
 
 class UserBase(BaseModel):
-    email: str
+    email: str = Field(..., example='user@example.com')
+
+
+class ResetPassword(BaseModel):
+    code: str
+    password1: str
+    password2: str
 
 
 class UserCreate(UserBase):

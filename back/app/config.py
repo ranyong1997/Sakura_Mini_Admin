@@ -44,6 +44,15 @@ class Settings(BaseSettings):
     REDIS_PREFIX: str = 'Sakura'
     # Captcha验证码超时
     CAPTCHA_EXPIRATION_TIME: int = 60  # 单位：s
+    # Email
+    EMAIL_DESCRIPTION: str = None  # 邮件标题
+    EMAIL_SERVER: str = None    # 电子邮件服务器
+    EMAIL_PORT: int = None  # 电子邮件端口
+    EMAIL_USER: str = None  # 发件人
+    EMAIL_PASSWORD: str = None  # 授权密码，非邮箱密码
+    EMAIL_SSL: bool = True  # 是否使用ssl
+    # Cookies
+    COOKIES_MAX_AGE: int = 60 * 5  # cookies 时效 60 * 5 = 5 分钟
     # 项目标题
     project_title: str = "Sakura_Mini_Admin"
     # 项目描述

@@ -6,14 +6,14 @@
 # @File    : user_token.py
 # @Software: PyCharm
 # @desc    : 用户路由
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
-from back.app import settings
+from back.app.config import Config
 from back.app.database import get_db
 from back.schemas import user_schemas
-from back.schemas.user_schemas import User, Casbin_rule, Users, UserUpdate, ChangeUserRole, Token
+from back.schemas.user_schemas import User, Casbin_rule, Users, UserUpdate, ChangeUserRole, Token, \
+    ResetPassword
 from back.utils import token
 from back.utils.exception.errors import TokenAuthError
 from back.utils.password import get_password_hash
@@ -159,8 +159,9 @@ async def update_me(user: UserUpdate, token: str = Depends(oauth2_scheme), db: S
         detail="无法验证凭据!",
         headers={"WWW-Authenticate": "Bearer"}
     )
-    username = get_username_by_token()
+    username = get_username_by_token(token)
     me = services.get_user_by_username(db, username)
+    # bug:获取不到id
     if user.user_id == me.id:
         u = services.get_user_by_id(db, user.user_id)
         u.username = user.username
@@ -218,17 +219,41 @@ async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: S
 
 @router.post('/user/login', summary='用户登录', response_model=Token)
 async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """
+    用户登录
+    """
     get_token, is_super = await services.login(form_data)
     return Token(access_token=get_token, is_superuser=is_super)
 
 
 @router.post("/user/logout", summary='用户退出')
 async def user_logout(user: User = Depends(token.get_current_user)):
+    """
+    用户退出
+    """
     # 1、通过token解密获取到username
     username = user.username
     if not username:
         raise TokenAuthError
     else:
         # 2、拿到username后传入到redis的key中
-        await redis_client.delete(f'{settings.REDIS_PREFIX}:user:{username}')
+        await redis_client.delete(f'{Config.REDIS_PREFIX}:user:{username}')
     return response_base.response_200(msg='退出登录成功')
+
+
+@router.post('/password/reset/captcha', summary='获取密码重置验证码')
+def password_reset_captcha(username_or_email: str, response: Response):
+    """
+    可以通过用户名或者邮箱重置密码
+    """
+    services.get_pwd_rest_captcha(username_or_email=username_or_email, response=response)
+    return response_base.response_200(msg='验证码发送成功')
+
+
+@router.post('/user/password/reset', summary='密码重置请求')
+def password_reset(obj: ResetPassword, request: Request, response: Response):
+    """
+    密码重置
+    """
+    services.pwd_reset(obj=obj, request=request, response=response)
+    return response_base.response_200(msg='密码重置成功')

@@ -16,7 +16,7 @@ from back.crud import services
 from back.models.db_user_models import User
 from fastapi import HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from typing import Optional, Union, Any
+from typing import Optional, Union
 from back.utils.exception.errors import TokenError
 
 # 执行生成token的地址
