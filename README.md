@@ -157,6 +157,7 @@ docker-compose up -d
 - [X] 接入Httprunner
 - [X] 增加登录验证码图片接口
 - [X] 采用slim打包更小的Docker镜像,包体积从1G+缩小到500M以内
+- [X] 实现单点登录功能
 
 ### Httprunner快速体验
 
