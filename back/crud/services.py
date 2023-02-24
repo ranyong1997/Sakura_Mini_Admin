@@ -8,12 +8,8 @@
 # @desc    : CRUD接口
 import random
 from datetime import datetime
-
 from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
-from sqlalchemy import update, func
 from sqlalchemy.orm import Session
-
 from back.app import settings
 from back.app.database import SessionLocal
 from back.models.db_casbin_object_models import CasbinObject
@@ -296,18 +292,18 @@ def delete_user_by_id(db: Session, user_id: int):
 
 def update_user_login_time(db: Session, username: str) -> int:
     """
-    # todo:需要在User数据库重增加个last_login字段
     更新用户登录时间
     :param db:
     :param username:
     :return:
     """
-    user = db.execute(
-        update(User)
-            .where(User.username == username)
-            .values(update_time=datetime.now())
-    )
-    return user.rowcount
+    try:
+        user = db.query(User).filter(User.username == username).first()
+        user.last_login = datetime.now()
+        db.commit()
+        return True
+    except Exception:
+        return False
 
 
 # --------------------------【User增删改查 完】--------------------------------------

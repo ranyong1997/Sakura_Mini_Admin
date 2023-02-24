@@ -28,6 +28,7 @@ class User(Base):
     remark = Column(String(128), comment='备注')
     create_time = Column(DateTime, nullable=False, default=datetime.now, comment='创建时间')
     update_time = Column(DateTime, nullable=False, default=datetime.now, onupdate=datetime.now, comment='更新时间')
+    last_login = Column(DateTime, nullable=False, default=datetime.now, onupdate=datetime.now, comment='上次登录')
     roles = relationship('Role', uselist=True, back_populates='user')
     cos = relationship('CasbinObject', uselist=True, back_populates='user')
     cas = relationship('CasbinAction', uselist=True, back_populates='user')
