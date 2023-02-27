@@ -145,6 +145,7 @@ docker-compose up -d
 - [ ] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
 - [ ] 新增分页查询
 - [ ] 增加Jenkinsfile打包
+- [ ] 新增修改密码移除redisToken缓存
 
 ## 🤦‍已办清单：
 
