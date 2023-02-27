@@ -22,6 +22,17 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
+def verity_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    密码校验
+
+    :param plain_password: 要验证的密码
+    :param hashed_password: 要比较的hash密码
+    :return: 比较密码之后的结果
+    """
+    return pwd_context.verify(plain_password, hashed_password)
+
+
 def get_password_hash(password):
     """
     hash密码
@@ -29,4 +40,3 @@ def get_password_hash(password):
     :return: 哈希加密密码
     """
     return pwd_context.hash(password)
-

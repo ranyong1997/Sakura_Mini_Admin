@@ -75,27 +75,6 @@ def get_username_by_token(token):
         raise credentials_exception from e
 
 
-# def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> Optional[User]:
-#     """
-#     通过token获取当前用户
-#     :param db:
-#     :param token:
-#     :return:
-#     """
-#     try:
-#         # 解密token
-#         payload = jwt.decode(token, APP_TOKEN_CONFIG.SECRET_KEY, algorithms=[APP_TOKEN_CONFIG.ALGORITHM])
-#         username = payload.get('sub')  # 从token中获取用户名
-#         if not username:
-#             raise TokenError
-#     except (JWTError, ValidationError) as e:
-#         raise TokenError from e
-#     user = services.get_user_by_username(db, User.username)
-#     if not user:
-#         raise TokenError
-#     return user
-
-
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     """
     生成token

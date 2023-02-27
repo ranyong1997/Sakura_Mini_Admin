@@ -7,17 +7,19 @@
 # @Software: PyCharm
 # @desc    : CRUD接口
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import sha256
 from typing import Optional
 from email_validator import validate_email, EmailNotValidError
 from fast_captcha import text_captcha
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import Request, Response, HTTPException
+from fastapi import Request, Response, HTTPException, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from starlette import status
+
 from back.app import settings
-from back.app.database import SessionLocal
+from back.app.database import SessionLocal, get_db
 from back.models.db_casbin_object_models import CasbinObject
 from back.models.db_casbinaction_models import CasbinAction
 from back.models.db_casbinrule_models import CasbinRule
@@ -25,13 +27,13 @@ from back.models.db_role_models import Role
 from back.models.db_user_models import User
 from back.router.v1.token_router import authenticate_user
 from back.schemas.user_schemas import ResetPassword
-from back.utils import token
+from back.utils import password, token
 from back.utils.exception import errors
 from back.utils.password import get_password_hash, verify_password
 from back.utils.logger import log
 from back.utils.redis import redis_client
 from back.utils.send_email import send_verification_code_email
-from back.utils.token import APP_TOKEN_CONFIG
+from back.utils.token import APP_TOKEN_CONFIG, create_access_token
 
 
 # TODO:后续将每个crud分离出来
@@ -90,26 +92,6 @@ def create_data(db: Session):
 
 
 # --------------------------【User增删改查】--------------------------------------
-async def login(form_data: OAuth2PasswordRequestForm):
-    with SessionLocal() as db:
-        user = authenticate_user(db, form_data.username, form_data.password)
-        current_user = get_user_by_username(db, form_data.username)
-        if not current_user:
-            raise errors.NotFoundError(msg='用户名不存在')
-        elif not verify_password(form_data.password, current_user.hashed_password):
-            raise errors.AuthorizationError(msg='密码错误')
-        elif current_user.is_active:  # 如果is_active 为1则被锁定
-            raise errors.AuthorizationError(msg='该用户已被锁定，无法登录')
-        # 更新登陆时间
-        update_user_login_time(db, form_data.username)
-        # 创建token
-        access_token = token.create_access_token(current_user.id)
-        # 将token写入redis,并设置过期销毁时间,创建根目录/Sakura/user
-        await redis_client.set(f'{settings.REDIS_PREFIX}:user:{user.username}', access_token,
-                               ex=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
-        return access_token, current_user.is_superuser
-
-
 def pwd_reset(*, obj: ResetPassword, request: Request, response: Response):
     """
     密码重置
