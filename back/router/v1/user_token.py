@@ -217,28 +217,28 @@ async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: S
         raise no_permission
 
 
-@router.post('/user/login', summary='用户登录', response_model=Token)
-async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
-    """
-    用户登录
-    """
-    get_token, is_super = await services.login(form_data)
-    return Token(access_token=get_token, is_superuser=is_super)
-
-
-@router.post("/user/logout", summary='用户退出')
-async def user_logout(user: User = Depends(token.get_current_user)):
-    """
-    用户退出
-    """
-    # 1、通过token解密获取到username
-    username = user.username
-    if not username:
-        raise TokenAuthError
-    else:
-        # 2、拿到username后传入到redis的key中
-        await redis_client.delete(f'{Config.REDIS_PREFIX}:user:{username}')
-    return response_base.response_200(msg='退出登录成功')
+# @router.post('/user/login', summary='用户登录', response_model=Token)
+# async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
+#     """
+#     用户登录
+#     """
+#     get_token, is_super = await services.login(form_data)
+#     return Token(access_token=get_token, is_superuser=is_super)
+#
+#
+# @router.post("/user/logout", summary='用户退出')
+# async def user_logout(user: User = Depends(token.get_current_user)):
+#     """
+#     用户退出
+#     """
+#     # 1、通过token解密获取到username
+#     username = user.username
+#     if not username:
+#         raise TokenAuthError
+#     else:
+#         # 2、拿到username后传入到redis的key中
+#         await redis_client.delete(f'{Config.REDIS_PREFIX}:user:{username}')
+#     return response_base.response_200(msg='退出登录成功')
 
 
 @router.post('/password/reset/captcha', summary='获取密码重置验证码')

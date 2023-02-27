@@ -16,9 +16,10 @@ from back.app import settings
 from back.app.database import get_db
 from back.crud import services
 from back.schemas.token_schemas import Token
+from back.utils import token
 from back.utils.password import verify_password
 from back.utils.redis import redis_client
-from back.utils.token import APP_TOKEN_CONFIG, create_access_token
+from back.utils.token import APP_TOKEN_CONFIG
 
 router = APIRouter(
     prefix="/v1",
@@ -76,7 +77,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     # token过期时间
     access_token_expired = timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
     # 生成token
-    access_token = create_access_token(data={'sub': user.username}, expires_delta=access_token_expired)
+    access_token = token.create_access_token(data={'sub': user.username}, expires_delta=access_token_expired)
     # 将token写入redis,并设置过期销毁时间,创建根目录/Sakura/user
     await redis_client.set(f'{settings.REDIS_PREFIX}:user:{user.username}', access_token,
                            ex=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)

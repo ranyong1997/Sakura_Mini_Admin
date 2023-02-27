@@ -75,36 +75,25 @@ def get_username_by_token(token):
         raise credentials_exception from e
 
 
-def verify_e(e, sub, obj, act):
-    """
-    :param e:
-    :param sub:
-    :param obj:
-    :param act:
-    :return:
-    """
-    return e.enforce(sub, obj, act)
-
-
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> Optional[User]:
-    """
-    通过token获取当前用户
-    :param db:
-    :param token:
-    :return:
-    """
-    try:
-        # 解密token
-        payload = jwt.decode(token, APP_TOKEN_CONFIG.SECRET_KEY, algorithms=[APP_TOKEN_CONFIG.ALGORITHM])
-        username = payload.get('sub')  # 从token中获取用户名
-        if not username:
-            raise TokenError
-    except (JWTError, ValidationError) as e:
-        raise TokenError from e
-    user = services.get_user_by_username(db, User.username)
-    if not user:
-        raise TokenError
-    return user
+# def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> Optional[User]:
+#     """
+#     通过token获取当前用户
+#     :param db:
+#     :param token:
+#     :return:
+#     """
+#     try:
+#         # 解密token
+#         payload = jwt.decode(token, APP_TOKEN_CONFIG.SECRET_KEY, algorithms=[APP_TOKEN_CONFIG.ALGORITHM])
+#         username = payload.get('sub')  # 从token中获取用户名
+#         if not username:
+#             raise TokenError
+#     except (JWTError, ValidationError) as e:
+#         raise TokenError from e
+#     user = services.get_user_by_username(db, User.username)
+#     if not user:
+#         raise TokenError
+#     return user
 
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
@@ -114,10 +103,12 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     :param expires_delta:
     :return:
     """
+    to_encode = data.copy()
     if expires_delta:
-        expires = datetime.utcnow() + expires_delta
+        expire = datetime.utcnow() + expires_delta
     else:
-        expires = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"exp": expires, "sub": str(data)}
+        expire = datetime.utcnow() + timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    # 生成带有时间限制的token
     encoded_jwt = jwt.encode(to_encode, APP_TOKEN_CONFIG.SECRET_KEY, algorithm=APP_TOKEN_CONFIG.ALGORITHM)
     return encoded_jwt
