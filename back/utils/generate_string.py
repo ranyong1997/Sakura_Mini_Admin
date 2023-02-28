@@ -21,7 +21,6 @@ def get_uuid() -> str:
 def get_current_timestamp() -> float:
     """
     生成当前时间戳
-
     :return:
     """
     return datetime.datetime.now().timestamp()

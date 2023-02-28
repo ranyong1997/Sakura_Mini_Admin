@@ -7,9 +7,11 @@
 # @Software: PyCharm
 # @desc    : 用户路由
 from datetime import timedelta
-from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from sqlalchemy.testing import db
+
 from back.app import settings
 from back.app.config import Config
 from back.app.database import get_db
@@ -272,10 +274,17 @@ def password_reset_captcha(username_or_email: str, response: Response):
     return response_base.response_200(msg='验证码发送成功')
 
 
-@router.post('/user/password/reset', summary='密码重置请求')
+@router.post('/password/reset', summary='密码重置请求')
 def password_reset(obj: ResetPassword, request: Request, response: Response):
     """
     密码重置
     """
     services.pwd_reset(obj=obj, request=request, response=response)
     return response_base.response_200(msg='密码重置成功')
+
+
+@router.get('/password/reset/done', summary='重置密码完成')
+def password_reset_done():
+    return response_base.response_200(msg='重置密码完成')
+
+

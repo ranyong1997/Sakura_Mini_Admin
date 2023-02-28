@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     MYSQL_USER: str = None  # 数据库用户名
     MYSQL_PWD: str = None  # 数据库密码
     DBNAME: str = None  # 数据库表名
+    MySQL_CHARSET: str = None  # 数据库编码格式
     # Redis-server
     REDIS_OPEN: bool = True  # 是否开启Redis连接
     REDIS_HOST: str = None  # Redis主机
@@ -46,7 +47,7 @@ class Settings(BaseSettings):
     CAPTCHA_EXPIRATION_TIME: int = 60  # 单位：s
     # Email
     EMAIL_DESCRIPTION: str = None  # 邮件标题
-    EMAIL_SERVER: str = None    # 电子邮件服务器
+    EMAIL_SERVER: str = None  # 电子邮件服务器
     EMAIL_PORT: int = None  # 电子邮件端口
     EMAIL_USER: str = None  # 发件人
     EMAIL_PASSWORD: str = None  # 授权密码，非邮箱密码
@@ -141,6 +142,10 @@ class Settings(BaseSettings):
     # 将当前目录添加到系统变量中
     BASE_DIR: str = os.path.dirname(os.path.realpath(__file__))  # 当前项目路径
     LOG_PATH: str = os.path.join(BASE_DIR, '../logs')  # log_path为存放日志的路径
+    # 图片上传存放路径: /static/media/uploads/
+    ImgPath = os.path.join(base_dir, 'static', 'media', 'uploads')
+    # 头像上传存放路径: /static/media/uploads/avatars/
+    AvatarPath = os.path.join(ImgPath, 'avatars', '')
     BANNER: str = """
       ____        _                        __  __ _ _   _ _        _       _           _       
  / ___|  __ _| | ___   _ _ __ __ _    |  \/  (_) \ | (_)      / \   __| |_ __ ___ (_)_ __  
@@ -168,7 +173,8 @@ Sakura_Mini_ENV: str = os.environ.get("sakura_mini_env", "dev")
 # 如果sakura_mini存在且为pro
 Config = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
 # 初始化 sqlalchemy(由 apscheduler 使用)
-Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset=utf8mb4'
+# Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset=utf8mb4'
+Config.SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset={Config.MySQL_CHARSET}'
 # 初始化 sqlalchemy(异步)
 Config.ASYNC_SQLALCHEMY_URI = f'mysql+aiomysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}' \
                               f'@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'

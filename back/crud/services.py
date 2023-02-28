@@ -6,15 +6,17 @@
 # @File    : services.py
 # @Software: PyCharm
 # @desc    : CRUD接口
+import os
 import random
+from _xxsubinterpreters import get_current
 from datetime import datetime, timedelta
 from hashlib import sha256
 from typing import Optional
 from email_validator import validate_email, EmailNotValidError
 from fast_captcha import text_captcha
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import Request, Response, HTTPException, Depends
-from sqlalchemy import select
+from fastapi import Request, Response, HTTPException, Depends, UploadFile
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -29,6 +31,7 @@ from back.router.v1.token_router import authenticate_user
 from back.schemas.user_schemas import ResetPassword
 from back.utils import password, token
 from back.utils.exception import errors
+from back.utils.generate_string import get_current_timestamp
 from back.utils.password import get_password_hash, verify_password
 from back.utils.logger import log
 from back.utils.redis import redis_client
@@ -262,7 +265,7 @@ def get_users(db: Session, offset: int, limit: int, keyword: str):
     :param keyword:
     :return:
     """
-    return db.query(User).order_by(-User.id).filter(User.username.like(f"%{keyword}%")).offset(offset).limit(
+    return db.query(User).order_by(User.id).filter(User.username.like(f"%{keyword}%")).offset(offset).limit(
         limit).all()
 
 
@@ -284,6 +287,16 @@ def get_user_by_username(db: Session, username: str):
     :return:
     """
     return db.query(User).filter_by(username=username).first()
+
+
+def get_admin_by_username(db: Session, username: str):
+    """
+    根据用户名获取管理员
+    :param db:
+    :param username:
+    :return:
+    """
+    return db.query(User).filter(User.is_superuser == username).first()
 
 
 def get_users_count_by_keyword(db: Session, keyword: str):
@@ -387,14 +400,33 @@ def update_user_login_time(db: Session, username: str) -> int:
 
 
 def get_email_by_username(db: Session, username: str) -> str:
+    """
+    通过邮箱获取用户名
+    :param db:
+    :param username:
+    :return:
+    """
     return get_user_by_username(db, username).email
 
 
 def get_username_by_email(db: Session, email: str) -> str:
+    """
+    通过用户名获得邮箱
+    :param db:
+    :param email:
+    :return:
+    """
     return db.execute(select(User).where(User.email == email)).scalars().first().username
 
 
 def reset_password(db: Session, username: str, password: str) -> int:
+    """
+    重置密码
+    :param db:
+    :param username:
+    :param password:
+    :return:
+    """
     try:
         user = db.query(User).filter(User.username == username).first()
         user.hashed_password = get_password_hash(password)
@@ -405,6 +437,7 @@ def reset_password(db: Session, username: str, password: str) -> int:
 
 
 # --------------------------【User增删改查 完】--------------------------------------
+
 
 # --------------------------【Role增删改查】--------------------------------------
 def create_role(db: Session, role: Role):

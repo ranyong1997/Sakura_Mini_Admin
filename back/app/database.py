@@ -37,17 +37,17 @@ from back.utils.logger import log
 # 创建一个使用Mysql数据库
 # 创建数据库引擎
 try:
-    engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', encoding='utf8', echo=Config.DB_ECHO, pool_recycle=1500)
-    with engine.connect() as conn:
-        conn.execute(
-            "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
-    engine.dispose()
+    engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', echo=Config.DB_ECHO, pool_recycle=1500, future=True)
+    # with engine.connect() as conn:
+    #     conn.execute(
+    #         "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
+    # engine.dispose()
 except Exception as e:
     log.error('❌ 数据库链接失败 {}', e)
     sys.exit()
 else:
     # 创建本地会话
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    SessionLocal = sessionmaker(expire_on_commit=False, autoflush=False, bind=engine)
 
 
 def get_db():
@@ -63,7 +63,7 @@ def get_db():
 
 
 # 数据模型的基类
-Base = declarative_base(engine)
+Base = declarative_base()
 
 # casbin相关配置
 adapter = Adapter(engine)

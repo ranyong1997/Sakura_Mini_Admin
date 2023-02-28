@@ -50,7 +50,6 @@ def create_app() -> FastAPI:
     register_exception(app)
     # 环境启动
     register_init(app)
-
     return app
 
 
