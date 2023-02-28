@@ -38,10 +38,6 @@ from back.utils.logger import log
 # 创建数据库引擎
 try:
     engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', echo=Config.DB_ECHO, pool_recycle=1500, future=True)
-    # with engine.connect() as conn:
-    #     conn.execute(
-    #         "CREATE DATABASE IF NOT EXISTS sakura_mini default character set utf8mb4 collate utf8mb4_unicode_ci")
-    # engine.dispose()
 except Exception as e:
     log.error('❌ 数据库链接失败 {}', e)
     sys.exit()

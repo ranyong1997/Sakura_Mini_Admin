@@ -439,9 +439,6 @@ def reset_password(db: Session, username: str, password: str) -> int:
 
 def update_avatar(*, username: str, avatar: UploadFile):
     with SessionLocal.begin() as db:
-        # if not current_user.is_superuser:
-        #     if not username == current_user.username:
-        #         raise errors.AuthorizationError
         input_user = get_user_by_username(db, username)
         if not input_user:
             raise errors.NotFoundError(msg='用户不存在')
@@ -453,17 +450,16 @@ def update_avatar(*, username: str, avatar: UploadFile):
                 except Exception as e:
                     log.error(f'用户 {username} 更新头像时，原头像文件 {input_user_avatar} 删除失败\n{e}')
             new_file = avatar.file.read()
-            if 'image' not in avatar.content_type:
+            if 'image/jpeg' not in avatar.content_type:
                 raise errors.ForbiddenError(msg='图片格式错误，请重新选择图片')
-            file_name = str(get_current_timestamp()) + '_' + avatar.filename
+            file_name = f'{str(get_current_timestamp())}_{avatar.filename}'
             if not os.path.exists(settings.AvatarPath):
                 os.makedirs(settings.AvatarPath)
-            with open(settings.AvatarPath + f'{file_name}', 'wb') as f:
+            with open(f'{settings.AvatarPath}{file_name}', 'wb') as f:
                 f.write(new_file)
         else:
             file_name = input_user_avatar
-        count = user_services.update_avatar(db, input_user, file_name)
-        return count
+        return user_services.update_avatar(db, input_user, file_name)
 
 
 # --------------------------【User增删改查 完】--------------------------------------
