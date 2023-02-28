@@ -22,6 +22,7 @@ from starlette import status
 
 from back.app import settings
 from back.app.database import SessionLocal, get_db
+from back.crud import user_services
 from back.models.db_casbin_object_models import CasbinObject
 from back.models.db_casbinaction_models import CasbinAction
 from back.models.db_casbinrule_models import CasbinRule
@@ -434,6 +435,35 @@ def reset_password(db: Session, username: str, password: str) -> int:
         return True
     except Exception:
         return False
+
+
+def update_avatar(*, username: str, avatar: UploadFile):
+    with SessionLocal.begin() as db:
+        # if not current_user.is_superuser:
+        #     if not username == current_user.username:
+        #         raise errors.AuthorizationError
+        input_user = get_user_by_username(db, username)
+        if not input_user:
+            raise errors.NotFoundError(msg='用户不存在')
+        input_user_avatar = input_user.avatar
+        if avatar is not None:
+            if input_user_avatar is not None:
+                try:
+                    os.remove(settings.AvatarPath + input_user_avatar)
+                except Exception as e:
+                    log.error(f'用户 {username} 更新头像时，原头像文件 {input_user_avatar} 删除失败\n{e}')
+            new_file = avatar.file.read()
+            if 'image' not in avatar.content_type:
+                raise errors.ForbiddenError(msg='图片格式错误，请重新选择图片')
+            file_name = str(get_current_timestamp()) + '_' + avatar.filename
+            if not os.path.exists(settings.AvatarPath):
+                os.makedirs(settings.AvatarPath)
+            with open(settings.AvatarPath + f'{file_name}', 'wb') as f:
+                f.write(new_file)
+        else:
+            file_name = input_user_avatar
+        count = user_services.update_avatar(db, input_user, file_name)
+        return count
 
 
 # --------------------------【User增删改查 完】--------------------------------------

@@ -288,3 +288,9 @@ def password_reset_done():
     return response_base.response_200(msg='重置密码完成')
 
 
+@router.put('/{username}/avatar', summary='更新头像')
+def update_avatar(username: str, avatar: UploadFile, current_user: User = Depends(oauth2_scheme)):
+    count = services.update_avatar(username=username, avatar=avatar)
+    if count > 0:
+        return response_base.response_200(msg='更新头像成功')
+    return response_base.fail()
