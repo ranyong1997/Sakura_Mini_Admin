@@ -177,7 +177,7 @@ docker-compose up -d
 
 ```text
 ✨ feat:():新增
-🐞Fix:():修复
+🐞 Fix:():修复
 📃 docs:():文档
 🦄 refactor:():重构
 🎈 perf:():优化

@@ -437,7 +437,7 @@ def reset_password(db: Session, username: str, password: str) -> int:
         return False
 
 
-def update_avatar(*, username: str, avatar: UploadFile):
+def update_avatar(*, username: str, avatar: UploadFile, current_user: User):
     with SessionLocal.begin() as db:
         input_user = get_user_by_username(db, username)
         if not input_user:
@@ -460,6 +460,22 @@ def update_avatar(*, username: str, avatar: UploadFile):
         else:
             file_name = input_user_avatar
         return user_services.update_avatar(db, input_user, file_name)
+
+
+def delete_avatar(*, username: str, current_user: User):
+    with SessionLocal.begin() as db:
+        input_user = get_user_by_username(db, username)
+        if not input_user:
+            raise errors.NotFoundError(msg='用户不存在')
+        input_user_avatar = input_user.avatar
+        if input_user_avatar is not None:
+            try:
+                os.remove(settings.AvatarPath + input_user_avatar)
+            except Exception as e:
+                log.error(f'用户 {input_user.username} 删除头像文件 {input_user_avatar} 失败\n{e}')
+        else:
+            raise errors.NotFoundError(msg='用户没有头像文件，请上传头像文件后再执行此操作')
+        return user_services.delete_avatar(db, input_user.id)
 
 
 # --------------------------【User增删改查 完】--------------------------------------

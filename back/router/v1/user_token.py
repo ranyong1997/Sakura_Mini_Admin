@@ -291,12 +291,23 @@ def password_reset_done():
     return response_base.response_200(msg='重置密码完成')
 
 
-@router.put('/{username}/avatar', summary='更新头像')
+@router.put('/user/{username}/avatar', summary='更新头像')
 def update_avatar(username: str, avatar: UploadFile, current_user: User = Depends(oauth2_scheme)):
     """
     更新用户头像
     """
-    count = services.update_avatar(username=username, avatar=avatar)
+    count = services.update_avatar(username=username, avatar=avatar, current_user=current_user)
     if count > 0:
         return response_base.response_200(msg='更新头像成功')
+    return response_base.fail()
+
+
+@router.delete('/user/{username}/avater', summary='删除头像文件')
+def delete_avater(username: str, current_user: User = Depends(oauth2_scheme)):
+    """
+    删除用户头像文件
+    """
+    count = services.delete_avatar(username=username, current_user=current_user)
+    if count > 0:
+        return response_base.response_200(msg='删除用户头像成功')
     return response_base.fail()
