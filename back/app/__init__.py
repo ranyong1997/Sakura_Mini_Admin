@@ -8,5 +8,4 @@
 # @desc    :
 from back.app.config import Settings
 
-
 settings = Settings()

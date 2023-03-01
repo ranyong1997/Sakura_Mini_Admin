@@ -32,6 +32,13 @@ class Settings(BaseSettings):
     REDIS_DB: int = None  # Redis数据库
     REDIS_PASSWORD: str = None  # Redis密码
     REDIS_TIMEOUT: int = None  # Redis超时
+    # Email-server
+    EMAIL_DESCRIPTION: str = None  # 邮件标题
+    EMAIL_SERVER: str = None  # 电子邮件服务器
+    EMAIL_PORT: int = None  # 电子邮件端口
+    EMAIL_USER: str = None  # 发件人
+    EMAIL_PASSWORD: str = None  # 授权密码，非邮箱密码
+    EMAIL_SSL: bool = True  # 是否使用ssl
     # sqlalchemy_server
     SQLALCHEMY_DATABASE_URI: str = ''
     # 异步URI
@@ -45,13 +52,6 @@ class Settings(BaseSettings):
     REDIS_PREFIX: str = 'Sakura'
     # Captcha验证码超时
     CAPTCHA_EXPIRATION_TIME: int = 60  # 单位：s
-    # Email
-    EMAIL_DESCRIPTION: str = None  # 邮件标题
-    EMAIL_SERVER: str = None  # 电子邮件服务器
-    EMAIL_PORT: int = None  # 电子邮件端口
-    EMAIL_USER: str = None  # 发件人
-    EMAIL_PASSWORD: str = None  # 授权密码，非邮箱密码
-    EMAIL_SSL: bool = True  # 是否使用ssl
     # Cookies
     COOKIES_MAX_AGE: int = 60 * 5  # cookies 时效 60 * 5 = 5 分钟
     # 项目标题
@@ -173,8 +173,7 @@ Sakura_Mini_ENV: str = os.environ.get("sakura_mini_env", "dev")
 # 如果sakura_mini存在且为pro
 Config = ProConfig() if Sakura_Mini_ENV and Sakura_Mini_ENV.lower() == "pro" else DevConfig()
 # 初始化 sqlalchemy(由 apscheduler 使用)
-# Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset=utf8mb4'
-Config.SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset={Config.MySQL_CHARSET}'
+Config.SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{Config.MYSQL_USER}:{Config.MYSQL_PWD}@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}?charset={Config.MySQL_CHARSET}'
 # 初始化 sqlalchemy(异步)
 Config.ASYNC_SQLALCHEMY_URI = f'mysql+aiomysql://{Config.MYSQL_USER}:{Config.MYSQL_PWD}' \
                               f'@{Config.MYSQL_HOST}:{Config.MYSQL_PORT}/{Config.DBNAME}'

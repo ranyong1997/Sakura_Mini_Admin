@@ -450,7 +450,7 @@ def update_avatar(*, username: str, avatar: UploadFile):
                 except Exception as e:
                     log.error(f'用户 {username} 更新头像时，原头像文件 {input_user_avatar} 删除失败\n{e}')
             new_file = avatar.file.read()
-            if 'image/jpeg' not in avatar.content_type:
+            if 'image' not in avatar.content_type:
                 raise errors.ForbiddenError(msg='图片格式错误，请重新选择图片')
             file_name = f'{str(get_current_timestamp())}_{avatar.filename}'
             if not os.path.exists(settings.AvatarPath):
