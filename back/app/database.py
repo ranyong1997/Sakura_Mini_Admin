@@ -6,9 +6,7 @@
 # @File    : database.py
 # @Software: PyCharm
 # @desc    : 数据库以及连接的配置
-import os
 import sys
-
 import casbin  # 权限控制模块
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base

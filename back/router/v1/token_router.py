@@ -6,12 +6,10 @@
 # @File    : token_router.py
 # @Software: PyCharm
 # @desc    : 访问令牌路由
-from datetime import datetime, timedelta
-from typing import Union
+from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from jose import jwt
 from back.app import settings
 from back.app.database import get_db
 from back.crud import services

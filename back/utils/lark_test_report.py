@@ -6,7 +6,6 @@
 # @File    : lark_test_report.py
 # @Software: PyCharm
 # @desc    :
-
 import requests
 
 url = "https://open.feishu.cn/open-apis/bot/v2/hook/fce32975-4d2f-49ab-b7a0-72921b173bb9"

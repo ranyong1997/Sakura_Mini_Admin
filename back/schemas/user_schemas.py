@@ -15,6 +15,8 @@ class Token(BaseModel):
     msg: str = 'Success'
     access_token: str
     token_type: str = 'Bearer'
+    is_superuser: Optional[bool] = None
+
 
 
 class UserBase(BaseModel):

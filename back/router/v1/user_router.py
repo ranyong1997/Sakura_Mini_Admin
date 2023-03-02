@@ -6,27 +6,21 @@
 # @File    : user_router.py
 # @Software: PyCharm
 # @desc    : 用户路由
-from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status, Request, Response, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from sqlalchemy.testing import db
-
-from back.app import settings
 from back.app.config import Config
 from back.app.database import get_db
-from back.router.v1.token_router import authenticate_user
 from back.schemas import user_schemas
 from back.schemas.user_schemas import User, Casbin_rule, Users, UserUpdate, ChangeUserRole, Token, \
     ResetPassword
-from back.utils import token
 from back.utils.exception.errors import TokenAuthError
 from back.utils.password import get_password_hash
 from back.utils.redis import redis_client
 from back.utils.response.response_schema import response_base
-from back.utils.token import oauth2_scheme, get_username_by_token, APP_TOKEN_CONFIG
+from back.utils.token import oauth2_scheme, get_username_by_token
 from back.utils.casbin import verify_enforce
-from back.crud import services
+from back.crud import services, user_services
 
 router = APIRouter(
     prefix="/v1",
@@ -222,33 +216,10 @@ async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: S
         raise no_permission
 
 
-@router.post("/user/login", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    """
-    用户登录
-    """
-    user = authenticate_user(db, form_data.username, form_data.password)
-    # 判断是否有用户
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="用户或密码错误!",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
-    if user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="账号已被禁用!",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
-    # token过期时间
-    access_token_expired = timedelta(minutes=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
-    # 生成token
-    access_token = token.create_access_token(data={'sub': user.username}, expires_delta=access_token_expired)
-    # 将token写入redis,并设置过期销毁时间,创建根目录/Sakura/user
-    await redis_client.set(f'{settings.REDIS_PREFIX}:user:{user.username}', access_token,
-                           ex=APP_TOKEN_CONFIG.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return {"access_token": access_token, "token_type": "bearer"}
+@router.post('/user/login', summary='用户登录', response_model=Token, description='用户登录')
+async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
+    token, is_super = await user_services.login(form_data)
+    return Token(access_token=token, is_superuser=is_super)
 
 
 @router.post("/user/logout", summary='用户退出')
@@ -260,7 +231,7 @@ async def user_logout(token: str = Depends(oauth2_scheme)):
     if not username:
         raise TokenAuthError
     else:
-        # 2、拿到username后传入到redis的key中
+        # 2、拿到username后传入到redis的key中,并将该token删除
         await redis_client.delete(f'{Config.REDIS_PREFIX}:user:{username}')
     return response_base.response_200(msg='退出登录成功')
 

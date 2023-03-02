@@ -7,7 +7,6 @@
 # @Software: PyCharm
 # @desc    : 虚拟数据路由
 from fastapi import APIRouter
-
 from back.crud.fakerdata_services import test_data
 from back.utils import response_code
 from back.utils.logger import log

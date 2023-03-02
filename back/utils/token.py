@@ -8,16 +8,13 @@
 # @desc    : 令牌工具
 from datetime import timedelta, datetime
 from jose import JWTError, jwt
-from pydantic import BaseSettings, ValidationError
+from pydantic import BaseSettings
 from back.app import settings
 from fastapi.security import OAuth2PasswordBearer
 from back.app.database import get_db
-from back.crud import services
 from back.models.db_user_models import User
-from fastapi import HTTPException, status, Depends
-from sqlalchemy.orm import Session
-from typing import Optional, Union
-from back.utils.exception.errors import TokenError
+from fastapi import HTTPException, status
+from typing import Union
 
 # 执行生成token的地址
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=settings.url_prefix)
