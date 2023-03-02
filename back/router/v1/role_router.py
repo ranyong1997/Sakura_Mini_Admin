@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from back.app.database import get_db
 from back.crud import services
-from back.router.v1.user_token import return_rule
+from back.router.v1.user_router import return_rule
 from back.models import db_role_models, db_casbinrule_models
 from back.utils.token import oauth2_scheme
 from back.utils.casbin import verify_enforce
