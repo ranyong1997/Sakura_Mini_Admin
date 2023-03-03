@@ -12,7 +12,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from back.app import settings
 from back.app.database import get_db
-from back.crud import services
+from back.crud import user_services
 from back.schemas.token_schemas import Token
 from back.utils import token
 from back.utils.password import verify_password
@@ -42,7 +42,7 @@ def authenticate_user(db: Session, username: str, password: str):
     """
     认证用户，包括检测用户是否存在，密码校验
     """
-    user = services.get_user_by_username(db, username=username)  # 获取用户信息
+    user = user_services.get_user_by_username(db, username=username)  # 获取用户信息
     # 判断用户是否存在
     if not user:
         return False
@@ -53,10 +53,10 @@ def authenticate_user(db: Session, username: str, password: str):
     return user
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=Token,summary="获取token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
-    获取用户，如果没有或者密码错误并提示
+    获取token，如果没有或者密码错误并提示
     """
     user = authenticate_user(db, form_data.username, form_data.password)
     # 判断是否有用户

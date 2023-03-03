@@ -9,7 +9,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from back.app.database import get_db
-from back.crud import services
+from back.crud import role_services, casbinobject_services, casbinaction_services, casbinrule_services
 from back.router.v1.user_router import return_rule
 from back.models import db_role_models, db_casbinrule_models
 from back.utils.token import oauth2_scheme
@@ -33,15 +33,15 @@ no_permission = HTTPException(
 ################################
 # role相关的api接口
 ################################
-@router.get("/role/get_roles")
+@router.get("/role/get_roles", summary="获取角色")
 async def get_roles(db: Session = Depends(get_db)):
     """
     获取角色
     """
-    return services.get_roles(db)
+    return role_services.get_roles(db)
 
 
-@router.post("/role/create_role")
+@router.post("/role/create_role", summary="创建角色")
 async def create_role(role: role_schemas.Role, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     创建角色
@@ -52,23 +52,23 @@ async def create_role(role: role_schemas.Role, token: str = Depends(oauth2_schem
         new_role.role_key = role.role_key
         new_role.description = role.description
         new_role.user_id = int(role.user_id)
-        return services.create_role(db, new_role)
+        return role_services.create_role(db, new_role)
     else:
         raise no_permission
 
 
-@router.get("/role/get_role_by_id")
+@router.get("/role/get_role_by_id", summary="根据id获取角色")
 async def get_role_by_id(role_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据id获取角色
     """
     if verify_enforce(token, return_rule('Role', 'read')):
-        return services.get_role_by_id(db, role_id)
+        return role_services.get_role_by_id(db, role_id)
     else:
         raise no_permission
 
 
-@router.post("/role/update_role")
+@router.post("/role/update_role", summary="修改角色")
 async def update_role_by_id(role: role_schemas.EditRole, token: str = Depends(oauth2_scheme),
                             db: Session = Depends(get_db)):
     """
@@ -79,30 +79,30 @@ async def update_role_by_id(role: role_schemas.EditRole, token: str = Depends(oa
         new_role.name = role.name
         new_role.role_key = role.role_key
         new_role.description = role.description
-        return services.update_role_by_id(db, role.old_role_id, new_role)
+        return role_services.update_role_by_id(db, role.old_role_id, new_role)
     else:
         raise no_permission
 
 
-@router.delete("/role/delete_role")
+@router.delete("/role/delete_role", summary="根据id删除角色")
 async def delete_role_by_id(role_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据id删除角色
     """
     if verify_enforce(token, return_rule('Role', 'delete')):
-        return services.delete_role_by_id(db, role_id)
+        return role_services.delete_role_by_id(db, role_id)
     else:
         raise no_permission
 
 
-@router.get("/role/get_coca")
+@router.get("/role/get_coca", summary="返回用户组role所包含的权限用于前端使用多选框来展示")
 async def get_co_ca(role_id: int, db: Session = Depends(get_db)):
     """
     返回用户组role所包含的权限用于前端使用多选框来展示
     """
-    cos = services.get_casbin_objects(db)
-    cas = services.get_casbin_actions(db)
-    role = services.get_role_by_id(db, role_id)
+    cos = casbinobject_services.get_casbin_objects(db)
+    cas = casbinaction_services.get_casbin_actions(db)
+    role = role_services.get_role_by_id(db, role_id)
     all_co_ca = []  # 拼装所有权限的列表
     co_key_name = {}  # 组装一个字典,里面的资源key对应name
     ca_key_name = {}  # 组装一个字典，里面的动作key对应name
@@ -119,7 +119,7 @@ async def get_co_ca(role_id: int, db: Session = Depends(get_db)):
         co_key_name[co.object_key] = co.name
     for ca in cas:
         ca_key_name[ca.action_key] = ca.name
-    crs = services.get_casbin_rules_by_role_key(db, role.role_key)
+    crs = casbinrule_services.get_casbin_rules_by_role_key(db, role.role_key)
     for cr in crs:
         cks.append(co_key_name[cr.v1])
         cks.append(ca_key_name[cr.v2])
@@ -138,15 +138,16 @@ async def get_co_ca(role_id: int, db: Session = Depends(get_db)):
     return {'options': all_co_ca, 'checkeds': checkeds}
 
 
-@router.post("/role/change_role")
-async def change_role(cr_data: role_schemas.ChangeRole, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+@router.post("/role/change_role", summary="修改用户组所拥有的的权限")
+async def change_role(cr_data: role_schemas.ChangeRole, token: str = Depends(oauth2_scheme),
+                      db: Session = Depends(get_db)):
     """
     修改用户组所拥有的的权限
     """
     if verify_enforce(token, return_rule('Role', 'update')):
-        role = services.get_role_by_id(db, cr_data.role_id)
-        cos = services.get_casbin_objects(db)
-        cas = services.get_casbin_actions(db)
+        role = role_services.get_role_by_id(db, cr_data.role_id)
+        cos = casbinobject_services.get_casbin_objects(db)
+        cas = casbinaction_services.get_casbin_actions(db)
         co_name_key = {}  # 组装一个字典，里面的资源name对应key
         ca_name_key = {}  # 组装一个字典，里面的资源name对应key
         change_crs = []  # 准备要更新添加所有casbinrule
@@ -167,6 +168,6 @@ async def change_role(cr_data: role_schemas.ChangeRole, token: str = Depends(oau
                     if cr != cr_name:
                         change_crs.append(db_casbinrule_models.CasbinRule(ptype='p', v0=role.role_key, v1=object_key,
                                                                           v2=ca_name_key[cr]))
-        return services.change_role_casbinrules(db, role.role_key, change_crs)
+        return role_services.change_role_casbinrules(db, role.role_key, change_crs)
     else:
         raise no_permission

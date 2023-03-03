@@ -16,8 +16,11 @@ router = APIRouter(
 )
 
 
-@router.get("/news_api")
+@router.get("/news_api", summary="每日60秒读世界")
 def news(response: Response, index: int = 0, origin: str = 'zhihu', cache: str = 'null'):
+    """
+    每日60秒读世界
+    """
     response.headers["Cache-Control"] = "max-age=86400, immutable, stale-while-revalidate"
     response.headers["Content-Type"] = "application/json; charset=utf-8"
     response.headers["Access-Control-Allow-Origin"] = "*"

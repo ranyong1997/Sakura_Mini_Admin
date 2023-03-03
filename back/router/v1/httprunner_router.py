@@ -37,7 +37,7 @@ def settings():
     return Settings()
 
 
-@router.post("/run_har2case")
+@router.post("/run_har2case", summary="将*.har转为json文件")
 async def run_har2case(har_path: str, config: Settings = Depends(settings)):
     """
     将*.har转为json文件
@@ -65,7 +65,7 @@ async def run_har2case(har_path: str, config: Settings = Depends(settings)):
     return resp
 
 
-@router.post("/run_debug")
+@router.post("/run_debug", summary="将har转的json内容复制到这，可以debug调试")
 async def run_debug(case_info: dict):
     """
     将har转的json内容复制到这，可以debug调试
@@ -103,7 +103,7 @@ async def run_debug(case_info: dict):
     return resp
 
 
-@router.post("/run_subprocess")
+@router.post("/run_subprocess", summary="运行测试用例")
 async def run_subprocess(testcase_info: httprunner_schemas.HttpRunner_rule, config: Settings = Depends(settings)):
     """
     run测试用例

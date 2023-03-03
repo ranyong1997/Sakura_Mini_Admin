@@ -9,7 +9,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from back.app.database import get_db
-from back.crud import services
+from back.crud import casbinaction_services
 from back.models import db_casbinaction_models
 from back.schemas import casbin_schemas
 from back.router.v1.user_router import return_rule
@@ -33,15 +33,15 @@ no_permission = HTTPException(
 ################################
 # Casbin行为相关的api接口
 ################################
-@router.get("/ca/get_cas")
+@router.get("/ca/get_cas", summary="获取casbin行为")
 async def get_cas(db: Session = Depends(get_db)):
     """
     获取casbin行为
     """
-    return services.get_casbin_actions(db)
+    return casbinaction_services.get_casbin_actions(db)
 
 
-@router.post("/ca/create_ca")
+@router.post("/ca/create_ca", summary="创建casbin行为")
 async def create_ca(ca: casbin_schemas.createCasbinAction, token: str = Depends(oauth2_scheme),
                     db: Session = Depends(get_db)):
     """
@@ -53,37 +53,38 @@ async def create_ca(ca: casbin_schemas.createCasbinAction, token: str = Depends(
         new_ca.action_key = ca.action_key
         new_ca.description = ca.description
         new_ca.user_id = ca.user_id
-        return services.create_casbin_action(db, new_ca)
+        return casbinaction_services.create_casbin_action(db, new_ca)
     else:
         raise no_permission
 
 
-@router.get("/ca/get_ca")
+@router.get("/ca/get_ca", summary="根据ca_id获取casbin行为")
 async def get_ca(ca_id: int, db: Session = Depends(get_db)):
     """
     根据ca_id获取casbin行为
     """
-    return services.get_casbin_action_by_id(db, ca_id)
+    return casbinaction_services.get_casbin_action_by_id(db, ca_id)
 
 
-@router.post("/ca/update_ca")
+@router.post("/ca/update_ca", summary="更新casbin行为")
 async def update_ca(ca: casbin_schemas.EditCasbinAction, token: str = Depends(oauth2_scheme),
                     db: Session = Depends(get_db)):
     """
     更新casbin行为
     """
     if verify_enforce(token, return_rule("CasbinAction", "update")):
-        return services.update_casbin_action_by_id(db, ca.old_ca_id, ca.name, ca.action_key, ca.description)
+        return casbinaction_services.update_casbin_action_by_id(db, ca.old_ca_id, ca.name, ca.action_key,
+                                                                ca.description)
     else:
         raise no_permission
 
 
-@router.delete("/ca/delete_ca")
+@router.delete("/ca/delete_ca", summary="根据ca_id删除casbin行为")
 async def delete_ca(ca_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据ca_id删除casbin行为
     """
     if verify_enforce(token, return_rule("CasbinAction", "delete")):
-        return services.delete_casbin_action_by_id(db, ca_id)
+        return casbinaction_services.delete_casbin_action_by_id(db, ca_id)
     else:
         raise no_permission

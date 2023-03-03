@@ -16,7 +16,7 @@ from pydantic import ValidationError
 from loguru import logger
 from back.app import settings
 from back.app.database import Base, engine, get_db
-from back.crud import services
+from back.crud import user_services
 from back.router.v1 import api_v1_router
 from back.utils import response_code
 from back.utils.exception import errors
@@ -118,7 +118,7 @@ def register_init(app: FastAPI) -> None:
                 raise
         try:
             # 生成初始化数据，添加了一个超级管理员并赋予所有管理权限，以及一些虚拟的用户。
-            services.create_data(next(get_db()))
+            user_services.create_data(next(get_db()))
             logger.bind(name=None).success("生成初始化数据成功.          ✔")
         except Exception as e:
             logger.bind(name=None).error(f"生成初始化数据失败.          ❌ \n Error:{str(e)}")

@@ -9,7 +9,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from back.app.database import get_db
-from back.crud import services
+from back.crud import casbinobject_services
 from back.schemas import casbin_schemas
 from back.router.v1.user_router import return_rule
 from back.models import db_casbin_object_models
@@ -38,10 +38,10 @@ async def get_cos(db: Session = Depends(get_db)):
     """
     获取Casbin资源
     """
-    return services.get_casbin_objects(db)
+    return casbinobject_services.get_casbin_objects(db)
 
 
-@router.post("/co/create_co")
+@router.post("/co/create_co", summary="创建资源")
 async def create_casbin_object(co: casbin_schemas.createCasbinObject, token: str = Depends(oauth2_scheme),
                                db: Session = Depends(get_db)):
     """
@@ -53,34 +53,37 @@ async def create_casbin_object(co: casbin_schemas.createCasbinObject, token: str
         new_co.object_key = co.object_key
         new_co.description = co.description
         new_co.user_id = co.user_id
-        return services.create_casbin_object(db, new_co)
+        return casbinobject_services.create_casbin_object(db, new_co)
     else:
         raise no_permission
 
 
-@router.get("/co/get_co")
+@router.get("/co/get_co", summary="根据co_id获取资源")
 async def get_casbin_object(co_id: int, db: Session = Depends(get_db)):
     """
     根据co_id获取资源
     """
-    return services.get_casbin_object_by_id(db, co_id)
+    return casbinobject_services.get_casbin_object_by_id(db, co_id)
 
 
-@router.post("/co/update_co")
+@router.post("/co/update_co", summary="更新casbin_object")
 async def update_casbin_object_by_id(co: casbin_schemas.EditCasbinObject, token: str = Depends(oauth2_scheme),
                                      db: Session = Depends(get_db)):
+    """
+    更新casbin_object
+    """
     if verify_enforce(token, return_rule("CasbinObject", "update")):
-        return services.update_casbin_object(db, co.old_co_id, co.name, co.object_key, co.description)
+        return casbinobject_services.update_casbin_object(db, co.old_co_id, co.name, co.object_key, co.description)
     else:
         raise no_permission
 
 
-@router.delete("/co/delete_co")
+@router.delete("/co/delete_co",summary="根据co_id删除资源")
 async def delete_casbin_object_by_id(co_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     根据co_id删除资源
     """
     if verify_enforce(token, return_rule('CasbinObject', 'read')):
-        return services.delete_casbin_object_by_id(db, co_id)
+        return casbinobject_services.delete_casbin_object_by_id(db, co_id)
     else:
         raise no_permission

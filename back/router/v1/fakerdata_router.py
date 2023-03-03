@@ -22,7 +22,7 @@ router = APIRouter(
 ################################
 # 虚拟数据api接口
 ################################
-@router.post('/test/data')
+@router.post('/test/data', summary="获取随机数据")
 async def random_data(param: FakeData):
     """
     获取随机数据
