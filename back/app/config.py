@@ -32,6 +32,20 @@ class Settings(BaseSettings):
     REDIS_DB: int = None  # Redis数据库
     REDIS_PASSWORD: str = None  # Redis密码
     REDIS_TIMEOUT: int = None  # Redis超时
+    # APScheduler Redis
+    APS_REDIS_HOST: str = None  # Redis主机
+    APS_REDIS_PORT: int = None  # Redis端口
+    APS_REDIS_PASSWORD: str = None  # Redis密码
+    APS_REDIS_DATABASE: int = None  # Redis数据库
+    APS_REDIS_TIMEOUT: int = None  # Redis超时
+    # APScheduler Executor (TP:线程，PP:进程)
+    APS_TP: bool = True
+    APS_TP_EXECUTOR_NUM: int = 10  # 执行数 > 0
+    APS_PP: bool = True
+    APS_PP_EXECUTOR_NUM: int = 10  # 执行数 > 0
+    # APScheduler Default
+    APS_COALESCE: bool = False  # 是否合并运行
+    APS_MAX_INSTANCES: int = 3  # 最大实例数
     # Email-server
     EMAIL_DESCRIPTION: str = None  # 邮件标题
     EMAIL_SERVER: str = None  # 电子邮件服务器
