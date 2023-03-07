@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : task.py
 # @Software: PyCharm
-# @desc    : 任务调度器
+# @desc    : apscheduler封装
 import tzlocal
 from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
 from apscheduler.jobstores.redis import RedisJobStore

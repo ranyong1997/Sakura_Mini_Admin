@@ -22,6 +22,7 @@ from back.utils import response_code
 from back.utils.exception import errors
 from back.utils.logger import log
 from back.utils.redis import redis_client
+from back.utils.task import scheduler
 
 
 def create_app() -> FastAPI:
@@ -113,6 +114,8 @@ def register_init(app: FastAPI) -> None:
             try:
                 await redis_client.init_redis_connect()
                 logger.bind(name=None).success("redis连接成功.          ✔")
+                # 启动定时任务
+                scheduler.start()
             except Exception as e:
                 logger.bind(name=None).error(f"redis连接失败.          ❌ \n Error:{str(e)}")
                 raise
@@ -129,6 +132,8 @@ def register_init(app: FastAPI) -> None:
         if settings.REDIS_OPEN:
             # 关闭redis连接
             await redis_client.close()
+            # 关闭定时任务
+            scheduler.shutdown()
 
 
 def register_hook(app: FastAPI) -> None:
