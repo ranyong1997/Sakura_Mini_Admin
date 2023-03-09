@@ -119,3 +119,33 @@ class AuthenticationError(Exception):
 
     def __init__(self, err_desc: str = "身份验证错误"):
         self.err_desc = err_desc
+
+
+class RESOURCE_ERROR(BaseExceptionMixin):
+    """
+    资源不存在
+    """
+    code = 40001
+
+    def __init__(self, *, msg: str = '资源不存在', data: Any = None):
+        super().__init__(msg=msg, data=data)
+
+
+class SYSTEM_ERROR(BaseExceptionMixin):
+    """
+    错误code
+    """
+    code = 50000
+
+    def __init__(self, *, msg: str = '错误code', data: Any = None):
+        super().__init__(msg=msg, data=data)
+
+
+class SQL_ERROR(BaseExceptionMixin):
+    """
+    错误sql
+    """
+    code = 50005
+
+    def __init__(self, *, msg: str = '错误sql', data: Any = None):
+        super().__init__(msg=msg, data=data)

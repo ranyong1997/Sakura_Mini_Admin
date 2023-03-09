@@ -6,11 +6,13 @@
 # @File    : main.py
 # @Software: PyCharm
 # @desc    : 总入口
+import time
 import traceback
 import uvicorn
 from fastapi import FastAPI, Response, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
+from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 from fastapi.responses import HTMLResponse  # 响应html
 from pydantic import ValidationError
 from loguru import logger
@@ -33,6 +35,8 @@ def create_app() -> FastAPI:
     app = FastAPI(
         debug=settings.DEBUG,
         title=settings.project_title,
+        docs_url="/docs",
+        redoc_url="/redoc",
         description=settings.project_description,
         version=settings.project_version,
         openapi_tags=settings.tags_metadata,
@@ -94,6 +98,8 @@ def register_init(app: FastAPI) -> None:
         logger.bind(name=None).success(f'{settings.BANNER}')
         logger.bind(name=None).success(
             f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
+        log.info(
+            f"********************  START:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} ********************")
 
     @app.on_event("startup")
     async def startup_event():
@@ -134,6 +140,22 @@ def register_init(app: FastAPI) -> None:
             await redis_client.close()
             # 关闭定时任务
             scheduler.shutdown()
+        log.info(
+            f"*********  END:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} *********")
+
+    @app.get("/docs", include_in_schema=False)
+    async def custom_swagger_ui_html():
+        return get_swagger_ui_html(
+            openapi_url=app.openapi_url,
+            title=app.title + " - Swagger UI",
+            oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
+            swagger_js_url="/static/swagger-ui-bundle.js",
+            swagger_css_url="/static/swagger-ui.css",
+        )
+
+    @app.get(app.swagger_ui_oauth2_redirect_url, include_in_schema=False)
+    async def swagger_ui_redirect():
+        return get_swagger_ui_oauth2_redirect_html()
 
 
 def register_hook(app: FastAPI) -> None:
