@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from pydantic import BaseSettings
 from back.app import settings
 from fastapi.security import OAuth2PasswordBearer
-from back.app.database import get_db
+from back.dbdriver.mysql import get_db
 from back.models.db_user_models import User
 from fastapi import HTTPException, status
 from typing import Union

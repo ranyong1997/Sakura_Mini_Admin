@@ -8,7 +8,7 @@
 # @desc    : Casbin行为路由
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from back.app.database import get_db
+from back.dbdriver.mysql import get_db
 from back.crud import casbinaction_services
 from back.models import db_casbinaction_models
 from back.schemas import casbin_schemas

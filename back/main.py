@@ -13,17 +13,16 @@ from fastapi import FastAPI, Response, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
-from fastapi.responses import HTMLResponse  # 响应html
 from pydantic import ValidationError
 from loguru import logger
 from back.app import settings
-from back.app.database import Base, engine, get_db
+from back.dbdriver.mysql import Base, engine, get_db
 from back.crud import user_services
 from back.router.v1 import api_v1_router
 from back.utils import response_code
 from back.utils.exception import errors
 from back.utils.logger import log
-from back.utils.redis import redis_client
+from back.dbdriver.redis import redis_client
 from back.utils.task import scheduler
 
 

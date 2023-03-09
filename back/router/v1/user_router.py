@@ -10,13 +10,13 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from back.app.config import Config
-from back.app.database import get_db
+from back.dbdriver.mysql import get_db
 from back.schemas import user_schemas
 from back.schemas.user_schemas import User, Casbin_rule, Users, UserUpdate, ChangeUserRole, Token, \
     ResetPassword
 from back.utils.exception.errors import TokenAuthError
 from back.utils.password import get_password_hash
-from back.utils.redis import redis_client
+from back.dbdriver.redis import redis_client
 from back.utils.response.response_schema import response_base
 from back.utils.token import oauth2_scheme, get_username_by_token
 from back.utils.casbin import verify_enforce

@@ -8,7 +8,7 @@
 # @desc    : 角色路由
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from back.app.database import get_db
+from back.dbdriver.mysql import get_db
 from back.crud import role_services, casbinobject_services, casbinaction_services, casbinrule_services
 from back.router.v1.user_router import return_rule
 from back.models import db_role_models, db_casbinrule_models

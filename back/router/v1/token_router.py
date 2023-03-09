@@ -11,12 +11,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from back.app import settings
-from back.app.database import get_db
+from back.dbdriver.mysql import get_db
 from back.crud import user_services
 from back.schemas.token_schemas import Token
 from back.utils import token
 from back.utils.password import verify_password
-from back.utils.redis import redis_client
+from back.dbdriver.redis import redis_client
 from back.utils.token import APP_TOKEN_CONFIG
 
 router = APIRouter(

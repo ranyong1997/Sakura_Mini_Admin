@@ -6,7 +6,7 @@
 # @File    : db_casbinrule_models.py
 # @Software: PyCharm
 # @desc    : 权限规则数据库
-from back.app.database import Base
+from back.dbdriver.mysql import Base
 from sqlalchemy import String, Column, Integer
 
 

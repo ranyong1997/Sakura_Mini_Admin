@@ -3,7 +3,7 @@
 # @Time    : 2023/1/9 15:36
 # @Author  : 冉勇
 # @Site    : 
-# @File    : database.py
+# @File    : mysql.py
 # @Software: PyCharm
 # @desc    : 数据库以及连接的配置
 import sys
@@ -14,23 +14,6 @@ from sqlalchemy.orm import sessionmaker
 from casbin_sqlalchemy_adapter import Adapter
 from back.app.config import Config
 from back.utils.logger import log
-
-# # 创建一个使用内存的SQLite数据库(暂时废除)
-# SQLALCHEMY_DATABASE_MEMORY = "sqlite+pysqlite:///:memory:"
-# engine_test = create_engine(SQLALCHEMY_DATABASE_MEMORY, echo=False, )
-# SessionLocal_test = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
-#
-# # 组装数据库的绝对地址(数据库生成在一下目录)
-# DB_DIR = os.path.join(settings.BASE_DIR, '../Sakura_Mini_Admin_data.db')
-#
-# # 数据库访问地址
-# SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_DIR}"
-# # 创建物理SQlite数据库
-# engine = create_engine(f'{SQLALCHEMY_DATABASE_URL}?check_same_thread=False', echo=False)
-#
-# # 启动会话
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 
 # 创建一个使用Mysql数据库
 # 创建数据库引擎

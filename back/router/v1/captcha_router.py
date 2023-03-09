@@ -11,7 +11,7 @@ from fastapi import APIRouter, Request
 from starlette.responses import StreamingResponse
 from back.app import settings
 from back.utils.generate_string import get_uuid
-from back.utils.redis import redis_client
+from back.dbdriver.redis import redis_client
 
 router = APIRouter(
     prefix="/v1",

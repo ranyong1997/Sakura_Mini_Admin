@@ -17,7 +17,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import update, select
 from sqlalchemy.orm import Session
 from back.app import settings
-from back.app.database import SessionLocal
+from back.dbdriver.mysql import SessionLocal
 from back.crud.casbinaction_services import get_casbin_action_count, add_casbin_action, get_casbin_actions
 from back.crud.casbinobject_services import get_casbin_object_count, add_casbin_objects, get_casbin_objects
 from back.crud.casbinrule_services import get_casbin_rule_count, create_casbin_rule_g, create_casbin_rules, \
@@ -35,7 +35,7 @@ from back.utils.exception import errors
 from back.utils.generate_string import get_current_timestamp
 from back.utils.logger import log
 from back.utils.password import get_password_hash, verify_password
-from back.utils.redis import redis_client
+from back.dbdriver.redis import redis_client
 from back.utils.send_email import send_verification_code_email
 from back.utils.token import APP_TOKEN_CONFIG
 from fastapi import Request, Response, HTTPException, UploadFile

@@ -7,7 +7,7 @@
 # @Software: PyCharm
 # @desc    : 权限工具
 from fastapi import HTTPException, status
-from back.app.database import get_casbin
+from back.dbdriver.mysql import get_casbin
 from back.utils.token import get_username_by_token, verify_isActive
 
 
