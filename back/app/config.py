@@ -70,6 +70,10 @@ class Settings(BaseSettings):
     COOKIES_MAX_AGE: int = 60 * 5  # cookies 时效 60 * 5 = 5 分钟
     # 项目标题
     project_title: str = "Sakura_Mini_Admin"
+    # Docs文档 正式上线将/docs 改成None
+    docs_url: str = "/docs"
+    # Redocs文档正式上线将/redocs 改成None
+    redoc_url: str = "/redocs"
     # 项目描述
     project_description: str = """
 #### Description/说明

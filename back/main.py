@@ -6,16 +6,20 @@
 # @File    : main.py
 # @Software: PyCharm
 # @desc    : 总入口
+import os
 import time
 import traceback
 import uvicorn
+from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, Response, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 from pydantic import ValidationError
+from fastapi.responses import HTMLResponse  # 响应html
 from loguru import logger
 from back.app import settings
+from back.app.config import ProConfig, DevConfig
 from back.dbdriver.mysql import Base, engine, get_db
 from back.crud import user_services
 from back.router.v1 import api_v1_router
@@ -31,19 +35,25 @@ def create_app() -> FastAPI:
     生成Fastapi对象
     :return:
     """
-    app = FastAPI(
-        debug=settings.DEBUG,
-        title=settings.project_title,
-        docs_url="/docs",
-        redoc_url="/redoc",
-        description=settings.project_description,
-        version=settings.project_version,
-        openapi_tags=settings.tags_metadata,
-        license_info={
-            "name": "开源MIT协议",
-            "url": "https://opensource.org/licenses/MIT",
-        }
-    )
+    # 获取config下的debug调试,如果为True,可以调试docs,否则不可以调试
+    if settings.DEBUG:
+        app = FastAPI(
+            title=settings.project_title,
+            docs_url=settings.docs_url,
+            redoc_url=settings.redoc_url,
+            description=settings.project_description,
+            version=settings.project_version,
+            openapi_tags=settings.tags_metadata,
+            license_info={
+                "name": "开源MIT协议",
+                "url": "https://opensource.org/licenses/MIT",
+            }
+        )
+    else:
+        app = FastAPI(
+            docs_url=None,
+            redoc_url=None,
+        )
     # 跨域设置
     register_cors(app)
     # 注册路由
@@ -142,7 +152,7 @@ def register_init(app: FastAPI) -> None:
         log.info(
             f"*********  END:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} *********")
 
-    @app.get("/docs", include_in_schema=False)
+    @app.post("/docs", include_in_schema=False)
     async def custom_swagger_ui_html():
         return get_swagger_ui_html(
             openapi_url=app.openapi_url,
