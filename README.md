@@ -141,7 +141,6 @@ docker-compose up -d
 - [ ] 日志优化输出控制台
 - [ ] 引入APScheduler
 - [ ] 单元测试
-- [ ] dev环境下不启动docs调试文档
 - [ ] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
 - [ ] 新增分页查询
 - [ ] 增加Jenkinsfile打包
@@ -162,6 +161,7 @@ docker-compose up -d
 - [X] 实现单点登录功能
 - [X] 密码重置功能
 - [X] 优化docs文档加载时间
+- [X] dev环境下不启动docs调试文档
 
 ### Httprunner快速体验
 
