@@ -10,7 +10,6 @@ import os
 import time
 import traceback
 import uvicorn
-from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, Response, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware  # 跨域
@@ -19,7 +18,6 @@ from pydantic import ValidationError
 from fastapi.responses import HTMLResponse  # 响应html
 from loguru import logger
 from back.app import settings
-from back.app.config import ProConfig, DevConfig
 from back.dbdriver.mysql import Base, engine, get_db
 from back.crud import user_services
 from back.router.v1 import api_v1_router
