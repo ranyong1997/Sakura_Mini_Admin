@@ -139,7 +139,6 @@ docker-compose up -d
 - [ ] 数据迁移、定时备份
 - [ ] 替换异步mysql
 - [ ] 日志优化输出控制台
-- [ ] 引入APScheduler
 - [ ] 单元测试
 - [ ] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
 - [ ] 新增分页查询
@@ -162,6 +161,7 @@ docker-compose up -d
 - [X] 密码重置功能
 - [X] 优化docs文档加载时间
 - [X] dev环境下不启动docs调试文档
+- [X] 引入APScheduler
 
 ### Httprunner快速体验
 

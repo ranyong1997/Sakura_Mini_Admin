@@ -22,10 +22,10 @@ from back.dbdriver.mysql import Base, engine, get_db
 from back.crud import user_services
 from back.router.v1 import api_v1_router
 from back.utils import response_code
+from back.utils.core.init_scheduler import scheduler_init
 from back.utils.exception import errors
 from back.utils.logger import log
 from back.dbdriver.redis import redis_client
-from back.utils.task import scheduler
 
 
 def create_app() -> FastAPI:
@@ -105,8 +105,6 @@ def register_init(app: FastAPI) -> None:
         logger.bind(name=None).success(f'{settings.BANNER}')
         logger.bind(name=None).success(
             f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
-        log.info(
-            f"********************  START:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} ********************")
 
     @app.on_event("startup")
     async def startup_event():
@@ -127,8 +125,7 @@ def register_init(app: FastAPI) -> None:
             try:
                 await redis_client.init_redis_connect()
                 logger.bind(name=None).success("redis连接成功.          ✔")
-                # 启动定时任务
-                scheduler.start()
+
             except Exception as e:
                 logger.bind(name=None).error(f"redis连接失败.          ❌ \n Error:{str(e)}")
                 raise
@@ -139,15 +136,53 @@ def register_init(app: FastAPI) -> None:
         except Exception as e:
             logger.bind(name=None).error(f"生成初始化数据失败.          ❌ \n Error:{str(e)}")
             raise
+        try:
+            # 初始化 定时器
+            await scheduler_init.init_scheduler()
+            logger.bind(name=None).success("APScheduler正在运行.          ✔")
+
+        except Exception as e:
+            logger.bind(name=None).error(f"初始化APScheduler失败.          ❌ \n Error:{str(e)}")
+            raise
+        try:
+            # 加载静态任务
+            await scheduler_init.add_config_job()
+            logger.bind(name=None).success("开始加载静态任务.          ✔")
+        except Exception as e:
+            logger.bind(name=None).error(f"加载静态任务失败.          ❌ \n Error:{str(e)}")
+            raise
+        logger.bind(name=None).success(
+            f"********************  START:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} ********************")
 
     @app.on_event("shutdown")
     async def shutdown_event():
-        if settings.REDIS_OPEN:
-            # 关闭redis连接
-            await redis_client.close()
-            # 关闭定时任务
-            scheduler.shutdown()
-        log.info(
+        try:
+            if settings.REDIS_OPEN:
+                # 关闭redis连接
+                await redis_client.close()
+                logger.bind(name=None).success("关闭redis连接.          ✔")
+        except Exception as e:
+            logger.bind(name=None).error(f"关闭redis连接失败.          ❌ \n Error:{str(e)}")
+        try:
+            for key, db in scheduler_init.items():
+                await db.close()
+                logger.bind(name=None).success(f"关闭数据库连接池 {key}.          ✔")
+        except Exception as e:
+            logger.bind(name=None).error(f"闭数据库连接池{key}失败          ❌ \n Error:{str(e)}")
+
+        try:
+            for rdb, pool in scheduler_init.items():
+                await pool.close()
+                logger.bind(name=None).success(f"关闭redis连接池:{rdb}.          ✔")
+        except Exception as e:
+            logger.bind(name=None).error(f"关闭redis连接池:{rdb}失败        ❌ \n Error:{str(e)}")
+        try:
+            for rdb, pool in scheduler_init.items():
+                pool.close()
+                logger.bind(name=None).success(f"关闭sync_redis连接池:{rdb}.          ✔")
+        except Exception as e:
+            logger.bind(name=None).error(f"关闭sync_redis连接池: {rdb}失败          ❌ \n Error:{str(e)}")
+        logger.bing(name=None).success(
             f"*********  END:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} *********")
 
     @app.post("/docs", include_in_schema=False)

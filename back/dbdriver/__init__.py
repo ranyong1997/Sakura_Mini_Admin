@@ -6,3 +6,10 @@
 # @File    : __init__.py.py
 # @Software: PyCharm
 # @desc    :
+from back.dbdriver.mysql_ import get_database_pool, get_async_database_pool
+from back.dbdriver.redis_ import get_redis_connect_pool, get_sync_redis_connect_pool
+
+redis = get_redis_connect_pool()
+sync_redis = get_sync_redis_connect_pool()
+mysql = get_database_pool()
+async_mysql = get_async_database_pool()

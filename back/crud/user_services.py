@@ -17,6 +17,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import update, select
 from sqlalchemy.orm import Session
 from back.app import settings
+from back.crud import role_services
 from back.dbdriver.mysql import SessionLocal
 from back.crud.casbinaction_services import get_casbin_action_count, add_casbin_action, get_casbin_actions
 from back.crud.casbinobject_services import get_casbin_object_count, add_casbin_objects, get_casbin_objects
@@ -55,10 +56,10 @@ def create_data(db: Session):
         log.info("创建超级管理员：root")
     user = get_user_by_username(db, "root")
     if get_role_count(db) <= 0:
-        create_role(db, Role(name='超级管理员', role_key='role_superadmin', description='超级管理员，拥有所有系统的权限',
+        role_services.create_role(db, Role(name='超级管理员', role_key='role_superadmin', description='超级管理员，拥有所有系统的权限',
                              user=user))
-        create_role(db, Role(name='管理员', role_key='role_admin', description='管理员', user=user))
-        create_role(db, Role(name='普通用户', role_key='role_generaluser', description='默认注册的用户', user=user))
+        role_services.create_role(db, Role(name='管理员', role_key='role_admin', description='管理员', user=user))
+        role_services.create_role(db, Role(name='普通用户', role_key='role_generaluser', description='默认注册的用户', user=user))
     # 如果casbin行为<=0,则创建CasbinAction
     if get_casbin_action_count(db) <= 0:
         # 创建CasbinAction

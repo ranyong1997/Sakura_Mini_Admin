@@ -19,7 +19,6 @@ from back.utils.logger import log
 # 创建数据库引擎
 try:
     engine = create_engine(f'{Config.SQLALCHEMY_DATABASE_URI}', echo=Config.DB_ECHO, pool_recycle=1500, future=True)
-    log.debug(f"连接同步数据库:{Config.MYSQL_HOST}, -- {Config.DBNAME} -- {Config.MYSQL_USER} -- {Config.MYSQL_PWD}")
 except Exception as e:
     log.error('❌ 数据库链接失败 {}', e)
     sys.exit()
