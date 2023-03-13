@@ -134,7 +134,6 @@ docker-compose up -d
 > 📢注意事项：部署前请检查本地mysql端口3306是否开启，如果开启，请关闭。否则更改3306映射端口
 
 ## 🤦‍待办清单：
-
 - [ ] 完善README文档
 - [ ] 数据迁移、定时备份
 - [ ] 替换异步mysql
@@ -145,10 +144,10 @@ docker-compose up -d
 - [ ] 增加Jenkinsfile打包
 - [ ] 新增修改密码移除redisToken缓存
 - [ ] 新增websocket
+- [ ] 记录请求日志
 
 
 ## 🤦‍已办清单：
-
 - [X] 使用Dockerfile进行构建
 - [X] 使用Mysql接替sqlite
 - [X] 封装mysql账号密码到config.py里面
