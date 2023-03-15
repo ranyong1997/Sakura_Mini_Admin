@@ -144,7 +144,7 @@ docker-compose up -d
 - [ ] 增加Jenkinsfile打包
 - [ ] 新增修改密码移除redisToken缓存
 - [ ] 新增websocket
-- [ ] 记录请求日志
+
 - [ ] 数据库自定义创建表、字段
 
 
@@ -162,6 +162,7 @@ docker-compose up -d
 - [X] 优化docs文档加载时间
 - [X] dev环境下不启动docs调试文档
 - [X] 引入APScheduler
+- [X] 记录请求日志
 
 ### Httprunner快速体验
 
