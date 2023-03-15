@@ -8,7 +8,6 @@
 # @desc    : 记录请求日志
 from datetime import datetime
 from fastapi import Request, Response
-from loguru import logger
 from starlette.middleware.base import BaseHTTPMiddleware
 from back.utils.logger import log
 
