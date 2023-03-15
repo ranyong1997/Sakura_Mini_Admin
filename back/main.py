@@ -6,13 +6,11 @@
 # @File    : main.py
 # @Software: PyCharm
 # @desc    : 总入口
-import os
 import time
 import traceback
 import uvicorn
 from fastapi import FastAPI, Response, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.middleware.cors import CORSMiddleware  # 跨域
 from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 from pydantic import ValidationError
 from fastapi.responses import HTMLResponse  # 响应html
@@ -20,7 +18,8 @@ from loguru import logger
 from back.app import settings
 from back.dbdriver.mysql import Base, engine, get_db
 from back.crud import user_services
-from back.router.v1 import api_v1_router
+from back.middleware import register_middleware
+from back.router.v1 import api_v1_router, tags_metadata
 from back.utils import response_code
 from back.utils.core.init_scheduler import scheduler_init
 from back.utils.exception import errors
@@ -41,7 +40,7 @@ def create_app() -> FastAPI:
             redoc_url=settings.redoc_url,
             description=settings.project_description,
             version=settings.project_version,
-            openapi_tags=settings.tags_metadata,
+            openapi_tags=tags_metadata,
             license_info={
                 "name": "开源MIT协议",
                 "url": "https://opensource.org/licenses/MIT",
@@ -52,8 +51,6 @@ def create_app() -> FastAPI:
             docs_url=None,
             redoc_url=None,
         )
-    # 跨域设置
-    register_cors(app)
     # 注册路由
     register_router(app)
     # 请求拦截
@@ -62,23 +59,9 @@ def create_app() -> FastAPI:
     register_exception(app)
     # 环境启动
     register_init(app)
+    # 中间件
+    register_middleware(app)
     return app
-
-
-def register_cors(app: FastAPI) -> None:
-    """
-    配置允许域名列表、允许方式、请求头、cookie等等
-    :param app:
-    :return:
-    """
-    if settings.DEBUG:
-        app.add_middleware(
-            CORSMiddleware,
-            allow_origins=settings.origins,
-            allow_credentials=True,
-            allow_methods=settings.cors_allow_methods,
-            allow_headers=settings.cors_allow_headers
-        )
 
 
 def register_router(app: FastAPI) -> None:

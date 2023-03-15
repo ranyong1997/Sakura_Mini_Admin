@@ -68,7 +68,7 @@ class NewBook:
         for va in range(1, data_len + 1):
             url = self._Base_Url.format(page=va)
             book_info = self.get_new_book_info(url)
-            print(book_info)
+            # print(book_info)
             # self.save_db(book_info)
         logger.info("目前有新书")
         return True

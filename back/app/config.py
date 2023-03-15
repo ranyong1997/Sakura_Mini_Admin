@@ -68,6 +68,10 @@ class Settings(BaseSettings):
     CAPTCHA_EXPIRATION_TIME: int = 60  # 单位：s
     # Cookies
     COOKIES_MAX_AGE: int = 60 * 5  # cookies 时效 60 * 5 = 5 分钟
+    # Middleware
+    MIDDLEWARE_CORS: bool = True
+    MIDDLEWARE_GZIP: bool = True
+    MIDDLEWARE_ACCESS: bool = True
     # 项目标题
     project_title: str = "Sakura_Mini_Admin"
     # Docs文档 正式上线将/docs 改成None
@@ -92,61 +96,18 @@ class Settings(BaseSettings):
 - Github: [✶  🎀  GitHub地址  🎀  ✶](https://github.com/ranyong1997)
 </details>
 """
-    # Tags数据
-    tags_metadata = [
-        {
-            "name": "Casbin权限验证",
-            "description": "",
-        },
-        {
-            "name": "Casbin资源",
-            "description": "",
-        },
-        {
-            "name": "Casbin行为",
-            "description": "",
-        },
-        {
-            "name": "角色",
-            "description": "角色相关操作，增删改查",
-        },
-        {
-            "name": "系统登录",
-            "description": "获取token",
-        },
-        {
-            "name": "用户",
-            "description": "用户相关操作，增删改查",
-        },
-        {
-            "name": "虚拟数据生成器",
-            "description": "生成虚拟数据API",
-        },
-        {
-            "name": "HttpRunner",
-            "description": "HttpRunner接口测试",
-        },
-        {
-            "name": "每日60秒读世界",
-            "description": "60秒读世界API",
-        },
-        {
-            "name": "验证码",
-            "description": "验证码API",
-        },
-    ]
     # 项目版本
-    project_version: str = '0.0.5'
+    project_version: str = '0.0.6'
     # host
     server_host: str = "0.0.0.0"
     # port
     server_port: int = 8000
     # 配置允许域名
-    # origins: List[str] = ["http://localhost", "http://localhost:5555", "http://127.0.0.1:5555", "http://127.0.0.1:5174"]
+    # cors_allow_origins: List[str] = ["http://localhost", "http://localhost:5555", "http://127.0.0.1:5555", "http://127.0.0.1:5174"]
     # 所有域名可访问
-    origins: List[str] = ["*"]
+    cors_allow_origins: List[str] = ["*"]
     # 配置允许访问方式
-    cors_allow_methods: List[str] = ["PUT", "POST", "GET", "DELETE", "OPTIONS"]
+    cors_allow_methods: List[str] = ["*"]
     # 配置允许访问请求头
     cors_allow_headers: List[str] = ["*"]
     # url的前缀
