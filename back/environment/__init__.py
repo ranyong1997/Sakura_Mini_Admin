@@ -22,10 +22,10 @@ with open('store/env.json', 'r') as f:
     ENV = json.loads(f.read()).get('env', 'test')
 
 if ENV == Environment.PRODUCT.value:
-    log.info("\n当前环境为 生产 环境！")
-    from back.settings.product import *
+    log.info("当前环境为 生产 环境！")
+    from back.environment.product import *
 elif ENV == Environment.TEST.value:
-    log.info("\n当前环境为 测试 环境！")
-    from back.settings.test import *
+    log.info("当前环境为 测试 环境！")
+    from back.environment.test import *
 else:
-    raise ValueError("不识别的环境配置，正式环境请使用：product， 测试环境请使用：stag， 开发环境请使用：dev")
+    raise ValueError("不识别的环境配置，正式环境请使用：product， 测试环境请使用：test")

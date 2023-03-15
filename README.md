@@ -145,6 +145,7 @@ docker-compose up -d
 - [ ] 新增修改密码移除redisToken缓存
 - [ ] 新增websocket
 - [ ] 记录请求日志
+- [ ] 数据库自定义创建表、字段
 
 
 ## 🤦‍已办清单：

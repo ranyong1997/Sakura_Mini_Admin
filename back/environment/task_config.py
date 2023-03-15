@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : task_config.py
 # @Software: PyCharm
-# @desc    : 设置固定的定时任务【用于测试】
+# @desc    : 设置固定的定时任务【可用于测试】
 from datetime import datetime, timedelta
 
 source_task = [
@@ -19,8 +19,8 @@ source_task = [
         'trigger': 'interval',
         'jobstore': 'source_task',
         'days': 1,  # 间隔时间为 一天
-        # 'start_date': datetime.now() + timedelta(minutes=20),  # 开始执行的时间
-        'start_date': datetime.now() + timedelta(seconds=10),
+        'start_date': datetime.now() + timedelta(minutes=20),  # 开始执行的时间
+        # 'start_date': datetime.now() + timedelta(seconds=10),
         'next_run_time': datetime.now(),
         # 'hours': 1,
         # 'minutes': 1,

@@ -7,7 +7,7 @@
 # @Software: PyCharm
 # @desc    :
 from typing import Union, Tuple, Dict
-from back.settings.test.db_config import TABLE_DB_MAP
+from back.environment.test.db_config import TABLE_DB_MAP
 from back.dbdriver import mysql, redis, sync_redis, async_mysql
 
 
@@ -140,6 +140,7 @@ class SyncMysqlDBInterface(DBInterface):
         return self.async_mdb[db].executemany(sql, data=data, t_index=t_index)
 
     def get_db_instance(self, db: str = None):
+        """获取数据库实例"""
         self.SELECT_DB = db or self.DE_DB
         return self.async_mdb[self.SELECT_DB]
 

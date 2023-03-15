@@ -11,7 +11,7 @@ import traceback
 import pymysql
 from typing import Union, Tuple, Dict
 from dbutils.pooled_db import PooledDB
-from back import settings
+from back import environment
 from back.schemas.response_schemas import HttpException
 from back.utils.exception.errors import SQL_ERROR
 from back.utils.logger import log
@@ -302,7 +302,7 @@ class pyMysqlDb(object):
         """
         relist = True
         log_sql = sql.replace("\n", ' ')
-        log.info(f'执行sql: {log_sql}; \n 结果: {data}; t_index: {t_index}')
+        # log.info(f'执行sql: {log_sql}; \n 结果: {data}; t_index: {t_index}')
         if t_index:
             trans_cur = self.__transaction_cur[t_index]
             trans_cur.execute(sql, data)
@@ -316,7 +316,6 @@ class pyMysqlDb(object):
                 log.error("------------------SQL ERROR: {}".format(traceback.format_exc()))
             finally:
                 cur.close()
-                # self.conn.close()
         return relist
 
     def executemany(self, sql, data: list = None, t_index=None):
@@ -406,7 +405,7 @@ class pyMysqlDb(object):
 def get_database_pool():
     """获取数据库pool"""
     db_pool = {}
-    for key, item in settings.BusinessConfig.items():
+    for key, item in environment.BusinessConfig.items():
         dp = AioMysqlDb(**item)
         db_pool.setdefault(key, dp)
     return db_pool
@@ -415,7 +414,7 @@ def get_database_pool():
 def get_async_database_pool():
     """异步获取数据库pool"""
     db_pool = {}
-    for key, item in settings.BusinessConfig.items():
+    for key, item in environment.BusinessConfig.items():
         dp = pyMysqlDb(item)
         db_pool.setdefault(key, dp)
     return db_pool

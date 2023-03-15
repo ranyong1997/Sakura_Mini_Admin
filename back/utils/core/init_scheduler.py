@@ -10,13 +10,15 @@ import json
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.executors.pool import ProcessPoolExecutor
 from apscheduler.events import JobEvent, JobExecutionEvent
-from back.settings.task_config import JOBS
+from loguru import logger
+
+from back.environment.task_config import JOBS
 from back.utils.logger import log
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED, EVENT_JOB_MODIFIED, EVENT_JOB_ADDED, EVENT_JOB_REMOVED
 from .MysqlJobStore import MysqlJobStore
 from back.utils.common import MyJsonEncoder
 from back.basesever.service import SyncMysqlBaseService
-from back.settings.test.db_config import ApsMysqlConfig
+from back.environment.test.db_config import ApsMysqlConfig
 
 
 class SchedulerStart:
@@ -24,7 +26,7 @@ class SchedulerStart:
     def __init__(self):
         self.jobstores = {
             "default": MysqlJobStore(ApsMysqlConfig, table_name="default_task_job"),
-            "source_task": MysqlJobStore(ApsMysqlConfig, table_name="source_task", echo=True),
+            "source_task": MysqlJobStore(ApsMysqlConfig, table_name="source_task", echo=False),
         }
         self.executors = {
             "default": {"type": "threadpool", "max_workers": 20},  # 使用多线程执行
@@ -92,7 +94,7 @@ class SchedulerStart:
         self.init_db()
         for job in JOBS:
             sd = self.scheduler.add_job(**job)
-            log.info(f'添加任务： {job["id"]}, {sd}')
+            logger.info(f'添加任务： {job["id"]}, {sd}')
 
     def init_db(self):
         # 初始化数据库

@@ -54,7 +54,9 @@ class NewBook:
                 info = li.css_first('div[class="media__body"]')
                 res['title'] = info.css_first('h2[class="clearfix"] a').text(strip=True)
                 other_info = info.css_first('p[class="subject-abstract color-gray"]').text(strip=True)
-                date_ = re.findall('(\d{4}-\d{1,2}-\d{1,2}|\d{4}-\d{1,2}|\d{4}年\d{1,2}月|\d{4}年\d{1,2}月\d{1,2}日|\d{4}\\\d{1,2}\\\d{1,2}|\d{4}\\\d{1,2})', other_info)
+                date_ = re.findall(
+                    '(\d{4}-\d{1,2}-\d{1,2}|\d{4}-\d{1,2}|\d{4}年\d{1,2}月|\d{4}年\d{1,2}月\d{1,2}日|\d{4}\\\d{1,2}\\\d{1,2}|\d{4}\\\d{1,2})',
+                    other_info)
                 res['public_date'] = date_[0] if date_ else ''
                 res['author'] = other_info.split('/')[0]
                 res_list.append(res)
@@ -63,16 +65,17 @@ class NewBook:
 
     def run(self):
         data_len = self.get_search_list()
-        for va in range(1, data_len+1):
+        for va in range(1, data_len + 1):
             url = self._Base_Url.format(page=va)
             book_info = self.get_new_book_info(url)
+            print(book_info)
             # self.save_db(book_info)
-        logger.info("current new books are got")
+        logger.info("目前有新书")
         return True
 
-    # def save_db(self, data):
-    #     self.mysql.insert_or_update(table_name='cw_book', values=data,
-    #                            update_name=['image_url', 'public_date', 'oss_img'])
+    def save_db(self, data):
+        self.mysql.insert_or_update(table_name='cw_book', values=data,
+                                    update_name=['image_url'])
 
 
 def start_book():

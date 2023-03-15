@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : service.py
 # @Software: PyCharm
-# @desc    : 封装对mysql增删改查
+# @desc    : 封装对mysql、redis增删改查
 import uuid
 import re
 from typing import Union, Tuple, Dict, List, Any
@@ -91,7 +91,7 @@ class MysqlBaseService(object):
         return await self.db_interface.executemany(sql=sql, data=data, table_name=table_name, t_index=t_index)
 
     async def insert_or_update(self, table_name: str = None, values: Union[List[Dict], Dict] = None,
-                               update_name: List = [], t_index: str = None):
+                               update_name=None, t_index: str = None):
         """
         插入或更新数据库
         :param table_name: 数据表名
@@ -100,6 +100,8 @@ class MysqlBaseService(object):
         :param t_index: 事物句柄
         :return:
         """
+        if update_name is None:
+            update_name = []
         sql = """ insert into {table_name}{keys} values{values}  """
 
         if not values:
@@ -249,6 +251,14 @@ class SyncMysqlBaseService(object):
         return rows, total['total'] if total else 0
 
     def execute(self, sql: str = None, data: Union[dict, list] = None, table_name: str = None, t_index: str = None):
+        """
+        执行SQL
+        :param sql:
+        :param data:
+        :param table_name:
+        :param t_index:
+        :return:
+        """
         t_index = t_index if t_index else self.t_index
         if isinstance(data, list):
             return self.db_interface.executemany(sql, table_name=table_name, data=data, t_index=t_index)
@@ -266,23 +276,17 @@ class SyncMysqlBaseService(object):
         :return:
         """
         sql = """ insert into {table_name}{keys} values{values}  """
-
         if not values:
             return
-
         temp_data = values[0] if isinstance(values, list) else values
-
         key_str = list()
         value_name = list()
         for key in temp_data.keys():
             value_name.append(f"%({key})s")
             key_str.append(f"`{key}`")
-
         key_str = "( " + ", ".join(key_str) + " )"
         value_name = "( " + ", ".join(value_name) + " )"
-
         sql = sql.format(table_name=table_name, keys=key_str, values=value_name)
-
         if update_name:
             update_ = []
             for up_d in update_name:
@@ -297,9 +301,7 @@ class SyncMysqlBaseService(object):
                     """
                     update_.append(f"`{up_d['key']}` = {up_d['value']} ")
             update_str = ", ".join(update_)
-
             sql = " ON DUPLICATE KEY UPDATE ".join([sql, update_str])
-
         t_index = t_index if t_index else self.t_index
         if isinstance(values, list):
             return self.db_interface.executemany(sql, table_name=table_name, data=values, t_index=t_index)
@@ -316,7 +318,6 @@ class SyncMysqlBaseService(object):
         """
         if not where or not table_name or not values:
             raise
-
         value_name = list()
         set_copy = {}
         for key, value in values.items():
@@ -326,9 +327,7 @@ class SyncMysqlBaseService(object):
             else:
                 set_copy[f"va_{key}"] = value
                 value_name.append(f"`{key}` = %(va_{key})s ")
-
         eql_value = ", ".join(value_name)
-
         where_v = list()
         for wh, value in where.items():
             set_copy[f"wh_{wh}"] = value
@@ -336,11 +335,8 @@ class SyncMysqlBaseService(object):
                 where_v.append(f"`{wh}` in %(wh_{wh})s")
             else:
                 where_v.append(f"`{wh}` = %(wh_{wh})s")
-
         where_str = " and ".join(where_v)
-
         sql = f"""  update {table_name} set {eql_value} where {where_str} """
-
         t_index = t_index if t_index else self.t_index
         return self.db_interface.execute(sql=sql, table_name=table_name, data=set_copy, t_index=t_index)
 
@@ -356,22 +352,16 @@ class SyncMysqlBaseService(object):
         """
         if not where or not table_name or not values:
             raise
-
         value_list = list()
         for set_item in set_name:
             value_list.append(f"`{set_item}` = %({set_item})s ")
         eql_value = ", ".join(value_list)
-
         where_list = list()
         for where_item in where:
             where_list.append(f"`{where_item}`=%({where_item})s")
-
         where_str = " and ".join(where_list)
-
         sql = f"""  update {table_name} set {eql_value} where {where_str} """
-
         t_index = t_index if t_index else self.t_index
-
         return self.db_interface.executemany(sql, table_name=table_name, data=values, t_index=t_index)
 
 
@@ -379,7 +369,6 @@ class RedisBaseService(object):
     DB_SOURCE = 'redis'
 
     # 这里更多的是对数据处理
-
     def __init__(self):
         self.db_interface = DBConnectionFactory.find_dbinterface(db_source=self.DB_SOURCE)
 
@@ -418,7 +407,6 @@ class RedisBaseService(object):
         key, _, r_db = self.cook_redis_key(key, **kwargs)
         if not db:
             db = r_db
-
         return await self.db_interface.con(db=db).get(key)
 
     async def set(self, key: Union[Dict, str], value: Any, db=None, **kwargs):
@@ -432,7 +420,6 @@ class RedisBaseService(object):
         key, ex, r_db = self.cook_redis_key(key, **kwargs)
         if not db:
             db = r_db
-
         if ex > 0:
             return await self.db_interface.con(db=db).set(key, value=value, ex=ex)
         else:
@@ -442,7 +429,6 @@ class RedisBaseService(object):
         key, ex, r_db = self.cook_redis_key(key, **kwargs)
         if not db:
             db = r_db
-
         if ex > 0:
             res = await self.db_interface.con(db=db).sadd(key, *values)
             await self.db_interface.con(db=db).expire(key, ex)
@@ -476,7 +462,6 @@ class RedisBaseService(object):
         if not db:
             # pipeline中的 db必须都要一样
             db = data[0]['key']['db']
-
         connect = self.con(db=db)
         pipe = connect.pipeline()
         keys = []
@@ -492,14 +477,12 @@ class RedisBaseService(object):
                     await pipe.set(key, ve['value'], ex=expire)
                 else:
                     await pipe.set(key, ve['value'])
-
         res = await pipe.execute()
         return dict(zip(keys, res))
 
     async def aps_lock(self, lock_name: dict, time_out: int = 60, db: str = None) -> bool:
         identifier = str(uuid.uuid4())
         rdb = db if db is not None else lock_name['db']
-
         connect = self.con(db=rdb)
         # 1 不存在,key被设置
         # 0  已存在,key没有被改变,

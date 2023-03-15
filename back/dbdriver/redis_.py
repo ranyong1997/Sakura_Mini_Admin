@@ -8,7 +8,7 @@
 # @desc    : 异步redis
 import redis
 from aioredis import Connection, BlockingConnectionPool, Redis
-from back import settings
+from back import environment
 from back.utils.logger import log
 
 
@@ -101,7 +101,7 @@ def get_redis_connect_pool() -> dict:
     }
     """
     redis_pool = dict()
-    for redis_db, it in settings.Redis_Config.items():
+    for redis_db, it in environment.Redis_Config.items():
         aioRedis = AioRedis(**it)
         redis_pool.setdefault(redis_db, aioRedis)
     return redis_pool
@@ -117,7 +117,7 @@ def get_sync_redis_connect_pool() -> dict:
     }
     """
     redis_pool = dict()
-    for redis_db, it in settings.Redis_Config.items():
+    for redis_db, it in environment.Redis_Config.items():
         aioRedis = RedisConnection(**it)
         redis_pool.setdefault(redis_db, aioRedis)
     return redis_pool

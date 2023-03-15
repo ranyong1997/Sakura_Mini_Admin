@@ -116,7 +116,7 @@ def register_init(app: FastAPI) -> None:
             # 在数据库中生成表结构
             # TODO:将生成数据库异步执行
             Base.metadata.create_all(bind=engine)
-            logger.bind(name=None).success("数据库和表创建成功.          ✔")
+            logger.bind(name=None).success("数据库和表创建成功.         ✔")
         except Exception as e:
             logger.bind(name=None).error(f"数据库和表创建失败.          ❌ \n Error:{str(e)}")
             raise
@@ -124,7 +124,7 @@ def register_init(app: FastAPI) -> None:
             # 连接redis
             try:
                 await redis_client.init_redis_connect()
-                logger.bind(name=None).success("redis连接成功.          ✔")
+                logger.bind(name=None).success("redis连接成功.             ✔")
 
             except Exception as e:
                 logger.bind(name=None).error(f"redis连接失败.          ❌ \n Error:{str(e)}")
@@ -132,14 +132,14 @@ def register_init(app: FastAPI) -> None:
         try:
             # 生成初始化数据，添加了一个超级管理员并赋予所有管理权限，以及一些虚拟的用户。
             user_services.create_data(next(get_db()))
-            logger.bind(name=None).success("生成初始化数据成功.          ✔")
+            logger.bind(name=None).success("生成初始化数据成功.         ✔")
         except Exception as e:
             logger.bind(name=None).error(f"生成初始化数据失败.          ❌ \n Error:{str(e)}")
             raise
         try:
             # 初始化 定时器
             await scheduler_init.init_scheduler()
-            logger.bind(name=None).success("APScheduler正在运行.          ✔")
+            logger.bind(name=None).success("APScheduler正在运行.       ✔")
 
         except Exception as e:
             logger.bind(name=None).error(f"初始化APScheduler失败.          ❌ \n Error:{str(e)}")
@@ -147,7 +147,7 @@ def register_init(app: FastAPI) -> None:
         try:
             # 加载静态任务
             await scheduler_init.add_config_job()
-            logger.bind(name=None).success("开始加载静态任务.          ✔")
+            logger.bind(name=None).success("开始加载静态任务.           ✔")
         except Exception as e:
             logger.bind(name=None).error(f"加载静态任务失败.          ❌ \n Error:{str(e)}")
             raise
