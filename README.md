@@ -162,6 +162,7 @@ docker-compose up -d
 - [X] dev环境下不启动docs调试文档
 - [X] 引入APScheduler
 - [X] 记录请求日志
+- [x] http测试
 
 ### Httprunner快速体验
 
