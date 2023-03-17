@@ -139,7 +139,6 @@ docker-compose up -d
 - [ ] 替换异步mysql
 - [ ] 日志优化输出控制台
 - [ ] 单元测试
-- [ ] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
 - [ ] 新增分页查询
 - [ ] 增加Jenkinsfile打包
 - [ ] 新增修改密码移除redisToken缓存
@@ -163,6 +162,7 @@ docker-compose up -d
 - [X] 引入APScheduler
 - [X] 记录请求日志
 - [x] http测试
+- [x] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
 
 ### Httprunner快速体验
 
