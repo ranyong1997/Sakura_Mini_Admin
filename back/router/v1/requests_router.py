@@ -8,11 +8,9 @@
 # @desc    : 发送接口
 import httpx
 from typing import Dict, Any
-from sqlalchemy.orm import Session
-from fastapi import FastAPI, APIRouter, Body, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends
 from back.schemas import requests_schemas
 from back.utils.token import oauth2_scheme
-from back.dbdriver.mysql import get_db
 
 router = APIRouter(
     prefix="/v1",
@@ -23,8 +21,7 @@ router = APIRouter(
 
 @router.post("/send_request/")
 async def send_http_request(request_item: requests_schemas.RequestItem,
-                            token: str = Depends(oauth2_scheme),
-                            db: Session = Depends(get_db)) -> Dict[str, Any]:
+                            token: str = Depends(oauth2_scheme)) -> Dict[str, Any]:
     """
      发送Http接口
     """
@@ -37,16 +34,14 @@ async def send_http_request(request_item: requests_schemas.RequestItem,
         # 发送请求并接收响应
     async with httpx.AsyncClient() as client:
         try:
-            async with httpx.AsyncClient() as client:
-                response = await client.request(
-                    method=request_item.method,
-                    url=request_item.url,
-                    headers=request_item.headers,
-                    params=request_item.params,
-                    data=request_item.data,
-                    json=request_item.JSON,
-                )
-                response.raise_for_status()
+            response = await client.request(
+                method=request_item.method,
+                url=request_item.url,
+                headers=request_item.headers,
+                params=request_item.params,
+                data=request_item.data,
+                json=request_item.JSON)
+            response.raise_for_status()
         except httpx.HTTPError as e:
             raise HTTPException(status_code=400, detail=str(e))
     # 检查响应是否成功
