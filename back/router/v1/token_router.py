@@ -25,13 +25,6 @@ router = APIRouter(
     responses={404: {"description": "Not Found"}}  # 请求异常返回数据
 )
 
-no_permission = HTTPException(
-    status_code=status.HTTP_403_FORBIDDEN,
-    # TODO:后续封装所有请求结果
-    detail="您没有该权限",
-    headers={"WWW-Authenticate": "Bearer"}
-)
-
 
 ################################
 # access_token 系统登录相关的api接口
@@ -53,7 +46,7 @@ def authenticate_user(db: Session, username: str, password: str):
     return user
 
 
-@router.post("/token", response_model=Token,summary="获取token")
+@router.post("/token", response_model=Token, summary="获取token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     """
     获取token，如果没有或者密码错误并提示
