@@ -14,5 +14,4 @@ class RequestItem(BaseModel):
     method: str
     headers: dict
     params: dict
-    data: dict
     JSON: dict

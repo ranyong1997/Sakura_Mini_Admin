@@ -18,7 +18,6 @@ class Token(BaseModel):
     is_superuser: Optional[bool] = None
 
 
-
 class UserBase(BaseModel):
     email: str = Field(..., example='user@example.com')
 
