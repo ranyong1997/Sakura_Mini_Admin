@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>聊天室</title>
+    <script>
+        var ws = new WebSocket("ws://localhost/ws/" + prompt("请输入用户名："));
+        ws.onmessage = function(event) {
+            var messages = document.getElementById("messages");
+            var message = document.createElement("li");
+            var content = document.createTextNode(event.data);
+            message.appendChild(content);
+            messages.appendChild(message);
+        };
+        function sendMessage() {
+            var input = document.getElementById("input");
+            ws.send(input.value);
+            input.value = "";
+        }
+    </script>
+</head>
+<body>
+    <ul id="messages"></ul>
+    <input id="input" type="text" placeholder="输入消息...">
+    <button onclick="sendMessage()">发送</button>
+</body>
+</html>

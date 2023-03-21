@@ -6,26 +6,14 @@
 # @File    : main.py
 # @Software: PyCharm
 # @desc    : 总入口
-import time
-import traceback
 import uvicorn
-from fastapi import FastAPI, Response, Request
-from fastapi.exceptions import RequestValidationError
-from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
-from pydantic import ValidationError
-from fastapi.responses import HTMLResponse  # 响应html
-from loguru import logger
+from fastapi import FastAPI
 from back.app import settings
-from back.dbdriver.mysql import Base, engine, get_db
-from back.crud import user_services
+from back.crud import user_services    # 删除会报错
 from back.middleware import register_middleware
-from back.router.v1 import api_v1_router, tags_metadata
-from back.utils import response_code
-from back.utils.core.init_scheduler import scheduler_init
-from back.utils.exception import errors
-from back.utils.logger import log
-from back.dbdriver.redis import redis_client
+from back.router.v1 import tags_metadata
 from back.utils.registrar import register_router, register_init, register_hook, register_exception
+from back.utils.static import static_registration
 
 
 def create_app() -> FastAPI:
@@ -62,80 +50,11 @@ def create_app() -> FastAPI:
     register_init(app)
     # 中间件
     register_middleware(app)
+    # 静态资源
+    static_registration(app)
+
     return app
 
-    @app.exception_handler(errors.TokenAuthError)
-    async def user_token_exception_handler(request: Request, exc: errors.TokenAuthError):
-        """
-        用户token异常
-        :param request:
-        :param exc:
-        :return:
-        """
-        log.info(
-            f"用户认证异常\nURL:{request.method}{request.url}\nHeaders:{request.headers}\n{traceback.format_exc()}")
-
-        return response_code.resp_4003(message=exc.err_desc)
-
-    @app.exception_handler(errors.AuthenticationError)
-    async def user_not_found_exception_handler(request: Request, exc: errors.AuthenticationError):
-        """
-        用户权限不足
-        :param request:
-        :param exc:
-        :return:
-        """
-        log.info(f"用户权限不足 \nURL:{request.method}{request.url}")
-        return response_code.resp_4003(message=exc.err_desc)
-
-    @app.exception_handler(ValidationError)
-    async def inner_validation_exception_handler(request: Request, exc: ValidationError):
-        """
-        内部参数验证异常
-        :param request:
-        :param exc:
-        :return:
-        """
-        log.info(
-            f"内部参数验证错误\nURL:{request.method}{request.url}\nHeaders:{request.headers}\n{traceback.format_exc()}")
-        return response_code.resp_5002(message=exc.errors())
-
-    @app.exception_handler(RequestValidationError)
-    async def request_validation_exception_handler(request: Request, exc: RequestValidationError):
-        """
-        请求参数验证异常
-        :param request:
-        :param exc:
-        :return:
-        """
-        log.info(
-            f"请求参数格式错误\nURL:{request.method}{request.url}\nHeaders:{request.headers}\n{traceback.format_exc()}")
-        return response_code.resp_4001(message=exc.errors())
-
-    # 捕获全部异常
-    @app.exception_handler(Exception)
-    async def all_exception_handler(request: Request, exc: Exception):
-        """
-        全局所有异常
-        :param request:
-        :param exc:
-        :return:
-        """
-        log.info(f"全局异常\n{request.method}URL:{request.url}\nHeaders:{request.headers}\n{traceback.format_exc()}")
-        return response_code.resp_500()
-
-
-# 静态资源
-# app.mount("/dist", StaticFiles(directory=os.path.join(BASE_DIR, 'dist')), name="dist")
-# app.mount("/assets", StaticFiles(directory=os.path.join(BASE_DIR, 'dist/assets')), name="assets")
-
-
-# @app.get("/")
-# def main():
-#     html_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist', 'index.html')
-#     with open(html_path, encoding="utf-8") as f:
-#         html_content = f.read()
-#     return HTMLResponse(content=html_content, status_code=200)
 
 app = create_app()
 
