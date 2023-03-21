@@ -139,12 +139,10 @@ docker-compose up -d
 - [ ] 替换异步mysql
 - [ ] 日志优化输出控制台
 - [ ] 单元测试
-- [ ] 新增分页查询
 - [ ] 增加Jenkinsfile打包
 - [ ] 新增修改密码移除redisToken缓存
 - [ ] 新增websocket
 - [ ] 数据库自定义创建表、字段
-
 
 ## 🤦‍已办清单：
 - [X] 使用Dockerfile进行构建
@@ -161,8 +159,9 @@ docker-compose up -d
 - [X] dev环境下不启动docs调试文档
 - [X] 引入APScheduler
 - [X] 记录请求日志
-- [x] http测试,采用aiohttp,并持久化保存
+- [x] http发送接口,采用aiohttp,并持久化保存
 - [x] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
+- [x] 新增分页查询
 
 ### Httprunner快速体验
 
