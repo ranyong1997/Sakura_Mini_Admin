@@ -13,13 +13,14 @@ from starlette.staticfiles import StaticFiles
 from back.app.config import base_dir
 
 
-def static_registration(app: FastAPI) -> None:
+def static_registration(app: FastAPI()) -> None:
     """静态资源注册"""
+
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
     @app.get("/")
     def main():
-        html_path = os.path.join(base_dir, 'static\dist', 'index.html')
+        html_path = os.path.join(base_dir, 'static/dist', 'index.html')
         with open(html_path, encoding="utf-8") as f:
             html_content = f.read()
         return HTMLResponse(content=html_content, status_code=200)
