@@ -12,6 +12,8 @@ from dateutil import tz
 from datetime import datetime, timedelta
 from typing import Union, Optional, List, Dict
 from pytz.tzinfo import DstTzInfo
+from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 tz_sh = tz.gettz('Asia/Shanghai')
 
@@ -55,3 +57,19 @@ def combine(recodes: list, pre_recodes: List, index_key: Union[str, list], defau
             if default is not None:
                 rec.update(default)
     return recodes
+
+
+def paginate(db: Session, model: any, page: int = 1, page_size: int = 10):
+    """
+    分页查询
+    :param db: 数据库
+    :param model: 数据库库名【User】
+    :param page:
+    :param page_size:
+    :return:
+    """
+    offset = (page - 1) * page_size
+    query = db.query(model).offset(offset).limit(page_size).all()
+    if not query:
+        raise HTTPException(status_code=404, detail="Items not found")
+    return query

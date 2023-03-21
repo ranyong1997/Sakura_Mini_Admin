@@ -13,7 +13,7 @@ from pydantic import BaseModel
 
 
 class Job(BaseModel):
-    __tablename__ = 'role'
+    __tablename__ = 'job'
     __table_args__ = {'extend_existing': True}
     id: Union[str, uuid.UUID]  # 任务id, 必须唯一
     name: Optional[str] = None  # 任务的名字

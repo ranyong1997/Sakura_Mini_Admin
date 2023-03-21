@@ -5,7 +5,7 @@
 # @Site    : 
 # @File    : tasks_schemas.py
 # @Software: PyCharm
-# @desc    :
+# @desc    : 定时任务模型
 import enum
 import uuid
 from typing import Any, Dict, List, Optional, Union
