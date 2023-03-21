@@ -143,6 +143,7 @@ docker-compose up -d
 - [ ] 新增修改密码移除redisToken缓存
 - [ ] 新增websocket
 - [ ] 数据库自定义创建表、字段
+- [ ] 接入Scrapy爬虫
 
 ## 🤦‍已办清单：
 - [X] 使用Dockerfile进行构建
@@ -162,6 +163,7 @@ docker-compose up -d
 - [x] http发送接口,采用aiohttp,并持久化保存
 - [x] 涉及到密码的，数据库保留sha256(已实现),前端传输用AES
 - [x] 新增分页查询
+- [x] 新增websocket
 
 ### Httprunner快速体验
 
