@@ -89,7 +89,7 @@ def register_init(app: FastAPI) -> None:
             raise
         try:
             # 加载静态任务
-            await scheduler_init.add_config_job()
+            # await scheduler_init.add_config_job()
             logger.bind(name=None).success("开始加载静态任务.           ✔")
         except Exception as e:
             logger.bind(name=None).error(f"加载静态任务失败.          ❌ \n Error:{str(e)}")
@@ -125,7 +125,7 @@ def register_init(app: FastAPI) -> None:
                 logger.bind(name=None).success(f"关闭sync_redis连接池:{rdb}.          ✔")
         except Exception as e:
             logger.bind(name=None).error(f"关闭sync_redis连接池: {rdb}失败          ❌ \n Error:{str(e)}")
-        logger.bing(name=None).success(
+        logger.bind(name=None).success(
             f"*********  END:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} *********")
 
     @app.post("/docs", include_in_schema=False)

@@ -9,7 +9,7 @@
 import uvicorn
 from fastapi import FastAPI
 from back.app import settings
-from back.crud import user_services    # 删除会报错
+from back.crud import user_services  # 删除会报错
 from back.middleware import register_middleware
 from back.router.v1 import tags_metadata
 from back.utils.registrar import register_router, register_init, register_hook, register_exception
