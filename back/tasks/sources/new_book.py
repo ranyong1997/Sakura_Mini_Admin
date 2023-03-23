@@ -13,9 +13,9 @@ from . import USER_AGENTS
 from selectolax.parser import HTMLParser
 import httpx
 import random
-from loguru import logger
 from back.basesever.service import SyncMysqlBaseService
 from back.utils.core.init_scheduler import scheduler
+from ...utils.logger import log
 
 
 class NewBook:
@@ -70,7 +70,7 @@ class NewBook:
             book_info = self.get_new_book_info(url)
             # print(book_info)
             # self.save_db(book_info)
-        logger.info("目前有新书")
+        log.info("目前有新书")
         return True
 
     def save_db(self, data):
@@ -82,11 +82,11 @@ def start_book():
     try:
         NewBook().run()
     except Exception as e:
-        logger.error(traceback.format_exc())
+        log.error(traceback.format_exc())
     finally:
         try:
             next_time = datetime.now() + timedelta(hours=random.randint(10, 24))
             scheduler.reschedule_job(job_id='new_book', trigger='interval', start_date=next_time, days=2)
-            logger.info(f'修改爬取数据信息定时任务 下次执行时间为：{next_time}')
+            log.info(f'修改爬取数据信息定时任务 下次执行时间为：{next_time}')
         except Exception as e:
-            logger.exception(f"修改 book 定时任务失败： {traceback.format_exc()}")
+            log.exception(f"修改 book 定时任务失败： {traceback.format_exc(e)}")

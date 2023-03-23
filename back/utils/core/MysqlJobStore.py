@@ -6,13 +6,21 @@
 # @File    : MysqlJobStore.py
 # @Software: PyCharm
 # @desc    : mysql连接方式
-import pickle
-import pymysql
+from __future__ import absolute_import
+
+import traceback
+
 from apscheduler.jobstores.base import BaseJobStore, JobLookupError, ConflictingIdError
 from apscheduler.util import datetime_to_utc_timestamp, utc_timestamp_to_datetime
-from dbutils.pooled_db import PooledDB
 from apscheduler.job import Job
 from back.utils.logger import log
+try:
+    import cPickle as pickle
+except ImportError:  # pragma: nocover
+    import pickle
+import pymysql
+from dbutils.pooled_db import PooledDB
+
 
 class mysqlManager(object):
     """
@@ -59,7 +67,7 @@ class mysqlManager(object):
         :return:
         """
         if self.echo:
-            log.info(f"fetchmany: {sql} ; 结果: {data}")
+            log.info(f"fetchmany: {sql} ; data: {data}")
 
         relist = []
         cur = self._getConnectCur()
@@ -71,7 +79,6 @@ class mysqlManager(object):
             pass
         finally:
             cur.close()
-            # self.conn.close()
         return relist
 
     def fetchone(self, sql: str, data: dict = None) -> dict:
@@ -82,7 +89,7 @@ class mysqlManager(object):
         :return:
         """
         if self.echo:
-            log.info(f"fetchone: {sql} ; 结果: {data}")
+            log.info(f"fetchone: {sql} ; data: {data}")
         relist = {}
         cur = self._getConnectCur()
         try:
@@ -104,15 +111,13 @@ class mysqlManager(object):
         """
         relist = 0
         if self.echo:
-            log.info(f"执行: {sql} ; 结果: {data}")
+            log.info(f"execute: {sql} ; data: {data}")
 
         cur = self._getConnectCur()
         try:
             relist = cur.execute(sql, data)
             self.conn.commit()
         except Exception as e:
-            relist = -1
-            log.error(f"execute job error {e}")
             raise e
         finally:
             cur.close()

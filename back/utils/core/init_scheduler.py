@@ -10,8 +10,6 @@ import json
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.executors.pool import ProcessPoolExecutor
 from apscheduler.events import JobEvent, JobExecutionEvent
-from loguru import logger
-
 from back.environment.task_config import JOBS
 from back.utils.logger import log
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED, EVENT_JOB_MODIFIED, EVENT_JOB_ADDED, EVENT_JOB_REMOVED
@@ -94,7 +92,7 @@ class SchedulerStart:
         self.init_db()
         for job in JOBS:
             sd = self.scheduler.add_job(**job)
-            logger.info(f'添加任务： {job["id"]}, {sd}')
+            log.info(f'添加任务： {job["id"]}, {sd}')
 
     def init_db(self):
         # 初始化数据库

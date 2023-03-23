@@ -19,9 +19,9 @@ source_task = [
         'trigger': 'interval',
         'jobstore': 'source_task',
         'days': 1,  # 间隔时间为 一天
-        'start_date': datetime.now() + timedelta(minutes=20),  # 开始执行的时间
-        # 'start_date': datetime.now() + timedelta(seconds=10),
-        'next_run_time': datetime.now(),
+        # 'start_date': datetime.now() + timedelta(minutes=20),  # 开始执行的时间
+        'start_date': datetime.now() + timedelta(seconds=10),
+        # 'next_run_time': datetime.now(),
         # 'hours': 1,
         # 'minutes': 1,
         # 'seconds': 30,

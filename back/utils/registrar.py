@@ -45,16 +45,14 @@ def register_init(app: FastAPI) -> None:
 
     @app.on_event("startup")
     async def startup_event():
-        logger.bind(name=None).success(f'{settings.BANNER}')
-        logger.bind(name=None).success(
-            f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
-
-    @app.on_event("startup")
-    async def startup_event():
         """
             初始化数据库,建表,Redis
             :return:
             """
+        logger.bind(name=None).success(f'{settings.BANNER}')
+        logger.bind(name=None).success(
+            f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
+
         try:
             # 在数据库中生成表结构
             # TODO:将生成数据库异步执行
@@ -88,7 +86,7 @@ def register_init(app: FastAPI) -> None:
             logger.bind(name=None).error(f"初始化APScheduler失败.          ❌ \n Error:{str(e)}")
             raise
         try:
-            # 加载静态任务
+            # 加载静态任务 todo:有bug
             # await scheduler_init.add_config_job()
             logger.bind(name=None).success("开始加载静态任务.           ✔")
         except Exception as e:
