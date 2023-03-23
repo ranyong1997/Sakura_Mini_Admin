@@ -145,6 +145,7 @@ docker-compose up -d
 - [ ] 数据库自定义创建表、字段
 - [ ] 接入Scrapy爬虫
 - [ ] 重写APScheduler
+- [ ] 测试环境和正式环境一键切换开关
 
 ## 🤦‍已办清单：
 - [X] 使用Dockerfile进行构建

@@ -17,6 +17,7 @@ class Environment(Enum):
     TEST = "test"
 
 
+# todo:将获取env.json 写入到config.py里面,方便配置
 with open('store/env.json', 'r') as f:
     ENV = json.loads(f.read()).get('env', 'test')
 
