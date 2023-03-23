@@ -7,7 +7,6 @@
 # @Software: PyCharm
 # @desc    : 判断环境
 import json
-from loguru import logger
 from enum import Enum
 
 ENV = None
@@ -22,10 +21,8 @@ with open('store/env.json', 'r') as f:
     ENV = json.loads(f.read()).get('env', 'test')
 
 if ENV == Environment.PRODUCT.value:
-    logger.bind(name=None).success("当前环境为 生产 环境！")
     from back.environment.product import *
 elif ENV == Environment.TEST.value:
-    logger.bind(name=None).success("当前环境为 测试 环境！")
     from back.environment.test import *
 else:
     raise ValueError("不识别的环境配置，正式环境请使用：product， 测试环境请使用：test")

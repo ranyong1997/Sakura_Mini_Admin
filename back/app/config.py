@@ -16,7 +16,7 @@ base_dir = Path(__file__).absolute().parent.parent
 
 
 class Settings(BaseSettings):
-    DEBUG: bool = True  # DEBUG模式
+    DEBUG: bool = True  # DEBUG模式,开启则可以调试swagger文档，线上模式建议关闭
     # 数据库—server
     DB_ECHO: bool = False  # 是否开启日志打印
     MYSQL_HOST: str = None  # 数据库主机
