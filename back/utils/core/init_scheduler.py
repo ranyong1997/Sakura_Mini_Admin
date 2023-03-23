@@ -19,11 +19,26 @@ from back.basesever.service import SyncMysqlBaseService
 from back.environment.test.db_config import ApsMysqlConfig
 
 
+def init_db():
+    # 初始化数据库
+    sql = """
+        CREATE TABLE IF NOT EXISTS `aps_task_log` (
+          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+          `job_id` varchar(191) COLLATE utf8mb4_general_ci NOT NULL,
+          `job_info` json DEFAULT NULL,
+          `type` tinyint(3) DEFAULT NULL COMMENT '1 删除｜0添加或修改｜ 错误 4',
+          `creamt_time` datetime DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`),
+          KEY `task_log_job_id_idx` (`job_id`) USING BTREE
+        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    """
+    SyncMysqlBaseService().execute(sql=sql)
+
+
 class SchedulerStart:
 
     def __init__(self):
         self.jobstores = {
-            "default": MysqlJobStore(ApsMysqlConfig, table_name="default_task_job"),
             "source_task": MysqlJobStore(ApsMysqlConfig, table_name="source_task", echo=False),
         }
         self.executors = {
@@ -89,25 +104,10 @@ class SchedulerStart:
 
     async def add_config_job(self):
         """加载本地配置好的 定时任务"""
-        self.init_db()
+        init_db()
         for job in JOBS:
             sd = self.scheduler.add_job(**job)
             log.info(f'添加任务： {job["id"]}, {sd}')
-
-    def init_db(self):
-        # 初始化数据库
-        sql = """
-            CREATE TABLE IF NOT EXISTS `aps_task_log` (
-              `id` bigint(20) NOT NULL AUTO_INCREMENT,
-              `job_id` varchar(191) COLLATE utf8mb4_general_ci NOT NULL,
-              `job_info` json DEFAULT NULL,
-              `type` tinyint(3) DEFAULT NULL COMMENT '1 删除｜0添加或修改｜ 错误 4',
-              `creamt_time` datetime DEFAULT CURRENT_TIMESTAMP,
-              PRIMARY KEY (`id`),
-              KEY `task_log_job_id_idx` (`job_id`) USING BTREE
-            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-        """
-        SyncMysqlBaseService().execute(sql=sql)
 
 
 scheduler_init = SchedulerStart()
