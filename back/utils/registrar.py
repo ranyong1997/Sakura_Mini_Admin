@@ -22,6 +22,7 @@ from back.utils.core.init_scheduler import scheduler_init
 from back.utils.exception import errors
 from back.utils.logger import log
 from back.dbdriver.redis import redis_client
+from back.environment import ENV
 
 
 def register_router(app: FastAPI) -> None:
@@ -51,8 +52,7 @@ def register_init(app: FastAPI) -> None:
             """
         logger.bind(name=None).success(f'{settings.BANNER}')
         logger.bind(name=None).success(
-            f"{settings.project_title} 正在运行环境: 【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
-
+            f"{settings.project_title} 正在运行环境: {ENV}【环境】 接口文档: http://{settings.server_host}:{settings.server_port}/docs")
         try:
             # 在数据库中生成表结构
             # TODO:将生成数据库异步执行

@@ -235,8 +235,6 @@ class pyMysqlDb(object):
         self.__transaction = {}  # transaction
         self.__transaction_cur = {}
         pool_conf = pool_conf or {}
-        log.info(f"连接同步数据库:{self.host}, -- {self.db} -- {self.user} -- {self.pwd}")
-
         self.Pool = PooledDB(creator=pymysql,
                              mincached=pool_conf.get("mincached", 2),
                              maxcached=pool_conf.get("maxcached", 3),
