@@ -14,8 +14,8 @@ from fastapi.openapi.docs import get_swagger_ui_html, get_swagger_ui_oauth2_redi
 from loguru import logger
 from pydantic import ValidationError
 from back.app import settings
-from back.dbdriver.mysql import Base, engine, get_db
 from back.crud import user_services
+from back.dbdriver.mysql import Base, engine, get_db
 from back.router.v1 import api_v1_router
 from back.utils import response_code
 from back.utils.core.init_scheduler import scheduler_init
