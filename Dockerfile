@@ -1,5 +1,5 @@
 # 引入python版本
-FROM python:3.8-slim
+FROM python:3.8
 # 设置编码格式
 ENV LANG=C.UTF-8
 #作者信息

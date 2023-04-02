@@ -88,7 +88,7 @@ def register_init(app: FastAPI) -> None:
         try:
             logger.bind(name=None).success("开始加载静态任务.           ✔")
             # 加载静态任务
-            await scheduler_init.add_config_job()
+            # await scheduler_init.add_config_job()
         except Exception as e:
             logger.bind(name=None).error(f"加载静态任务失败.          ❌ \n Error:{str(e)}")
             raise

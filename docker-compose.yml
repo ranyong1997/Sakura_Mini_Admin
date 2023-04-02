@@ -19,12 +19,15 @@ services:
     # 加入指定网络
     networks:
       - my_network
+    volumes:
+      - ./back/logs:/back/logs
     # 服务的日志记录配置
     logging:
       driver: "json-file"
       options:
         max-size: "100m" # 单个文件大小为200k
         max-file: "2" # 最多10个文件
+
   # MySQL服务
   mysql:
     image: mysql:8.0.24
@@ -84,7 +87,45 @@ services:
     # 运行命令
     command: redis-server /etc/redis.conf
 
+  # elasticsearch
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.3"
+    container_name: elasticsearch
+    environment:
+      #- "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  # kibana
+  kibana:
+    image: "docker.elastic.co/kibana/kibana-oss:7.9.3"
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS:http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  # filebeat
+  filebeat:
+    build:
+      context: ./filebeat
+    container_name: filebeat
+    volumes:
+      - ./back/logs:/back/logs
+    depends_on:
+      - elasticsearch
+      - kibana
+
 # 创建网络
 networks:
   # 默认将会创建为 docker-compose.yml所在 文件夹名_my_network 网络名称
   my_network:
+
+volumes:
+    elasticsearch_data:
+        driver: local

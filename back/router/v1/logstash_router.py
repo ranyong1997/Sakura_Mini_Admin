@@ -7,39 +7,24 @@
 # @Software: PyCharm
 # @desc    :
 import logging
+import uuid
 from fastapi import APIRouter
-from logstash_async.handler import AsynchronousLogstashHandler
+from back.utils.logging_setup import setup_root_logger
 
+
+setup_root_logger()
+
+LOGGER = logging.getLogger(__name__)
+
+LOGGER.info("---Starting App---")
 router = APIRouter(
     prefix="/v1",
     tags=["ELK"],
     responses={404: {"description": "Not Found"}}  # 请求异常返回数据
 )
 
-# 在logstash中配置
-"""
-input {
-  tcp {
-    port => 5000
-    codec => "json"
-  }
-}
 
-output {
-  elasticsearch {
-    hosts => ["localhost:9200"]
-    index => "fastapi-%{+YYYY.MM.dd}"
-  }
-}
-"""
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = AsynchronousLogstashHandler(host="localhost", port=5000, database_path="")
-logger.addHandler(handler)
-
-
-@router.get("/")
+@router.get("/random_uuid")
 async def root():
-    logger.info("Hello")
-    return {"message": "Hello"}
+    LOGGER.info(str(uuid.uuid4()))
+    return {"message": "OK"}
