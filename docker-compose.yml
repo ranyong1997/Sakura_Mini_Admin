@@ -1,8 +1,11 @@
-version: '3.8'
+version: '3'
+
 services:
+
   sakura_mini_admin:
     # 指定容器运行的镜像,指向Dockerfile文件
-    build: .
+    build:
+      context: .
     # 自定义容器名称
     container_name: sakura_mini_admin
     # 将主机的数据卷或着文件挂载到容器里
@@ -11,6 +14,8 @@ services:
     depends_on:
       - mysql
       - redis
+      - elasticsearch
+      - kibana
     environment:
       TZ: Asia/Shanghai
     # 容器的端口xx映射到宿主机的端口xx
@@ -20,7 +25,7 @@ services:
     networks:
       - my_network
     volumes:
-      - ./back/logs:/back/logs
+      - ./fastapi-logs:/back/logs
     # 服务的日志记录配置
     logging:
       driver: "json-file"
@@ -121,11 +126,13 @@ services:
       - elasticsearch
       - kibana
 
+
+
 # 创建网络
 networks:
   # 默认将会创建为 docker-compose.yml所在 文件夹名_my_network 网络名称
   my_network:
 
 volumes:
-    elasticsearch_data:
-        driver: local
+  elasticsearch_data:
+    driver: local

@@ -10,7 +10,7 @@ import re
 import traceback
 import aiohttp
 from datetime import datetime, timedelta
-from . import USER_AGENTS
+from back.tasks.sources import USER_AGENTS
 from selectolax.parser import HTMLParser
 import random
 from back.basesever.service import SyncMysqlBaseService
