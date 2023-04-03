@@ -1,4 +1,4 @@
-name: "Sakura_Mini_Admin_filebeat"
+name: "sakura-filebeat"
 logging.metrics.enabled: false
 xpack.security.enabled: false
 xpack.monitoring.enabled: false
@@ -10,11 +10,11 @@ filebeat.inputs:
   scan_frequency: 1s
   enabled: true
   paths:
-    - /back/logs/fastapi-elk-stack.*
+    - /logs/fastapi-elk-stack.*
   fields:
     - service: sakura_mini_admin
   fields_under_root: true
 
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]
-  index: "sakura_mini_admin"
+  index: "sakura-app"

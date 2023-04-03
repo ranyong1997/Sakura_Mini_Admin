@@ -14,8 +14,6 @@ services:
     depends_on:
       - mysql
       - redis
-      - elasticsearch
-      - kibana
     environment:
       TZ: Asia/Shanghai
     # 容器的端口xx映射到宿主机的端口xx
@@ -95,7 +93,7 @@ services:
   # elasticsearch
   elasticsearch:
     image: "docker.elastic.co/elasticsearch/elasticsearch-oss:7.9.3"
-    container_name: elasticsearch
+    container_name: sakura-elasticsearch
     environment:
       #- "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - "discovery.type=single-node"
@@ -107,7 +105,7 @@ services:
   # kibana
   kibana:
     image: "docker.elastic.co/kibana/kibana-oss:7.9.3"
-    container_name: kibana
+    container_name: sakura-kibana
     ports:
       - "5601:5601"
     environment:
@@ -119,14 +117,12 @@ services:
   filebeat:
     build:
       context: ./filebeat
-    container_name: filebeat
+    container_name: sakura-filebeat
     volumes:
-      - ./back/logs:/back/logs
+      - ./fastapi-logs:/back/back/logs
     depends_on:
       - elasticsearch
       - kibana
-
-
 
 # 创建网络
 networks:
