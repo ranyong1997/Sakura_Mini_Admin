@@ -10,7 +10,7 @@ filebeat.inputs:
   scan_frequency: 1s
   enabled: true
   paths:
-    - /back/logs/sakura_mini_admin_all.*
+    - /back/logs/*.log
   fields:
     - service: sakura_mini_admin
   fields_under_root: true

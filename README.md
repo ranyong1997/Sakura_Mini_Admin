@@ -170,7 +170,7 @@ docker-compose up -d
 - [x] 重写APScheduler
 - [x] 接入ELK日志系统
 
-### Httprunner快速体验
+### ✨Httprunner快速体验
 
 > run_har2case——>"har\requests.har"
 
@@ -213,6 +213,10 @@ GET：`/news_api`
 | index            | query | number | 否   | 0      | 说明：`0-99` 用来控制天数，`0` 为今天，`1` 为昨天，依次类推 |
 | origin           | query | string | 否   | zhihu  | 说明："`zhihu`" 或 "`163`" 切换源                           |
 </details>
+
+## 🦄Casbin数据库ER图
+
+![数据库ER图](https://cdn.jsdelivr.net/gh/ranyong1997/image_collect@main/img/202304041543880.png)
 
 ## 📸截图
 

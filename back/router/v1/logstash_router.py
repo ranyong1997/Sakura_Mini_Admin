@@ -9,11 +9,13 @@
 import logging
 import uuid
 from fastapi import APIRouter
-from back.utils.logging_setup import setup_root_logger
 
-setup_root_logger()
+from back.utils.logger import log
+# from back.utils.logging_setup import setup_root_logger
 
-LOGGER = logging.getLogger(__name__)
+# setup_root_logger()
+
+# LOGGER = log.getLogger(__name__)
 
 router = APIRouter(
     prefix="/v1",
@@ -24,5 +26,5 @@ router = APIRouter(
 
 @router.get("/random_uuid")
 async def root():
-    LOGGER.info(str(uuid.uuid4()))
+    log.info(str(uuid.uuid4()))
     return {"message": "OK"}

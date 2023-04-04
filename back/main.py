@@ -65,5 +65,4 @@ if __name__ == '__main__':
         port=settings.server_port,
         reload_dirs=['back'],  # reload_dirs=['back'],仅检测back目录下的代码改动
         workers=4,
-        reload=True,
-        log_config=None)
+        reload=True)
