@@ -26,7 +26,7 @@ def setup_root_logger():
     console.setFormatter(formatter)
 
     # 配置 rotating 文件 handler
-    file = logging.handlers.RotatingFileHandler(filename="logs/fastapi-elk-stack.log", mode='a',
+    file = logging.handlers.RotatingFileHandler(filename="logs/sakura_mini_admin_all.log", mode='a',
                                                 maxBytes=15000000, backupCount=5)
     file.setFormatter(formatter)
 

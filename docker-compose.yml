@@ -23,7 +23,7 @@ services:
     networks:
       - my_network
     volumes:
-      - ./fastapi-logs:/back/logs
+      - ./back/logs:/back/logs
     # 服务的日志记录配置
     logging:
       driver: "json-file"
@@ -119,7 +119,7 @@ services:
       context: ./filebeat
     container_name: sakura-filebeat
     volumes:
-      - ./fastapi-logs:/back/logs
+      - ./back/logs:/back/logs
     depends_on:
       - elasticsearch
       - kibana
