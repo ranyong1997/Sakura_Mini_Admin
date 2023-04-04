@@ -11,12 +11,10 @@ import uuid
 from fastapi import APIRouter
 from back.utils.logging_setup import setup_root_logger
 
-
 setup_root_logger()
 
 LOGGER = logging.getLogger(__name__)
 
-LOGGER.info("---Starting App---")
 router = APIRouter(
     prefix="/v1",
     tags=["ELK"],

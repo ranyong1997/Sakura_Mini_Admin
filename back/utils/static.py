@@ -16,7 +16,7 @@ from back.app.config import base_dir
 def static_registration(app: FastAPI()) -> None:
     """静态资源注册"""
 
-    # app.mount("/static", StaticFiles(directory="/static"), name="static")
+    # app.mount("/static", StaticFiles(directory="static"), name="static")
     app.mount("/static", StaticFiles(directory="back/static"), name="static")
 
     @app.get("/")
