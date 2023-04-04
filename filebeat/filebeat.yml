@@ -10,7 +10,7 @@ filebeat.inputs:
   scan_frequency: 1s
   enabled: true
   paths:
-    - /back/back/logs/fastapi-elk-stack.*
+    - /back/logs/fastapi-elk-stack.*
   fields:
     - service: sakura_mini_admin
   fields_under_root: true

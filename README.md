@@ -145,7 +145,7 @@ docker-compose up -d
 - [ ] 数据库自定义创建表、字段
 - [ ] 接入Scrapy爬虫
 - [ ] 测试环境和正式环境一键切换开关
-- [ ] 接入ELK日志系统
+
 
 ## 🤦‍已办清单：
 - [X] 使用Dockerfile进行构建
@@ -167,6 +167,7 @@ docker-compose up -d
 - [x] 新增分页查询
 - [x] 新增websocket
 - [x] 重写APScheduler
+- [x] 接入ELK日志系统
 
 ### Httprunner快速体验
 

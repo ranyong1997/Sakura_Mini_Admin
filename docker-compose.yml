@@ -119,7 +119,7 @@ services:
       context: ./filebeat
     container_name: sakura-filebeat
     volumes:
-      - ./fastapi-logs:/back/back/logs
+      - ./fastapi-logs:/back/logs
     depends_on:
       - elasticsearch
       - kibana
