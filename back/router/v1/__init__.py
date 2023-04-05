@@ -9,7 +9,7 @@
 from fastapi import APIRouter
 from back.router.v1 import casbin_router, casbin_action_router, casbin_object_router, role_router, token_router, \
     user_router, fakerdata_router, httprunner_router, news_router, captcha_router, tasks_router, requests_router, \
-    pagequery_router, inmail_router, demo_router, logstash_router
+    pagequery_router, inmail_router, logstash_router, menu_router
 
 api_v1_router = APIRouter()
 
@@ -28,8 +28,8 @@ api_v1_router.include_router(tasks_router.router)
 api_v1_router.include_router(requests_router.router)
 api_v1_router.include_router(pagequery_router.router)
 api_v1_router.include_router(inmail_router.router)
-api_v1_router.include_router(demo_router.router)
 api_v1_router.include_router(logstash_router.router)
+api_v1_router.include_router(menu_router.router)
 
 # swagger标签
 tags_metadata = [
@@ -80,5 +80,9 @@ tags_metadata = [
     {
         "name": "分页查询演示接口",
         "description": "分页查询演示接口",
+    },
+    {
+        "name": "获取菜单",
+        "description": "获取菜单",
     },
 ]
