@@ -1,4 +1,6 @@
 # 引入python版本
+# [Mac用slim会报错]
+#FROM python:3.8
 FROM python:3.8-slim
 # 设置编码格式
 ENV LANG=C.UTF-8
