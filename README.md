@@ -18,6 +18,20 @@
     </a>
 </h1>
 
+## Built with
+
+* [![Python][Python]][python-url]
+* [![FastAPI][FastAPI]][fastapi-url]
+* [![Pydantic][Pydantic]][pydantic-url]
+* [![Uvicorn][uvicorn]][uvicorn-url]
+* [![Redis][redis]][redis-url]
+* [![jwt][jwt]][jwt-url]
+* [![Pytest][pytest]][pytest-url]
+* [![Nginx][Nginx]][Nginx-url]
+* [![Pycharm][Pycharm]][Pycharm-url]
+* [![Markdown][Markdown]][Markdown-url]
+* [![Swagger][Swagger]][Swagger-url]
+
 ## 🧐💻‍目录
 
 ```shell
@@ -146,6 +160,7 @@ docker-compose up -d
 - [ ] 接入Scrapy爬虫
 - [ ] 测试环境和正式环境一键切换开关
 - [ ] 写一个获取菜单的接口
+- [ ] 将ELK单独用Docker启动
 
 
 ## 🤦‍已办清单：
