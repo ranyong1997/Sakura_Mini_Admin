@@ -136,3 +136,4 @@ back/Sakura_Mini_Admin_data.db
 /back/conf/pro.env
 misc.xml
 Sakura_Mini_Admin.iml
+alembic.ini
