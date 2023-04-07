@@ -22,7 +22,6 @@ class User(Base):
     hashed_password = Column(String(128), nullable=False, comment='用户密码')
     sex = Column(String(1), nullable=False, default='1', comment='用户性别')
     email = Column(String(128), nullable=False, unique=True, comment='用户邮箱')
-    # is_superuser = Column(Boolean, default=False, comment='超级权限')  # 1为超管
     is_superuser: Mapped[bool] = mapped_column(default=False, comment='超级权限')  # 1为超管
     is_active = Column(Boolean, default=False, comment='用户账户状态')  # 0为正常
     avatar = Column(String(128), comment='用户头像')

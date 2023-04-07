@@ -12,7 +12,6 @@ from sqlalchemy import String, Column, Integer, JSON
 
 class RequestDetail(Base):
     __tablename__ = 'request_detail'
-
     id = Column(Integer, primary_key=True)
     status_code = Column(Integer)
     text = Column(String(255))
