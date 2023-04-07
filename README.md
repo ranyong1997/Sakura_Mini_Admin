@@ -20,7 +20,7 @@
 
 ## Built with
 
-* [![Python][Python]][python-url]
+* [![Python][Python]][python-url] 
 * [![FastAPI][FastAPI]][fastapi-url]
 * [![Pydantic][Pydantic]][pydantic-url]
 * [![Uvicorn][uvicorn]][uvicorn-url]
@@ -31,6 +31,7 @@
 * [![Pycharm][Pycharm]][Pycharm-url]
 * [![Markdown][Markdown]][Markdown-url]
 * [![Swagger][Swagger]][Swagger-url]
+
 
 ## 🧐💻‍目录
 
@@ -246,3 +247,49 @@ GET：`/news_api`
 </div>
 </details>
 <hr>
+
+[Python-docs]: https://docs.python.org/3.8/
+
+[Python]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
+
+[FastAPI]: https://img.shields.io/badge/FastAPI-FFFFFF?style=for-the-badge&logo=fastapi
+
+[Pydantic]: https://img.shields.io/badge/Pydantic-FF43A1?style=for-the-badge&logo=pydantic&logoColor=white
+
+[Uvicorn]: https://img.shields.io/badge/Uvicorn-2A308B?style=for-the-badge&logo=uvicorn&logoColor=white
+
+[Pytest]: https://img.shields.io/badge/Pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white
+
+[Redis]: https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white
+
+[JWT]: https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens
+
+[Nginx]: https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white
+
+[PyCharm]: https://img.shields.io/badge/PyCharm-21D789?style=for-the-badge&logo=pycharm&logoColor=white
+
+[Markdown]: https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white
+
+[Swagger]: https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white
+
+[python-url]: https://www.python.org/
+
+[fastapi-url]: https://fastapi.tiangolo.com
+
+[pydantic-url]: https://docs.pydantic.dev
+
+[uvicorn-url]: https://www.uvicorn.org/
+
+[pytest-url]: https://docs.pytest.org/en/7.2.x/
+
+[redis-url]: https://redis.io/
+
+[jwt-url]: https://jwt.io/
+
+[Pycharm-url]: https://www.jetbrains.com/pycharm/
+
+[Nginx-url]: https://www.nginx.com/
+
+[Markdown-url]: https://daringfireball.net/projects/markdown/
+
+[Swagger-url]: https://swagger.io/
