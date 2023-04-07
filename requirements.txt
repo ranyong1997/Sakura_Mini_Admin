@@ -30,3 +30,4 @@ aiohttp==3.8.4
 aiomysql==0.1.1
 DBUtils==3.0.2
 redis==4.5.1
+alembic==1.7.4
