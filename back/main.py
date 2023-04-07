@@ -51,7 +51,7 @@ def create_app() -> FastAPI:
     # 中间件
     register_middleware(app)
     # 静态资源
-    static_registration(app)
+    # static_registration(app)
 
     return app
 

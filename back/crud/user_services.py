@@ -56,10 +56,11 @@ def create_data(db: Session):
         log.info("创建超级管理员：root")
     user = get_user_by_username(db, "root")
     if get_role_count(db) <= 0:
-        role_services.create_role(db, Role(name='超级管理员', role_key='role_superadmin', description='超级管理员，拥有所有系统的权限',
-                             user=user))
+        role_services.create_role(db, Role(name='超级管理员', role_key='role_superadmin',
+                                           description='超级管理员，拥有所有系统的权限', user=user))
         role_services.create_role(db, Role(name='管理员', role_key='role_admin', description='管理员', user=user))
-        role_services.create_role(db, Role(name='普通用户', role_key='role_generaluser', description='默认注册的用户', user=user))
+        role_services.create_role(db, Role(name='普通用户', role_key='role_generaluser', description='默认注册的用户',
+                                           user=user))
     # 如果casbin行为<=0,则创建CasbinAction
     if get_casbin_action_count(db) <= 0:
         # 创建CasbinAction
@@ -247,7 +248,7 @@ def create_user(db: Session, username: str, password: str, sex: str, email: str)
     user.sex = sex
     user = add_user(db, user)
     create_casbin_rule_g(db, CasbinRule(ptype='g', v0=user.username, v1=role_user.role_key))  # 添加普通用户权限
-    return True
+    return [{"msg": "用户创建成功", "用户名": user.username, "邮箱:": user.email}]
 
 
 def set_user_role(db: Session):

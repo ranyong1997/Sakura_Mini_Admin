@@ -57,7 +57,7 @@ async def create_user(user: user_schemas.UserCreate, db: Session = Depends(get_d
         headers={"WWW-Authenticate": "Bearer"}
     )
     # 注册用户名称不能与用户组的role_key重复
-    role = role_services.get_role_by_role_key(db, user.username)
+    role = user_services.get_user_by_username(db, user.username)
     if role:
         raise credentials_exception
     return user_services.create_user(db, user.username, user.password, user.sex, user.email)
