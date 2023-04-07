@@ -29,7 +29,7 @@ async def get_ca(request: Request):
     uid = get_uuid()
     request.app.state.captcha_uid = uid
     # 将验证码写入redis,并设置过期销毁时间,创建根目录/Sakura/captcha
-    await redis_client.set(f'{settings.REDIS_PREFIX}:captcha:{uid}', code,
+    await redis_client.set(f'{settings.REDIS_PREFIX}:captcha:验证码', code,
                            ex=settings.CAPTCHA_EXPIRATION_TIME)
     return StreamingResponse(content=img, media_type='image/jpeg')
 
