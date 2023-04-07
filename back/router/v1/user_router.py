@@ -219,7 +219,7 @@ async def get_user_role(user_id: int, token: str = Depends(oauth2_scheme), db: S
 @router.post('/user/login', summary='用户登录', response_model=Token, description='用户登录')
 async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
     token, is_super = await user_services.login(form_data)
-    return Token(access_token=token, is_superuser=is_super)
+    return Token(access_token=token, is_superuser=is_super, msg="🎊🎊登录成功")
 
 
 @router.post("/user/logout", summary='用户退出')
