@@ -17,6 +17,7 @@ from back.app import settings
 from back.crud import user_services
 from back.dbdriver.mysql import Base, engine, get_db
 from back.router.v1 import api_v1_router
+from back.tasks.sources.bali_backup import scheduler
 from back.utils import response_code
 from back.utils.core.init_scheduler import scheduler_init
 from back.utils.exception import errors
@@ -88,9 +89,16 @@ def register_init(app: FastAPI) -> None:
         try:
             logger.bind(name=None).success("开始加载静态任务.           ✔")
             # 加载静态任务
-            # await scheduler_init.add_config_job()
+            await scheduler_init.add_config_job()
         except Exception as e:
             logger.bind(name=None).error(f"加载静态任务失败.          ❌ \n Error:{str(e)}")
+            raise
+        try:
+            logger.bind(name=None).success("开始加载定时备份.           ✔")
+            # 加载定时备份
+            scheduler.start()
+        except Exception as e:
+            logger.bind(name=None).error(f"加载定时备份失败.          ❌ \n Error:{str(e)}")
             raise
         logger.bind(name=None).success(
             f"********************  START:{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))} ********************")

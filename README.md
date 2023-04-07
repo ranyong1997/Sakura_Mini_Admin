@@ -142,7 +142,6 @@ docker-compose up -d
 - [ ] 单元测试
 - [ ] 增加Jenkinsfile打包
 - [ ] 新增修改密码移除redisToken缓存
-- [ ] 新增websocket
 - [ ] 数据库自定义创建表、字段
 - [ ] 接入Scrapy爬虫
 - [ ] 测试环境和正式环境一键切换开关

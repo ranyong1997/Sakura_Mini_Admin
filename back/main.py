@@ -12,6 +12,7 @@ from back.app import settings
 from back.crud import user_services  # 删除会报错奇怪的bug
 from back.middleware import register_middleware
 from back.router.v1 import tags_metadata
+from back.tasks.sources.bali_backup import scheduler
 from back.utils.registrar import register_router, register_init, register_hook, register_exception
 from back.utils.static import static_registration
 
@@ -51,8 +52,7 @@ def create_app() -> FastAPI:
     # 中间件
     register_middleware(app)
     # 静态资源
-    # static_registration(app)
-
+    static_registration(app)
     return app
 
 
