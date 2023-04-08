@@ -213,6 +213,23 @@ docker-compose up -d
 🎈 perf:():优化
 ```
 
+## 其他
+```text
+Git更新ignore文件直接修改gitignore是不会生效的，需要先去掉已经托管的文件，修改完成之后再重新添加并提交。
+
+第一步：
+git rm -r --cached .
+去掉已经托管的文件
+
+第二步：
+修改自己的igonre文件内容
+
+第三步：
+git add .
+git commit -m "clear cached"
+```
+
+
 ## 🛰️API文档
 
 ***API文档：***
