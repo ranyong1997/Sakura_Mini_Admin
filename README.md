@@ -1,4 +1,6 @@
- <h1 align="center">Sakura_Mini_Admin后台管理系统</h1>
+<h2 align="center">目前暂时停止更新此项目，最近在写新的一个模块，欢迎移步交流：https://github.com/ranyong1997/Sakura_K </h2>
+
+<h1 align="center">Sakura_Mini_Admin后台管理系统</h1>
 <h4 align="center">🚀快速开发、✅后台多端自适应</h4> 
 <p align="center">
 <a href="https://www.java.com/zh-CN/download/"><img src="https://img.shields.io/badge/Python-3.8-fadf6f"> </a> 
